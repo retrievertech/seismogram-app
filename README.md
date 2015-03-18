@@ -1,7 +1,7 @@
 seismogram-app
 ==============
 
-Beginning of making a browser app for searching/browsing seismogram. Eventually editing.
+Beginning of a browser app for searching/browsing seismograms. Eventually editing.
 
 data-tools
 ----------
