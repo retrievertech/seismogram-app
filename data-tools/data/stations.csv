@@ -1,0 +1,126 @@
+1,AAE,9.03,38.77,"Addis Ababa, Ethiopia",Other,FURI,25.000,25.000,1.500,1.500
+2,AAM,42.30,-83.66,"Ann Arbor, Michigan",US,AAM (NSN),25.000,25.000,1.500,1.500
+4,ADE,-34.97,138.71,"Adelaide, Australia",Other,,25.000,25.000,0.750,0.750
+5,AFI,-13.91,-171.78,"Apia, Western Samoa",Other,AFI,12.500,12.500,0.750,0.750
+6,AKU,65.69,-18.11,"Akureyri, Iceland",Other,,25.000,12.500,0.750,0.375
+7,ALQ,34.94,-106.46,"Albuquerque, New Mexico",US,ANMO,200.000,200.000,3.000,3.000
+707,ALQ Low Gain,34.94,-106.46,"Albuquerque, New Mexico",US,ANMO,,,0.030,0.030
+112,ANP,25.18,121.52,"Anpu, Taiwan",Other,TATO,6.250,6.250,0.750,0.750
+9,ANT,-23.70,-70.42,"Antofagusta, Chile",Other,LVC,50.000,50.000,3.000,3.000
+10,AQU,42.35,13.40,"L'Aquila, Italy",Other,,50.000,50.000,3.000,3.000
+11,ARE,-16.46,-71.49,"Arequipa, Peru",Other,NNA,50.000,50.000,1.500,1.500
+12,ATL,33.43,-84.33,"Atlanta, Georgia",US,,50.000,50.000,3.000,3.000
+13,ATU,37.97,23.72,"Athens, Greece",Other,,12.500,12.500,1.500,1.500
+14,BAG,16.41,120.58,"Baguio, Philippines",Other,,25.000,25.000,3.000,3.000
+,BDF,-15.66,-47.90,"Brasilia, Brazil",Other,BDFB (GT),100.000,100.000,1.500,1.500
+15,BEC,32.38,-64.68,Bermuda,Other,,25.000,25.000,1.500,1.500
+16,BES,,,,,,,,,
+17,BHP,8.96,-79.56,"Balboa Heights, Panama",Other,,12.500,12.500,0.750,0.750
+18,BKS,37.88,-122.24,"Berkeley, California",US,,25.000,25.000,3.000,3.000
+19,BLA,37.21,-80.42,"Blacksburg, Virginia",US,BLA (NSN),100.000,50.000,1.500,1.500
+21,BOG,4.62,-74.07,"Bogota, Columbia",Other,BOCO,12.500,12.500,3.000,3.000
+22,BOZ,45.60,-111.63,"Bozeman, Montana",US,,200.000,200.000,3.000,3.000
+23,BUL,-20.14,28.61,"Bulawayo, Zimbabwe",Other,,100.000,100.000,0.750,0.750
+24,CAR,10.51,-66.93,"Caracas, Venezuela",Other,,25.000,25.000,3.000,3.000
+25,CCG,77.17,-61.13,"Camp Century, Greenland",Other,,100.000,100.000,1.500,1.500
+26,CHG,18.79,98.98,"Chiengmai, Thailand",Other,CHTO,200.000,200.000,3.000,3.000
+27,CMC,67.83,-115.08,"Coppermine, Canada",Other,,200.000,200.000,3.000,3.000
+28,COL,64.90,-147.79,"College, Alaska",US,"COL, COLA",100.000,100.000,1.500,1.500
+29,COP,55.68,12.43,"Copenhagen, Denmark",Other,,12.500,12.500,0.750,0.750
+30,COR,44.59,-123.30,"Corvallis, Oregon",US,COR,25.000,12.500,1.500,0.750
+31,CTA,-20.09,146.25,"Charters Towers, Australia",Other,CTAO,100.000,100.000,3.000,3.000
+555,DAG,76.77,-18.77,"Danmarkshavn, Greenland",Other,,50.000,50.000,0.750,0.750
+32,DAL,32.85,-96.78,"Dallas, Texas",US,,25.000,25.000,1.500,1.500
+33,DAV,7.09,125.57,"Davao, Philippines",Other,DAV,6.250,6.250,3.000,3.000
+36,DUG,40.20,-112.81,"Dugway, Utah",US,DUG (NSN),400.000,200.000,3.000,3.000
+34,EIL,29.55,34.95,"Eilat, Israel",Other,,200.000,200.000,3.000,3.000
+38,ESK,55.32,-3.21,"Eskdalemuir, Scotland",Other,ESK,12.500,12.500,0.750,0.750
+39,FLO,38.80,-90.37,"Florissant, Missouri",US,,50.000,50.000,3.000,3.000
+,FVM,37.98,-90.43,"French Village, Missouri",US,,100.000,100.000,1.500,1.500
+40,GDH,69.25,-53.53,"Godhavn, Greenland",Other,,25.000,25.000,1.500,1.500
+41,GEO,38.90,-77.07,"Georgetown, D.C.",US,,25.000,25.000,1.500,1.500
+42,GIE,-0.73,-90.30,"Galapagos Islands, Ecuador",Other,PAYG,12.500,12.500,0.750,0.750
+43,GOL,39.70,-105.37,"Golden, Colorado",US,GOL (NSN),400.000,200.000,1.500,1.500
+37,GRM,-33.31,26.57,"Grahamstown, South Africa",Other,,25.000,25.000,1.500,1.500
+85,GSC,35.30,-116.81,"Goldstone, California",US,,100.000,100.000,1.500,1.500
+44,GUA,13.54,144.91,"Guam, Marianas Islands",US,GUMO,12.500,6.250,0.750,0.750
+45,HKC,22.30,114.17,Hong Kong,Other,,6.250,6.250,0.750,0.750
+47,HLW,29.86,31.34,"Helwan, Arab Republic of Egypt",Other,,50.000,50.000,3.000,3.000
+48,HNR,-9.43,159.95,"Honiara, Solomon Islands",Other,HNR,12.500,12.500,1.500,1.500
+49,HOW,-9.43,159.95,"Howrah, India",Other,,1.600,1.600,1.500,1.500
+555,INU,35.35,137.02,"Inuyama, Honshu",Other (Training System),,,,,
+50,IST,41.04,28.98,"Istanbul, Turkey",Other,,25.000,25.000,1.500,1.500
+35,JCT,30.48,-99.80,"Junction, Texas",US,,200.000,100.000,1.500,1.500
+51,JER,31.77,35.20,"Jerusalem, Israel",Other,,50.000,25.000,3.000,3.000
+57,KBL,34.57,69.11,"Kabul, Afghanistan",Other,KAAO (ASRO),400.000,400.000,6.000,6.000
+70,KBS,78.92,11.92,"Kingsbay, Spitsbergen",Other,KBS,50.000,25.000,0.750,0.750
+52,KEV,67.76,27.01,"Kevo, Finland",Other,KEV,25.000,25.000,1.500,1.500
+53,KIP,21.42,-158.02,"Kipapa, Hawaii",US,KIP,12.500,6.250,0.750,0.375
+54,KOD,10.23,77.47,"Kodaikanal, India",Other,,100.000,100.000,1.500,1.500
+55,KON,59.65,9.63,"Kongsberg, Norway",Other,KONO,50.000,25.000,1.500,1.500
+555,KRK,69.72,30.06,"Kirkenes, Norway",Other,,25.000,25.000,1.500,1.500
+100,KTG,70.42,-21.98,"Kap Tobin, Greenland",Other,,12.500,12.500,0.750,0.750
+56,LAH,31.55,74.33,"Lahore, Pakistan",Other,,3.125,3.125,0.750,0.750
+20,LEM,-6.83,107.62,"Lembang, Indonesia",Other,,25.000,25.000,0.750,0.750
+58,LON,46.75,-121.81,"Longmire, Washington",US,LON (DWW),100.000,100.000,1.500,1.500
+126,LOR,47.27,3.86,"Lormes, France",Other,,100.000,100.000,0.750,0.750
+59,LPA,-34.91,-57.93,"La Plata, Argentina",Other,,3.125,3.125,0.750,0.750
+60,LPB,-16.53,-68.10,"La Paz, Bolivia",Other,,50.000,50.000,1.500,1.500
+61,LPS,14.29,-89.16,"La Palma, El Salvador",Other,,100.000,50.000,3.000,3.000
+63,LUB,33.58,-101.87,"Lubbock, Texas",US,,25.000,25.000,1.500,1.500
+65,MAL,36.73,-4.41,"Malaga, Spain",Other,,50.000,50.000,1.500,1.500
+66,MAN,14.66,121.08,"Manila, Philippines",Other,,12.500,12.500,1.500,1.500
+64,MAT,36.54,138.21,"Matsushiro, Japan",Other,MAJO,100.000,100.000,3.000,3.000
+67,MDS,43.37,-89.76,"Madison, Wisconsin",US,JFWS (NSN),100.000,100.000,1.500,1.500
+69,MNN,44.91,-93.19,"Minneapolis, Minnesota",US,,50.000,50.000,3.000,3.000
+71,MSH,36.31,59.59,"Mashad, Iran",Other,MAIO (SRO),12.500,12.500,1.500,1.500
+555,MSO,46.83,-113.94,"Missoula, Montana",US,,100.000,100.000,1.500,1.500
+72,MUN,-31.98,116.21,"Mundaring, W. Australia",Other,NWAO (142 km),25.000,25.000,0.750,0.750
+74,NAI,-1.27,36.80,"Nairobi, Kenya",Other,"NAI, KMBO",50.000,50.000,1.500,1.500
+73,NAT,-5.12,-35.03,"Natal, Brazil",Other,RCBR (40 km),25.000,25.000,1.500,1.500
+75,NDI,28.68,77.22,"New Delhi, India",Other,,50.000,50.000,1.500,1.500
+76,NHA,12.21,109.21,"Nhatrang, South Vietnam",Other,,25.000,25.000,1.500,1.500
+78,NNA,-11.99,-76.84,"Nana, Peru",Other,NNA,50.000,50.000,3.000,3.000
+79,NOR,81.60,-16.68,"Nord, Greenland",Other,,50.000,50.000,0.750,0.750
+81,NUR,60.51,24.65,"Nurmijarvi, Finland",Other,,25.000,25.000,3.000,3.000
+82,OGD,41.07,-74.62,"Ogdensburg, New Jersey",US,OGD (HGLP),100.000,50.000,6.000,0.750
+83,OXF,34.51,-89.41,"Oxford, Mississippi",US,OXF (NSN),50.000,50.000,3.000,3.000
+84,PDA,37.75,-25.66,"Ponta Delgada, Azores",Other,,6.250,6.250,0.750,0.750
+98,PEL,-33.14,-70.69,"Peldehue, Chile",Other,,50.000,50.000,1.500,1.500
+555,PLM,33.35,-116.86,"Palomar, SD County, CA",US,,50.000,50.000,0.750,0.750
+86,PMG,-9.41,147.15,"Port Moresby, New Guinea",Other,PMG,25.000,25.000,1.500,1.500
+87,POO,18.53,73.85,"Poona, India",Other,,50.000,50.000,1.500,1.500
+89,PRE,-25.75,28.19,"Pretoria, South Africa",Other,,50.000,50.000,1.500,1.500
+91,PTO,41.14,-8.60,"Porto, Portugal",Other,,25.000,25.000,1.500,1.500
+92,QUE,30.19,66.95,"Quetta, Pakistan",Other,,200.000,200.000,6.000,6.000
+93,QUI,-0.20,-78.50,"Quito, Ecuador",Other,OTAV (49 km),3.125,3.125,3.000,3.000
+94,RAB,-4.19,152.17,"Rabaul, Cook Islands",Other,,12.500,12.500,0.750,0.750
+95,RAR,-21.22,-159.77,"Rarotonga, Cook Islands",Other,RAR,6.250,6.250,0.375,0.375
+96,RCD,44.08,-103.21,"Rapid City, S. Dakota",US,RSSD (67 km),25.000,25.000,1.500,1.500
+97,RIV,-33.83,151.16,"Riverview, Australia",Other,,12.500,12.500,0.750,0.750
+99,SBA,-77.85,166.76,"Scott Base, Antarctica",Other,SBA,25.000,12.500,0.750,0.750
+101,SCP,40.80,-77.87,"State College, Pennsylvania",US,SSPA (18 km),50.000,50.000,1.500,1.500
+62,SDB,-14.93,13.57,"Sa Da Bandeira, Angola",Other,,100.000,100.000,1.500,1.500
+102,SEO,37.57,126.97,"Seoul, Korea",Other,INCN (31 km),50.000,50.000,0.750,0.750
+103,SHA,30.69,-88.14,"Spring Hill, Alabama",US,,6.250,6.250,1.500,1.500
+104,SHI,29.64,52.53,"Shiraz, Iran",Other,,50.000,50.000,0.750,0.750
+114,SHK,34.53,132.68,"Shiraki, Japan",Other,,12.500,12.500,1.500,1.500
+105,SHL,25.57,91.88,"Shillong, India",Other,,200.000,200.000,3.000,3.000
+106,SJG,18.11,-66.15,"San Juan, Puerto Rico",US,SJG,50.000,50.000,0.750,0.750
+8,SNA,-70.31,-2.33,"Sanae, Antarctica",Other,,50.000,50.000,NO LP,NO LP
+68,SNG,7.17,100.62,"Songkhla, Thailand",Other,,25.000,25.000,3.000,3.000
+107,SOM,-52.78,-69.24,"Sombrero, Chile",Other,,6.250,6.250,0.375,0.375
+108,SPA,-90.00,0.00,"South Pole, Antarctica",Other,SPA,100.000,100.000,0.375,0.375
+109,STU,48.77,9.19,"Stuttgart, Germany",Other,,25.000,25.000,0.750,0.750
+110,TAB,38.07,46.33,"Tabriz, Iran",Other,,6.250,6.250,1.500,1.500
+113,TAU,-42.91,147.32,"Hobart, Tasmania",Other,TAU,25.000,25.000,0.750,0.750
+115,TOL,39.88,-4.05,"Toledo, Spain",Other,TOL (DWW),25.000,25.000,1.500,1.500
+117,TRI,45.71,13.76,"Trieste, Italy",Other,,50.000,50.000,3.000,3.000
+118,TRN,10.65,-61.40,"Trinidad, Port of Spain",Other,,25.000,25.000,1.500,1.500
+119,TUC,32.31,-110.78,"Tucson, Arizona",US,TUC,200.000,200.000,3.000,3.000
+120,UME,63.82,20.24,"Umea, Sweden",Other,,50.000,50.000,5.500,5.500
+125,UNM,19.33,-99.18,"Mexico City, Mexico",Other,,6.250,6.250,1.500,1.500
+121,VAL,51.94,-10.24,"Valentia, Ireland",Other,,25.000,12.500,1.500,0.750
+122,WEL,-41.29,174.77,"Wellington, New Zealand",Other,SNZO (6 km),6.250,6.250,0.750,0.750
+123,WES,42.38,-71.32,"Weston, Massachusetts",US,HRV (24 km),50.000,50.000,3.000,3.000
+124,WIN,-22.57,17.10,"Windhoek, Namibia",Other,TSUM (375 km),50.000,50.000,1.500,1.500
