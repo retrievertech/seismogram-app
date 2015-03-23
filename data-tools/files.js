@@ -99,6 +99,11 @@ module.exports = {
     seismos = seismos.filter(function(seismo) {
       return null !== validStationId(seismo.stationId, stations, invalidStations);
     });
+    seismos.forEach(function(seismo) {
+      var stationId = validStationId(seismo.stationId, stations, invalidStations);
+      console.assert(stationId !== null, "Internal Error.");
+      seismo.stationId = stationId;
+    });
     console.error("Invalid stations:");
     for (var k in invalidStations) {
       console.error("  ", k, invalidStations[k]);
