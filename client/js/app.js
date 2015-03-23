@@ -10,16 +10,8 @@ var server = function(path) {
   return serverUrl + path;
 };
 
-seismoApp.run(["$rootScope", function($rootScope) {
+seismoApp.run([function() {
   console.log("Seismo is running.");
-  $rootScope.safeApply = function(fn) {
-    var phase = this.$root.$$phase;
-    if(phase === "$apply" || phase === "$digest") {
-      if(fn && (typeof(fn) === "function")) fn();
-    } else {
-      this.$apply(fn);
-    }
-  };
 }]);
 
 seismoApp.service("map", [function() {
