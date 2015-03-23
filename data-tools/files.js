@@ -81,7 +81,7 @@ module.exports = {
       var type = validType(dataParts[3], invalidTypes);
       if (dateTime && type) {
         seismos.push({
-          date: dateTime,
+          date: {"$date": dateTime.getTime()},
           stationId: stationId,
           type: type,
           name: fileName
