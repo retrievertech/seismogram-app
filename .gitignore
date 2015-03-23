@@ -1,2 +1,5 @@
 bower_components
 node_modules
+client/js/controllers.js
+client/js/directives.js
+client/js/services.js
