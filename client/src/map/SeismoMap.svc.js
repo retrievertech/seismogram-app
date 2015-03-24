@@ -1,8 +1,8 @@
-import {Leaflet} from "../bower_components/redfish-core/lib/Leaflet.js";
+import {Leaflet} from "../../bower_components/redfish-core/lib/Leaflet.js";
 
 var L = window.L;
 
-class Map {
+class SeismoMap {
   
   constructor() {
     this.map = null;
@@ -24,4 +24,4 @@ class Map {
 
 }
 
-export { Map }
+export { SeismoMap }

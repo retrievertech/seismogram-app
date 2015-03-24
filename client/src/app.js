@@ -2,17 +2,17 @@ import {Gradient} from "../bower_components/redfish-core/lib/Util/Gradient.js";
 
 var angular = window.angular;
 
-import { MainCtrl } from "./mainCtrl.js";
-import { Map } from "./map.js";
-import { SeismoQuery } from "./query.js";
-import { SeismoTimeFilter } from "./seismoTimeFilter/seismoTimeFilter.js";
-import { SeismoFilters } from "./seismoFilters/seismoFilters.js";
-import { LeafletMap } from "./leafletMap.js";
+import { SeismoMain } from "./SeismoMain.ctrl.js";
+import { SeismoMap } from "./map/SeismoMap.svc.js";
+import { SeismoQuery } from "./SeismoQuery.svc.js";
+import { SeismoTimeFilter } from "./seismo-time-filter/SeismoTimeFilter.dir.js";
+import { SeismoFilters } from "./seismo-filters/SeismoFilters.dir.js";
+import { LeafletMap } from "./map/LeafletMap.dir.js";
 
-angular.module("seismoApp", [])
-  .controller("mainCtrl", MainCtrl)
-  .service("map", Map)
-  .service("seismoQuery", SeismoQuery)
+angular.module("SeismoApp", [])
+  .controller("SeismoMain", SeismoMain)
+  .service("SeismoMap", SeismoMap)
+  .service("SeismoQuery", SeismoQuery)
   .directive("seismoTimeFilter", SeismoTimeFilter)
   .directive("seismoFilters", SeismoFilters)
   .directive("leafletMap", LeafletMap)
@@ -21,6 +21,6 @@ angular.module("seismoApp", [])
   }]);
 
 angular.element(document).ready(function() {
-  angular.bootstrap(document, ["seismoApp"]);
+  angular.bootstrap(document, ["SeismoApp"]);
 });
 

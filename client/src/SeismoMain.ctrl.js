@@ -1,14 +1,14 @@
 var L = window.L;
 
-class MainCtrl {
+class SeismoMain {
 
-  constructor($scope, $http, map, seismoQuery) {
+  constructor($scope, $http, SeismoMap, SeismoQuery) {
     var log = function(base, exp) {
       return Math.log(exp) / Math.log(base);
     };
 
     var seismogramArea = 0.5; // pixels
-    $http({url: seismoQuery.path("/stations")}).then(function(ret) {
+    $http({url: SeismoQuery.path("/stations")}).then(function(ret) {
       var stations = ret.data;
       stations.forEach(function(station) {
         if (station.lat === null || station.lon === null)
@@ -21,7 +21,7 @@ class MainCtrl {
           radius: radius,
           opacity: 0
         });
-        marker.addTo(map.leafletMap);
+        marker.addTo(SeismoMap.leafletMap);
         var popup = L.popup().setContent(
           station.location + "<br/>" +
           "<b>" + station.numFiles + "</b> files."
@@ -31,7 +31,7 @@ class MainCtrl {
     });
 
     $scope.doQuery = function(params) {
-      seismoQuery.doQuery(params).then(function(res) {
+      SeismoQuery.doQuery(params).then(function(res) {
         // update model
       });
     }
@@ -39,4 +39,4 @@ class MainCtrl {
 
 }
 
-export { MainCtrl }
+export { SeismoMain }

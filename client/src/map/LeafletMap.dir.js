@@ -1,8 +1,8 @@
 class LeafletMap {
-  constructor(map) {
+  constructor(SeismoMap) {
     return {
       link: (scope, element, attrs) => {
-        map.init(attrs.id);
+        SeismoMap.init(attrs.id);
       }
     }
   }
