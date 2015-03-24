@@ -1,7 +1,7 @@
 class SeismoTimeFilter {
   constructor() {
     return {
-      templateUrl: "src/seismoTimeFilter/seismoTimeFilter.html"  
+      templateUrl: "src/seismo-time-filter/SeismoTimeFilter.html"  
     };
   }
 }
