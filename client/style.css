@@ -43,16 +43,16 @@ body {
   height: 100%;
 }
 
-#seismo-time-filter {
+#seismo-time-nubbin {
   height: 20px;
   width: 100%;
 }
 
-#seismo-filters {
+#seismo-query-nubbins {
   height: 100px;
   width: 100%;
 }
 
-#seismo-filters div {
+#seismo-query-nubbins div {
   display: inline-block;
 }
