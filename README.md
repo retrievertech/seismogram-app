@@ -32,4 +32,8 @@ node app # starts on port 3000
 
 client
 ------
-An angular frontend. Serve this directory using a web server and load it in the browser, assuming the above steps are done.
+An angular frontend.
+```sh
+bower install
+```
+Serve the client directory using a web server and load it in the browser, assuming the above steps are done.
