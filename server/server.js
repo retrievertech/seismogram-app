@@ -14,6 +14,19 @@ var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
 
+var cache = {};
+var cacheKey = function(query) {
+  return query.status + "_" + query.edited + "_" + query.dateFrom + "_" + query.dateTo + "_" + query.page;
+};
+var cacheHit = function(query) {
+  return cache[cacheKey(query)];
+};
+var cachePut = function(query, payload) {
+  var key = cacheKey(query);
+  console.log("put", key);
+  cache[key] = payload;
+};
+
 app.get("/stations", function(req, res, next) {
   async.waterfall([
     connect,
@@ -31,6 +44,11 @@ app.get("/stations", function(req, res, next) {
 });
 
 app.get("/query", function(req, res, next) {
+  var hit = cacheHit(req.query);
+  if (hit) {
+    res.send(hit);
+    return;
+  }
   var status = req.query.status;
   var edited = req.query.edited;
   var dateFrom = new Date(req.query.dateFrom);
@@ -86,34 +104,54 @@ app.get("/query", function(req, res, next) {
     // get all the stations
     function(db, files, cb) {
       db.collection("stations").find({}).toArray(function(err, stations) {
-        cb(err, files, stations);
+        cb(err, db, files, stations);
       });
     },
-    function(files, stations, cb) {
+    // get all the statuses
+    function(db, files, stations, cb) {
+      db.collection("statuses").find({}).toArray(function(err, statuses) {
+        cb(err, files, stations, statuses);
+      });
+    },
+    function(files, stations, statuses, cb) {
       var stationMap = {};
-      stations.forEach(function(station) {
-        stationMap[station.stationId] = station;
-        station.completed = 0;
-        station.inProgress = 0;
-        station.notStarted = 0;
-        station.needsAttention = 0;
-        station.edited = 0;
+      var getStation = function(id) {
+        if (!(id in stationMap)) {
+          stationMap[id] = {
+            completed: 0,
+            inProgress: 0,
+            notStarted: 0,
+            needsAttention: 0,
+            edited: 0
+          };
+        }
+        return stationMap[id];
+      };
+      var statusMap = {};
+      statuses.forEach(function(status) {
+        statusMap[status.fileName] = status;
       });
       files.forEach(function(file) {
-        var station = stationMap[file.stationId];
+        var station = getStation(file.stationId);
+        var statusObj = statusMap[file.name];
         if (!station) console.error(file.stationId, "does not exist");
-        if (file.status === 0 || typeof(file.status) === "undefined") station.notStarted++;
-        if (file.status === 1) station.inProgress++;
-        if (file.status === 2) station.needsAttention++;
-        if (file.status === 3) station.completed++;
-        if (file.edited) station.edited++;
+        if (!statusObj) console.error(file.name, "has no status");
+        if (statusObj.status === 0) station.notStarted++;
+        if (statusObj.status === 1) station.inProgress++;
+        if (statusObj.status === 2) station.needsAttention++;
+        if (statusObj.status === 3) station.completed++;
+        if (statusObj.edited) station.edited++;
+        file.status = statusObj.status;
+        file.edited = statusObj.edited;
       });
       var filteredFiles = files.splice(pageSize*(page-1), pageSize);
-      res.send({
-        stations: stations,
+      var payload = {
+        stations: stationMap,
         numResults: files.length,
         files: filteredFiles
-      });
+      };
+      cachePut(req.query, payload);
+      res.send(payload);
       cb(null);
     }
   ], function(err) {
