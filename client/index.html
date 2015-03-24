@@ -10,9 +10,17 @@
     <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
     <script type="text/javascript" src="bower_components/leaflet/dist/leaflet.js"></script>
     <script type="text/javascript" src="bower_components/Leaflet.label/dist/Leaflet.label.js"></script>
+    <script type="text/javascript" src="bower_components/d3/d3.js"></script>
     <script type="module">import "src/app.js"</script>
   </head>
   <body ng-controller="SeismoMain">
-    <div id="leaflet-map" class="leaflet-map" leaflet-map></div>
+    <div id="left-section">
+        <div id="leaflet-map" class="leaflet-map" leaflet-map></div>
+        <div id="seismo-time-filter" seismo-time-filter></div>
+        <div id="seismo-filters" seismo-filters></div>
+    </div>
+    <div id="right-section">
+        <div seismo-list></div>
+    </div>
   </body>
 </html>

@@ -1,10 +1,58 @@
-body {
-  margin: 0;
-}
-.leaflet-map {
-  position: absolute;
-  top: 0;
-  left: 0;
+html {
   width: 100%;
   height: 100%;
+}
+
+/* body is display: flex so that the
+   right-section is fixed-width and
+   the left-section is space-filling */
+
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+/* main layout */
+
+/* left-section is display: flex so that the
+   filters are fixed-height and the map is
+   space-filling */
+
+#left-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+#right-section {
+  display: inline-block;
+  width: 500px;
+  height: 100%;
+}
+
+/* directives */
+
+.leaflet-map {
+  position: relative;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+#seismo-time-filter {
+  height: 20px;
+  width: 100%;
+}
+
+#seismo-filters {
+  height: 100px;
+  width: 100%;
+}
+
+#seismo-filters div {
+  display: inline-block;
 }
