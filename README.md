@@ -35,7 +35,5 @@ client
 An angular frontend.
 ```sh
 bower install
-npm install
-npm run build
 ```
 Serve the client directory using a web server and load it in the browser, assuming the above steps are done.
