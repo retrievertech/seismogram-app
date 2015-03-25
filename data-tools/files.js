@@ -84,7 +84,9 @@ module.exports = {
           date: {"$date": dateTime.getTime()},
           stationId: stationId,
           type: type,
-          name: fileName
+          name: fileName,
+          status: Math.floor(Math.random() * 4),
+          edited: Math.floor(Math.random() * 2) === 1 ? true : false
         });
       }
     });

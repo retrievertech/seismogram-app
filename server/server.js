@@ -19,7 +19,8 @@ var cacheKey = function(query) {
   return query.status + "_" + query.edited + "_" + query.dateFrom + "_" + query.dateTo + "_" + query.page;
 };
 var cacheHit = function(query) {
-  return cache[cacheKey(query)];
+  return false;
+  //return cache[cacheKey(query)];
 };
 var cachePut = function(query, payload) {
   var key = cacheKey(query);
@@ -49,7 +50,6 @@ app.get("/query", function(req, res, next) {
     res.send(hit);
     return;
   }
-  var status = req.query.status;
   var edited = req.query.edited;
   var dateFrom = new Date(req.query.dateFrom);
   var dateTo = new Date(req.query.dateTo);
@@ -65,6 +65,20 @@ app.get("/query", function(req, res, next) {
       return stationId.trim();
     });
   }
+
+  var status = [];
+  if (req.query.status) {
+    status = req.query.status.split(",").reduce(function(acc, status) {
+      var cleanedUpStatus = parseInt(status.trim());
+      console.log(cleanedUpStatus);
+      if (!isNaN(cleanedUpStatus)) {
+        console.log("push");
+        acc.push(cleanedUpStatus);
+      }
+      return acc;
+    }, []);
+  }
+
   // build the query.
   // queryComponents is a list of clauses that will be $and-ed together
   var queryComponents = [];
@@ -79,10 +93,11 @@ app.get("/query", function(req, res, next) {
 
   // edited bit
   if (edited) queryComponents.push({edited: JSON.parse(edited)});
-  // status bit
-  if (status) queryComponents.push({status: JSON.parse(status)});
   // station Ids to match
   if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
+  // statuses
+  console.log(status);
+  if (status.length > 0) queryComponents.push({status: {$in: status}});
 
   // final query
   var query = {};
@@ -93,65 +108,53 @@ app.get("/query", function(req, res, next) {
     connect,
     // run the query on the files collection
     function(db, cb) {
+      console.time("files");
       db.collection("files")
         .find(query)
         //.skip(pageSize * (page-1))
-        //.limit(pageSize)
+        //.limit(10000)
         .toArray(function(err, files) {
+          console.timeEnd("files");
           cb(err, db, files);
         });
     },
     // get all the stations
     function(db, files, cb) {
+      console.time("stations");
       db.collection("stations").find({}).toArray(function(err, stations) {
+        console.timeEnd("stations");
         cb(err, db, files, stations);
       });
     },
-    // get all the statuses
     function(db, files, stations, cb) {
-      db.collection("statuses").find({}).toArray(function(err, statuses) {
-        cb(err, files, stations, statuses);
-      });
-    },
-    function(files, stations, statuses, cb) {
       var stationMap = {};
       var getStation = function(id) {
         if (!(id in stationMap)) {
           stationMap[id] = {
-            completed: 0,
-            inProgress: 0,
-            notStarted: 0,
-            needsAttention: 0,
+            status: [0,0,0,0],
             edited: 0
           };
         }
         return stationMap[id];
       };
-      var statusMap = {};
-      statuses.forEach(function(status) {
-        statusMap[status.fileName] = status;
-      });
+      console.time("processing");
       files.forEach(function(file) {
         var station = getStation(file.stationId);
-        var statusObj = statusMap[file.name];
         if (!station) console.error(file.stationId, "does not exist");
-        if (!statusObj) console.error(file.name, "has no status");
-        if (statusObj.status === 0) station.notStarted++;
-        if (statusObj.status === 1) station.inProgress++;
-        if (statusObj.status === 2) station.needsAttention++;
-        if (statusObj.status === 3) station.completed++;
-        if (statusObj.edited) station.edited++;
-        file.status = statusObj.status;
-        file.edited = statusObj.edited;
+        station.status[file.status]++;
+        station.edited += +file.edited;
       });
+      console.timeEnd("processing");
+      var numResults = files.length;
       var filteredFiles = files.splice(pageSize*(page-1), pageSize);
       var payload = {
         stations: stationMap,
-        numResults: files.length,
+        numResults: numResults,
         files: filteredFiles
       };
       cachePut(req.query, payload);
       res.send(payload);
+      db.close();
       cb(null);
     }
   ], function(err) {
