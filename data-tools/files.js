@@ -81,10 +81,12 @@ module.exports = {
       var type = validType(dataParts[3], invalidTypes);
       if (dateTime && type) {
         seismos.push({
-          date: dateTime,
+          date: {"$date": dateTime.getTime()},
           stationId: stationId,
           type: type,
-          name: fileName
+          name: fileName,
+          status: Math.floor(Math.random() * 4),
+          edited: Math.floor(Math.random() * 2) === 1 ? true : false
         });
       }
     });
@@ -98,6 +100,11 @@ module.exports = {
     var invalidStations = {};
     seismos = seismos.filter(function(seismo) {
       return null !== validStationId(seismo.stationId, stations, invalidStations);
+    });
+    seismos.forEach(function(seismo) {
+      var stationId = validStationId(seismo.stationId, stations, invalidStations);
+      console.assert(stationId !== null, "Internal Error.");
+      seismo.stationId = stationId;
     });
     console.error("Invalid stations:");
     for (var k in invalidStations) {
