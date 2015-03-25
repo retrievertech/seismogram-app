@@ -106,30 +106,22 @@ app.get("/query", function(req, res, next) {
 
   async.waterfall([
     connect,
-    // get all the stations upfront
     function(db, cb) {
-      console.time("stations");
-      db.collection("stations").find({}).toArray(function(err, stations) {
-        console.timeEnd("stations");
-        cb(err, db, stations);
-      });
-    },
-    function(db, stations, cb) {
       console.time("filteredFiles");
       db.collection("files").find(query).skip(pageSize * (page-1)).limit(pageSize).toArray(function(err, filteredFiles) {
         console.timeEnd("filteredFiles");
-        cb(err, db, stations, filteredFiles);
+        cb(err, db, filteredFiles);
       });
     },
-    function(db, stations, filteredFiles, cb) {
+    function(db, filteredFiles, cb) {
       console.time("numResults");
       var fileCursor = db.collection("files").find(query).batchSize(10000);
       fileCursor.count(function(err, numResults) {
         console.timeEnd("numResults");
-        cb(err, db, stations, fileCursor, filteredFiles, numResults);
+        cb(err, db, fileCursor, filteredFiles, numResults);
       });
     },
-    function(db, stations, fileCursor, filteredFiles, numResults, cb) {
+    function(db, fileCursor, filteredFiles, numResults, cb) {
       console.time("processing");
       var stationMap = {};
       var getStation = function(id) {
