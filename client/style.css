@@ -56,3 +56,32 @@ body {
 #seismo-query-nubbins div {
   display: inline-block;
 }
+
+/* svg */
+
+.inner-segments path {
+  fill-opacity: 0.9;
+}
+
+circle.outer-circle {
+  fill: #044;
+  opacity: 0.5;
+}
+
+/* color scheme: http://paletton.com/#uid=7090L0kpjJgeGSpkpNzuSF8BHt4 */
+
+path.not-started {
+  fill: #2DD772;
+}
+
+path.ongoing {
+  fill: #FFB935;
+}
+
+path.needs-attention {
+  fill: #FF5C35;
+}
+
+path.complete {
+  fill: #3C6BD0;
+}
