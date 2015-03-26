@@ -17,7 +17,6 @@ class SeismoMain {
 
 
 
-    });
 
     $scope.doQuery = function(params) {
       return SeismoQuery.doQuery(params).then(function(res) {
