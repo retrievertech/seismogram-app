@@ -8,19 +8,26 @@ class SeismoMain {
     window.SeismoMap = SeismoMap;
     window.SeismoQuery = SeismoQuery;
 
+    // temporary for testing
     $http({url: SeismoQuery.path("/stations")}).then(function(ret) {
       var stations = ret.data;
+      SeismoMap.pieOverlay.setStationModel(stations);
+      $scope.doQuery();
+    });
 
-      SeismoMap.pieOverlay.storeData(stations);
 
 
     });
 
     $scope.doQuery = function(params) {
-      SeismoQuery.doQuery(params).then(function(res) {
-        // update model
+      return SeismoQuery.doQuery(params).then(function(res) {
+        var stations = res.data.stations;
+        if (stations) {
+          SeismoMap.pieOverlay.setStationStatusModel(stations);
+        }
       });
     }
+
   }
 
 }
