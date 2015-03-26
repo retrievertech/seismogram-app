@@ -93,7 +93,7 @@ class PieOverlay extends LeafletD3Overlay {
     pieSegments.exit().remove();
   }
 
-  renderStations(stations) {
+  renderStations(stationData) {
     // expects stations to be an array of station objects:
     // [
     //   {
@@ -105,8 +105,8 @@ class PieOverlay extends LeafletD3Overlay {
     // ]
 
     // bind data to <g class="station"> elements
-    stations = this.overlay.selectAll(".station")
-      .data(stations);
+    var stations = this.overlay.selectAll(".station")
+      .data(stationData);
 
     // append new <g> elements
     var newStations = stations.enter()
