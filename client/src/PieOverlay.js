@@ -71,7 +71,7 @@ class PieOverlay extends LeafletD3Overlay {
 
         // create arc data expected by d3.svg.arc()
         var data = pieLayout(stationStatus.status);
-        data.forEach((arcData, idx) => {
+        data.forEach((arcData) => {
           arcData.outerRadius = curRadius;
           arcData.innerRadius = 0;
         });
@@ -105,7 +105,7 @@ class PieOverlay extends LeafletD3Overlay {
     // ]
 
     // bind data to <g class="station"> elements
-    var stations = this.overlay.selectAll(".station")
+    stations = this.overlay.selectAll(".station")
       .data(stations);
 
     // append new <g> elements
@@ -137,9 +137,9 @@ class PieOverlay extends LeafletD3Overlay {
       if (station.lat === null || station.lon === null) {
         console.warn("Station has invalid lat or lon", station);
         return;
-      }        
+      }
       var pixelXY = this.project(station.lon, station.lat);
-      return "translate(" + pixelXY.x + "," + pixelXY.y + ")"
+      return "translate(" + pixelXY.x + "," + pixelXY.y + ")";
     });
 
     // each <g> has an outer-circle and several inner-segments
@@ -158,4 +158,4 @@ class PieOverlay extends LeafletD3Overlay {
 
 }
 
-export { PieOverlay }
+export { PieOverlay };

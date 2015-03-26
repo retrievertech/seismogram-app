@@ -1,5 +1,3 @@
-var L = window.L;
-
 class SeismoMain {
 
   constructor($scope, $http, SeismoMap, SeismoQuery) {
@@ -15,9 +13,6 @@ class SeismoMain {
       $scope.doQuery();
     });
 
-
-
-
     $scope.doQuery = function(params) {
       return SeismoQuery.doQuery(params).then(function(res) {
         var stations = res.data.stations;
@@ -25,10 +20,10 @@ class SeismoMain {
           SeismoMap.pieOverlay.setStationStatusModel(stations);
         }
       });
-    }
+    };
 
   }
 
 }
 
-export { SeismoMain }
+export { SeismoMain };

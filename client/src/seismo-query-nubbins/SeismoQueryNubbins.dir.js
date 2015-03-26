@@ -6,4 +6,4 @@ class SeismoQueryNubbins {
   }
 }
 
-export { SeismoQueryNubbins }
+export { SeismoQueryNubbins };

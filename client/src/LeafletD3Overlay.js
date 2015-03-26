@@ -1,6 +1,7 @@
 // based on http://bost.ocks.org/mike/leaflet/
 
 var d3 = window.d3;
+var L = window.L;
 
 class LeafletD3Overlay {
   constructor(leafletMap) {
@@ -36,4 +37,4 @@ class LeafletD3Overlay {
   }
 }
 
-export { LeafletD3Overlay }
+export { LeafletD3Overlay };
