@@ -31,10 +31,10 @@ module.exports = {
           obj.numFiles = 0;
           stations.push(obj);
         });
-        callback(stations);
+        callback(this.filterInvalidStations(stations));
         //console.log(JSON.stringify(stations, null, 2));
       }
-    });
+    }.bind(this));
   },
   populateSeismoData: function(stations, seismos) {
     stations.forEach(function(station) {
@@ -44,5 +44,35 @@ module.exports = {
         }
       });
     });
+  },
+  filterInvalidStations: function(stations) {
+    var woId = [];
+    var dups = {};
+    stations.forEach(function(s) {
+      if (!s.stationId) woId.push(s);
+      else {
+        if (typeof dups[s.stationId] === "undefined") {
+          dups[s.stationId] = 1;
+        } else {
+          dups[s.stationId]++;
+        }
+      }
+    });
+    // print errors
+    console.error("Stations with missing ID:");
+    woId.forEach(function(s) {
+      console.log("  ", s.code, s.location);
+    });
+    console.log("Stations with repeated ID:");
+    for (var k in dups) {
+      if (dups[k] > 1) {
+        console.log("  ", k, dups[k]);
+      }
+    }
+    // return filtered results
+    stations = stations.filter(function(station) {
+      return station.stationId && dups[station.stationId] === 1;
+    });
+    return stations;
   }
 };

@@ -14,18 +14,19 @@ var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
 
-var cache = {};
-var cacheKey = function(query) {
-  return query.status + "_" + query.edited + "_" + query.dateFrom + "_" + query.dateTo + "_" + query.page;
-};
-var cacheHit = function(query) {
-  return false;
-  //return cache[cacheKey(query)];
-};
-var cachePut = function(query, payload) {
-  var key = cacheKey(query);
-  console.log("put", key);
-  cache[key] = payload;
+var cache = {
+  on: true,
+  cache: {},
+  key: function(query) {
+    return query.status + "_" + query.edited + "_" + query.dateFrom + "_" + query.dateTo + "_" + query.page;
+  },
+  hit: function(query) {
+    return this.on ? this.cache[this.key(query)] : null;
+  },
+  put: function(query, payload) {
+    var key = this.key(query);
+    this.cache[key] = payload;
+  }
 };
 
 app.get("/stations", function(req, res, next) {
@@ -45,8 +46,10 @@ app.get("/stations", function(req, res, next) {
 });
 
 app.get("/query", function(req, res, next) {
-  var hit = cacheHit(req.query);
+  console.log("--- processing /query ---", req.query);
+  var hit = cache.hit(req.query);
   if (hit) {
+    console.log("result is cached");
     res.send(hit);
     return;
   }
@@ -70,9 +73,7 @@ app.get("/query", function(req, res, next) {
   if (req.query.status) {
     status = req.query.status.split(",").reduce(function(acc, status) {
       var cleanedUpStatus = parseInt(status.trim());
-      console.log(cleanedUpStatus);
       if (!isNaN(cleanedUpStatus)) {
-        console.log("push");
         acc.push(cleanedUpStatus);
       }
       return acc;
@@ -96,37 +97,32 @@ app.get("/query", function(req, res, next) {
   // station Ids to match
   if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
   // statuses
-  console.log(status);
   if (status.length > 0) queryComponents.push({status: {$in: status}});
 
   // final query
   var query = {};
   if (queryComponents.length > 0) query.$and = queryComponents;
-  console.log(JSON.stringify(query, null, 2));
+  console.log("query =", JSON.stringify(query, null, 2));
 
   async.waterfall([
     connect,
-    // run the query on the files collection
     function(db, cb) {
-      console.time("files");
-      db.collection("files")
-        .find(query)
-        //.skip(pageSize * (page-1))
-        //.limit(10000)
-        .toArray(function(err, files) {
-          console.timeEnd("files");
-          cb(err, db, files);
-        });
-    },
-    // get all the stations
-    function(db, files, cb) {
-      console.time("stations");
-      db.collection("stations").find({}).toArray(function(err, stations) {
-        console.timeEnd("stations");
-        cb(err, db, files, stations);
+      console.time("filteredFiles");
+      db.collection("files").find(query).skip(pageSize * (page-1)).limit(pageSize).toArray(function(err, filteredFiles) {
+        console.timeEnd("filteredFiles");
+        cb(err, db, filteredFiles);
       });
     },
-    function(db, files, stations, cb) {
+    function(db, filteredFiles, cb) {
+      console.time("numResults");
+      var fileCursor = db.collection("files").find(query).batchSize(10000);
+      fileCursor.count(function(err, numResults) {
+        console.timeEnd("numResults");
+        cb(err, db, fileCursor, filteredFiles, numResults);
+      });
+    },
+    function(db, fileCursor, filteredFiles, numResults, cb) {
+      console.time("processing");
       var stationMap = {};
       var getStation = function(id) {
         if (!(id in stationMap)) {
@@ -137,25 +133,26 @@ app.get("/query", function(req, res, next) {
         }
         return stationMap[id];
       };
-      console.time("processing");
-      files.forEach(function(file) {
-        var station = getStation(file.stationId);
-        if (!station) console.error(file.stationId, "does not exist");
-        station.status[file.status]++;
-        station.edited += +file.edited;
+      fileCursor.each(function(err, file) {
+        if (file === null) {
+          console.timeEnd("processing");
+          var payload = {
+            stations: stationMap,
+            numResults: numResults,
+            files: filteredFiles
+          };
+          cache.put(req.query, payload);
+          res.send(payload);
+          db.close();
+          cb(null);
+        } else {
+          var station = getStation(file.stationId);
+          if (!station) console.error(file.stationId, "does not exist");
+          station.status[file.status]++;
+          station.edited += +file.edited;
+        }
       });
-      console.timeEnd("processing");
-      var numResults = files.length;
-      var filteredFiles = files.splice(pageSize*(page-1), pageSize);
-      var payload = {
-        stations: stationMap,
-        numResults: numResults,
-        files: filteredFiles
-      };
-      cachePut(req.query, payload);
-      res.send(payload);
-      db.close();
-      cb(null);
+
     }
   ], function(err) {
     if (err) next(err);
