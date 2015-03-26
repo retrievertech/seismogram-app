@@ -1,4 +1,5 @@
 import {Leaflet} from "../../bower_components/redfish-core/lib/Leaflet.js";
+import {PieOverlay} from "../PieOverlay.js";
 
 var L = window.L;
 
@@ -16,10 +17,12 @@ class SeismoMap {
     map.leafletMap.setView(new L.LatLng(0,0), 3);
     map.addLayers();
     map.setBaseLayer(map.baseLayers[3]);
+
+    this.pieOverlay = new PieOverlay(this.leafletMap);
   }
   
   render(data) {
-        
+    
   }
 
 }

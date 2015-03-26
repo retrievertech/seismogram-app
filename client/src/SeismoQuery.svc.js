@@ -1,5 +1,5 @@
 var serverUrl = "http://localhost:3000",
-    queryUrl = "http://localhost:3000/query";
+    queryUrl = serverUrl + "/query";
 
 class SeismoQuery {
   constructor($http) {
@@ -19,4 +19,4 @@ class SeismoQuery {
   }
 }
 
-export { SeismoQuery }
+export { SeismoQuery };

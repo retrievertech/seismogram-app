@@ -22,6 +22,7 @@
     "Leaflet.label": "~0.2.1"
   },
   "resolutions": {
-    "firebase": "~1.1.0"
+    "firebase": "~1.1.0",
+    "d3": "~3.5.5"
   }
 }
