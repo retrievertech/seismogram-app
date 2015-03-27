@@ -6,14 +6,7 @@ class SeismoQueryNubbins {
         queryParams: "="
       },
       link: (scope, element, attrs) => {
-        scope.queryParams = {
-          stationNames: "",
-          notStarted: true,
-          inProgress: true,
-          needsAttention: true,
-          complete: true,
-          editedByMe: false
-        };
+        
       }
     };
   }

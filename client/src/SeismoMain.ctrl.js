@@ -6,6 +6,8 @@ class SeismoMain {
     window.SeismoMap = SeismoMap;
     window.SeismoQuery = SeismoQuery;
 
+    this.setDefaultQueryParams($scope);
+
     // temporary for testing
     $http({url: SeismoQuery.path("/stations")}).then((ret) => {
       var stations = ret.data;
@@ -56,6 +58,23 @@ class SeismoMain {
       });
     }
 
+  }
+
+  setDefaultQueryParams ($scope) {
+
+    // eventually dateFrom and dateTo should
+    // come from the bounds in a query
+
+    $scope.queryParamModel = {
+      dateFrom: new Date("1937-10-14T19:26:00Z"),
+      dateTo: new Date("1978-09-16T21:20:00Z"),
+      stationNames: "",
+      notStarted: true,
+      inProgress: true,
+      needsAttention: true,
+      complete: true,
+      editedByMe: false
+    };
   }
 
 }
