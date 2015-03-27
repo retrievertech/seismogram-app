@@ -122,6 +122,16 @@ app.get("/query", function(req, res, next) {
       });
     },
     function(db, fileCursor, filteredFiles, numResults, cb) {
+      db.collection("files").find({}).sort({date:1}).limit(1).toArray(function(err, files) {
+        cb(err, db, fileCursor, filteredFiles, numResults, files[0].date);
+      });
+    },
+    function(db, fileCursor, filteredFiles, numResults, lowDate, cb) {
+      db.collection("files").find({}).sort({date:-1}).limit(1).toArray(function(err, files) {
+        cb(err, db, fileCursor, filteredFiles, numResults, lowDate, files[0].date);
+      });
+    },
+    function(db, fileCursor, filteredFiles, numResults, lowDate, highDate, cb) {
       console.time("processing");
       var stationMap = {};
       var getStation = function(id) {
@@ -138,6 +148,8 @@ app.get("/query", function(req, res, next) {
           console.timeEnd("processing");
           var payload = {
             stations: stationMap,
+            lowDate: lowDate,
+            highDate: highDate,
             numResults: numResults,
             files: filteredFiles
           };
