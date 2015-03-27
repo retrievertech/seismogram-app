@@ -15,17 +15,8 @@ class SeismoMain {
       $scope.queryStations();
     });
 
-    // queryParams = {
-    //   dateFrom: "",
-    //   dateTo: "",
-    //   stationIds: [],
-    //   status: [0, 1, 2, 3], // 0: not started; 1: ongoing; 2: needs attention; 3: complete
-    //   edited: null, // True if you want only seismograms you've edited
-    //   page: 0 // each page returns 40 results
-    // }
-
-    $scope.queryStations = (params) => {
-      return SeismoQuery.queryStations(params).then((res) => {
+    $scope.queryStations = (query) => {
+      return SeismoQuery.queryStations(query).then((res) => {
         var stations = res.data.stations;
         if (stations) {
           SeismoMap.pieOverlay.setStationStatusModel(stations);
@@ -52,8 +43,18 @@ class SeismoMain {
         edited: queryParamModel.editedByMe
       };
 
-      console.log("Doing query with params", params);
-      $scope.queryStations(params).then(() => {
+      // The server expects something that looks like:
+      // {
+      //   dateFrom: "",
+      //   dateTo: "",
+      //   stationIds: [],
+      //   status: [0, 1, 2, 3], // 0: not started; 1: ongoing; 2: needs attention; 3: complete
+      //   edited: null, // True if you want only seismograms you've edited
+      //   page: 0 // each page returns 40 results
+      // }
+
+      console.log("Doing query with params", query);
+      $scope.queryStations(query).then(() => {
         console.log("Query complete.");
       });
     }
