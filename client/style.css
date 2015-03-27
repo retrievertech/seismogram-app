@@ -33,6 +33,10 @@ body {
   height: 100%;
 }
 
+#query-button {
+  height: 40px; 
+}
+
 /* directives */
 
 .leaflet-map {
