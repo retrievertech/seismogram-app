@@ -53,12 +53,14 @@ body {
 }
 
 #seismo-query-nubbins {
+  display: flex;
   height: 100px;
   width: 100%;
 }
 
-#seismo-query-nubbins div {
+#seismo-query-nubbins div, #seismo-time-nubbin div {
   display: inline-block;
+  margin: auto 0;
 }
 
 /* svg */
