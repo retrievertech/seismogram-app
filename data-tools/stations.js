@@ -48,9 +48,12 @@ module.exports = {
   filterInvalidStations: function(stations) {
     var woId = [];
     var dups = {};
+    var woLatLon = [];
     stations.forEach(function(s) {
       if (!s.stationId) woId.push(s);
-      else {
+      else if (isNaN(s.lat) || isNaN(s.lon)) {
+        woLatLon.push(s);
+      } else {
         if (typeof dups[s.stationId] === "undefined") {
           dups[s.stationId] = 1;
         } else {
@@ -63,6 +66,10 @@ module.exports = {
     woId.forEach(function(s) {
       console.log("  ", s.code, s.location);
     });
+    console.error("Stations without lat/lon:");
+    woLatLon.forEach(function(s) {
+      console.log("  ", s.code, s.location);
+    });
     console.log("Stations with repeated ID:");
     for (var k in dups) {
       if (dups[k] > 1) {
@@ -71,7 +78,7 @@ module.exports = {
     }
     // return filtered results
     stations = stations.filter(function(station) {
-      return station.stationId && dups[station.stationId] === 1;
+      return station.stationId && dups[station.stationId] === 1 && !isNaN(station.lat) && !isNaN(station.lon);
     });
     return stations;
   }
