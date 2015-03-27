@@ -122,12 +122,12 @@ app.get("/query", function(req, res, next) {
       });
     },
     function(db, fileCursor, filteredFiles, numResults, cb) {
-      db.collection("files").find({}).sort({date:1}).limit(1).toArray(function(err, files) {
+      db.collection("files").find(query).sort({date:1}).limit(1).toArray(function(err, files) {
         cb(err, db, fileCursor, filteredFiles, numResults, files[0].date);
       });
     },
     function(db, fileCursor, filteredFiles, numResults, lowDate, cb) {
-      db.collection("files").find({}).sort({date:-1}).limit(1).toArray(function(err, files) {
+      db.collection("files").find(query).sort({date:-1}).limit(1).toArray(function(err, files) {
         cb(err, db, fileCursor, filteredFiles, numResults, lowDate, files[0].date);
       });
     },
