@@ -93,7 +93,11 @@ app.get("/query", function(req, res, next) {
   if (Object.keys(dateComponents).length > 0) queryComponents.push({date: dateComponents});
 
   // edited bit
-  if (edited) queryComponents.push({edited: JSON.parse(edited)});
+  if (edited) {
+    var editedValue = JSON.parse(edited);
+    if (editedValue)
+      queryComponents.push({edited: JSON.parse(edited)});
+  }
   // station Ids to match
   if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
   // statuses
