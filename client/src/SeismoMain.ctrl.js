@@ -32,23 +32,22 @@ class SeismoMain {
     };
 
     $scope.doQuery = () => {
-      var statusParams = $scope.statusParams,
-          dateParams = $scope.dateParams;
+      var queryParamModel = $scope.queryParamModel;
 
       var status = [];
-      if (statusParams.notStarted) status.push(0);
-      if (statusParams.inProgress) status.push(1);
-      if (statusParams.needsAttention) status.push(2);
-      if (statusParams.complete) status.push(3);
+      if (queryParamModel.notStarted) status.push(0);
+      if (queryParamModel.inProgress) status.push(1);
+      if (queryParamModel.needsAttention) status.push(2);
+      if (queryParamModel.complete) status.push(3);
 
-      // TODO: convert statusParams.stationNames into stationIds
+      // TODO: convert queryParamModel.stationNames into stationIds
 
-      var params = {
-        dateFrom: new Date(dateParams.dateFrom),
-        dateTo: new Date(dateParams.dateTo),
+      var query = {
+        dateFrom: new Date(queryParamModel.dateFrom),
+        dateTo: new Date(queryParamModel.dateTo),
         // stationIds: stationIds
         status: status.join(","),
-        edited: statusParams.editedByMe
+        edited: queryParamModel.editedByMe
       };
 
       console.log("Doing query with params", params);
