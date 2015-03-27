@@ -8,7 +8,12 @@ stationsModule.parse("data/stations.csv", function(stations) {
   var files = filesModule.parse("data/files.uniq.txt");
   files = filesModule.filterBadStations(files, stations);
   stationsModule.populateSeismoData(stations, files);
-  //var statuses = statusesModule.generateRandomStatuses(files);
+  console.error("Stations with zero files:");
+  stations = stations.filter(function(station) {
+    if (station.numFiles === 0)
+      console.error("  ", station.code, station.location);
+    return station.numFiles > 0;
+  });
   fs.writeFileSync(path.join(__dirname, "files.json"), JSON.stringify(files, null, 2));
   fs.writeFileSync(path.join(__dirname, "stations.json"), JSON.stringify(stations, null, 2));
   //fs.writeFileSync(path.join(__dirname, "statuses.json"), JSON.stringify(statuses, null, 2));
