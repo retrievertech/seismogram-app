@@ -31,6 +31,32 @@ class SeismoMain {
       });
     };
 
+    $scope.doQuery = function() {
+      var statusParams = $scope.statusParams,
+          dateParams = $scope.dateParams;
+
+      var status = [];
+      if (statusParams.notStarted) status.push(0);
+      if (statusParams.inProgress) status.push(1);
+      if (statusParams.needsAttention) status.push(2);
+      if (statusParams.complete) status.push(3);
+
+      // TODO: convert statusParams.stationNames into stationIds
+
+      var params = {
+        dateFrom: new Date(dateParams.dateFrom),
+        dateTo: new Date(dateParams.dateTo),
+        // stationIds: stationIds
+        status: status.join(","),
+        edited: statusParams.editedByMe
+      };
+
+      console.log("Doing query with params", params);
+      $scope.queryStations(params).then(function() {
+        console.log("Query complete.");
+      });
+    }
+
   }
 
 }

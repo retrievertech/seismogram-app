@@ -16,8 +16,10 @@
   <body ng-controller="SeismoMain">
     <div id="left-section">
         <div id="leaflet-map" class="leaflet-map" leaflet-map></div>
-        <div id="seismo-time-nubbin" seismo-time-nubbin></div>
-        <div id="seismo-query-nubbins" seismo-query-nubbins></div>
+        <div id="seismo-time-nubbin" query-params="dateParams" seismo-time-nubbin></div>
+
+        <div id="seismo-query-nubbins" query-params="statusParams" seismo-query-nubbins></div>
+
         <!-- probably won't need this button eventually -->
         <button id="query-button" ng-click="doQuery()">Query</button>
     </div>
