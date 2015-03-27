@@ -7,7 +7,7 @@ class SeismoMain {
     window.SeismoQuery = SeismoQuery;
 
     // temporary for testing
-    $http({url: SeismoQuery.path("/stations")}).then(function(ret) {
+    $http({url: SeismoQuery.path("/stations")}).then((ret) => {
       var stations = ret.data;
       SeismoMap.pieOverlay.setStationModel(stations);
       $scope.queryStations();
@@ -22,8 +22,8 @@ class SeismoMain {
     //   page: 0 // each page returns 40 results
     // }
 
-    $scope.queryStations = function(params) {
-      return SeismoQuery.queryStations(params).then(function(res) {
+    $scope.queryStations = (params) => {
+      return SeismoQuery.queryStations(params).then((res) => {
         var stations = res.data.stations;
         if (stations) {
           SeismoMap.pieOverlay.setStationStatusModel(stations);
@@ -31,7 +31,7 @@ class SeismoMain {
       });
     };
 
-    $scope.doQuery = function() {
+    $scope.doQuery = () => {
       var statusParams = $scope.statusParams,
           dateParams = $scope.dateParams;
 
@@ -52,7 +52,7 @@ class SeismoMain {
       };
 
       console.log("Doing query with params", params);
-      $scope.queryStations(params).then(function() {
+      $scope.queryStations(params).then(() => {
         console.log("Query complete.");
       });
     }
