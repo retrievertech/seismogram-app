@@ -6,7 +6,8 @@ function validDateTime(dateString, timeString) {
   try {
     var month = dateString.substr(0, 2);
     var day = dateString.substr(2, 2);
-    var year = dateString.substr(4, 2);
+    // enforce 20th century
+    var year = "19" + dateString.substr(4, 2);
     var hour = timeString.substr(0, 2);
     var minute = timeString.substr(2, 2);
     var dt = month + "-" + day + "-" + year + " " + hour + ":" + minute;
