@@ -101,7 +101,7 @@ app.get("/query", function(req, res, next) {
   // station Ids to match
   if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
   // statuses
-  if (status.length > 0) queryComponents.push({status: {$in: status}});
+  queryComponents.push({status: {$in: status}});
 
   // final query
   var query = {};
