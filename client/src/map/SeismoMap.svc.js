@@ -20,10 +20,6 @@ class SeismoMap {
 
     this.pieOverlay = new PieOverlay(this.leafletMap);
   }
-  
-  render(data) {
-    
-  }
 
 }
 
