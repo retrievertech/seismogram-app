@@ -15,12 +15,13 @@ class SeismoMain {
       $scope.doQuery();
     });
 
-    $scope.queryStations = (query) => {
+    $scope.queryStationStatuses = (query) => {
       return SeismoQuery.queryStations(query).then((res) => {
-        var stations = res.data.stations;
-        if (stations) {
-          SeismoMap.pieOverlay.setStationStatusModel(stations);
+        var stationStatus = res.data.stations;
+        if (stationStatus) {
+          SeismoMap.pieOverlay.setStationStatusModel(stationStatus);
         }
+        return stationStatus;
       });
     };
 
@@ -54,8 +55,8 @@ class SeismoMain {
       // }
 
       console.log("Doing query with params", query);
-      $scope.queryStations(query).then(() => {
-        console.log("Query complete.");
+      $scope.queryStationStatuses(query).then((statuses) => {
+        console.log("Query complete.", statuses);
       });
     }
 
