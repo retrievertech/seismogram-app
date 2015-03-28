@@ -18,7 +18,8 @@ var cache = {
   on: true,
   cache: {},
   key: function(query) {
-    return query.status + "_" + query.edited + "_" + query.dateFrom + "_" + query.dateTo + "_" + query.page;
+    return ["dateFrom", "dateTo", "status", "edited", "stationIds", "page"]
+      .map(function(field) { return query[field]; }).join("_");
   },
   hit: function(query) {
     return this.on ? this.cache[this.key(query)] : null;
