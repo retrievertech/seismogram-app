@@ -28,18 +28,22 @@ class SeismoMain {
     $scope.doQuery = () => {
       var queryParamModel = $scope.queryParamModel;
 
+      var stationNames = queryParamModel.stationNames
+        .split(",").map((stationName) => stationName.trim());
+      var stationIds = SeismoMap.pieOverlay.stationModel
+        .filter((station) => stationNames.indexOf(station.code) !== -1)
+        .map((station) => station.stationId);
+
       var status = [];
       if (queryParamModel.notStarted) status.push(0);
       if (queryParamModel.inProgress) status.push(1);
       if (queryParamModel.needsAttention) status.push(2);
       if (queryParamModel.complete) status.push(3);
 
-      // TODO: convert queryParamModel.stationNames into stationIds
-
       var query = {
         dateFrom: new Date(queryParamModel.dateFrom),
         dateTo: new Date(queryParamModel.dateTo),
-        // stationIds: stationIds
+        stationIds: stationIds.join(","),
         status: status.join(","),
         edited: queryParamModel.editedByMe
       };
