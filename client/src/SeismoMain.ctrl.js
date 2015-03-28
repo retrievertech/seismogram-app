@@ -31,7 +31,7 @@ class SeismoMain {
       $scope.doQuery(query).then((statuses) => {
         console.log("Query complete.", statuses);
       });
-    }
+    };
 
     $scope.makeQueryParams = () => {
 
@@ -49,9 +49,28 @@ class SeismoMain {
 
       var stationNames = queryParamModel.stationNames
         .split(",").map((stationName) => stationName.trim());
+
+
+
       var stationIds = SeismoMap.pieOverlay.stationModel
-        .filter((station) => stationNames.indexOf(station.code) !== -1)
+        .filter((station) => stationNames.find((stationName) =>
+          station.location.toLowerCase().indexOf(stationName.toLowerCase()) !== -1 ||
+          station.code.toLowerCase().indexOf(stationName.toLowerCase()) !== -1
+        ))
         .map((station) => station.stationId);
+
+      // If the text box is *not* empty (so the user did enter a query)
+      // and this query matches no station ids or codes, we send the 
+      // server an impossible code, so it returns no results.
+
+      // Obviously, there seems like a shorter way to express zero results
+      // than to give the server a zero-result query.
+
+      // I realize there is a bit of ambiguity here, essentially telling
+      // the client to handle part of the query by itself.
+
+      if (stationNames[0] !== "" && stationIds.length === 0)
+        stationIds.push("xxxx");
 
       var status = [];
       if (queryParamModel.notStarted) status.push(0);
@@ -68,7 +87,7 @@ class SeismoMain {
       };
 
       return query;
-    }
+    };
 
   }
 
