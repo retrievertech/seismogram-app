@@ -12,7 +12,7 @@ class SeismoMain {
     $http({url: SeismoQuery.path("/stations")}).then((ret) => {
       var stations = ret.data;
       SeismoMap.pieOverlay.setStationModel(stations);
-      $scope.queryStations();
+      $scope.doQuery();
     });
 
     $scope.queryStations = (query) => {
