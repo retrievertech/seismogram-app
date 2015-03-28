@@ -12,10 +12,10 @@ class SeismoMain {
     $http({url: SeismoQuery.path("/stations")}).then((ret) => {
       var stations = ret.data;
       SeismoMap.pieOverlay.setStationModel(stations);
-      $scope.doQuery();
+      $scope.queryStationStatuses();
     });
 
-    $scope.queryStationStatuses = (query) => {
+    $scope.doQuery = (query) => {
       return SeismoQuery.queryStations(query).then((res) => {
         var stationStatus = res.data.stations;
         if (stationStatus) {
@@ -25,7 +25,26 @@ class SeismoMain {
       });
     };
 
-    $scope.doQuery = () => {
+    $scope.queryStationStatuses = () => {
+      var query = $scope.makeQueryParams();
+      console.log("Doing query with params", query);
+      $scope.doQuery(query).then((statuses) => {
+        console.log("Query complete.", statuses);
+      });
+    }
+
+    $scope.makeQueryParams = () => {
+
+      // The server expects something that looks like:
+      // {
+      //   dateFrom: "",
+      //   dateTo: "",
+      //   stationIds: [],
+      //   status: [0, 1, 2, 3], // 0: not started; 1: ongoing; 2: needs attention; 3: complete
+      //   edited: null, // True if you want only seismograms you've edited
+      //   page: 0 // each page returns 40 results
+      // }
+
       var queryParamModel = $scope.queryParamModel;
 
       var stationNames = queryParamModel.stationNames
@@ -48,20 +67,7 @@ class SeismoMain {
         edited: queryParamModel.editedByMe
       };
 
-      // The server expects something that looks like:
-      // {
-      //   dateFrom: "",
-      //   dateTo: "",
-      //   stationIds: [],
-      //   status: [0, 1, 2, 3], // 0: not started; 1: ongoing; 2: needs attention; 3: complete
-      //   edited: null, // True if you want only seismograms you've edited
-      //   page: 0 // each page returns 40 results
-      // }
-
-      console.log("Doing query with params", query);
-      $scope.queryStationStatuses(query).then((statuses) => {
-        console.log("Query complete.", statuses);
-      });
+      return query;
     }
 
   }
