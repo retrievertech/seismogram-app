@@ -1,4 +1,8 @@
-// based on http://bost.ocks.org/mike/leaflet/
+// ~~based on http://bost.ocks.org/mike/leaflet/~~
+// based on http://bl.ocks.org/monfera/11100987
+
+// If we ever update Leaflet to bleeding edge,
+// see https://github.com/Leaflet/Leaflet/issues/3315
 
 var d3 = window.d3;
 var L = window.L;
@@ -6,11 +10,18 @@ var L = window.L;
 class LeafletD3Overlay {
   constructor(leafletMap) {
     this.map = leafletMap;
-    this.svg = d3.select(leafletMap.getPanes().overlayPane).append("svg");
+
+    // init the leaflet svg element
+    this.map._initPathRoot();
+    // grab it; it handles zoom animation for you
+    this.svg = d3.select(leafletMap.getContainer()).select("svg");
+    
+    // this.svg = d3.select(leafletMap.getPanes().overlayPane).append("svg");
+    
     this.root = this.svg.append("g");
 
-    leafletMap.on("viewreset", () => { this.reset(); });
-    this.reset();
+    // leafletMap.on("viewreset", () => { this.reset(); });
+    // this.reset();
   }
 
   createGroup() {
@@ -22,25 +33,25 @@ class LeafletD3Overlay {
     return point;
   }
 
-  reset() {
-    // Assume that an svg that covers the
-    // entire world will fit any dataset.
-    var topLeft = this.project( -180, 90 ),
-        bottomRight = this.project( 180, -90 );
+  // reset() {
+  //   // Assume that an svg that covers the
+  //   // entire world will fit any dataset.
+  //   var topLeft = this.project( -180, 90 ),
+  //       bottomRight = this.project( 180, -90 );
 
-    // Pad the svg to account for icons
-    // that extend beyond map boundaries.
-    var padding = 50;
+  //   // Pad the svg to account for icons
+  //   // that extend beyond map boundaries.
+  //   var padding = 50;
 
-    this.svg
-      .attr("width", bottomRight.x - topLeft.x + 2*padding)
-      .attr("height", bottomRight.y - topLeft.y + 2*padding)
-      .style("margin-left", topLeft.x - padding + "px")
-      .style("margin-top", topLeft.y - padding + "px");
+  //   this.svg
+  //     .attr("width", bottomRight.x - topLeft.x + 2*padding)
+  //     .attr("height", bottomRight.y - topLeft.y + 2*padding)
+  //     .style("margin-left", topLeft.x - padding + "px")
+  //     .style("margin-top", topLeft.y - padding + "px");
 
-    this.root
-      .attr("transform", "translate(" + -(topLeft.x - padding) + "," + -(topLeft.y - padding) + ")");
-  }
+  //   this.root
+  //     .attr("transform", "translate(" + -(topLeft.x - padding) + "," + -(topLeft.y - padding) + ")");
+  // }
 }
 
 export { LeafletD3Overlay };
