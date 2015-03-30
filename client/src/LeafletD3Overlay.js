@@ -23,17 +23,23 @@ class LeafletD3Overlay {
   }
 
   reset() {
+    // Assume that an svg that covers the
+    // entire world will fit any dataset.
     var topLeft = this.project( -180, 90 ),
         bottomRight = this.project( 180, -90 );
 
+    // Pad the svg to account for icons
+    // that extend beyond map boundaries.
+    var padding = 50;
+
     this.svg
-      .attr("width", bottomRight.x - topLeft.x)
-      .attr("height", bottomRight.y - topLeft.y)
-      .style("margin-left", topLeft.x + "px")
-      .style("margin-top", topLeft.y + "px");
+      .attr("width", bottomRight.x - topLeft.x + 2*padding)
+      .attr("height", bottomRight.y - topLeft.y + 2*padding)
+      .style("margin-left", topLeft.x - padding + "px")
+      .style("margin-top", topLeft.y - padding + "px");
 
     this.root
-      .attr("transform", "translate(" + -topLeft.x + "," + -topLeft.y + ")");
+      .attr("transform", "translate(" + -(topLeft.x - padding) + "," + -(topLeft.y - padding) + ")");
   }
 }
 
