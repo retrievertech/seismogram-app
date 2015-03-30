@@ -128,12 +128,14 @@ app.get("/query", function(req, res, next) {
     },
     function(db, fileCursor, filteredFiles, numResults, cb) {
       db.collection("files").find(query).sort({date:1}).limit(1).toArray(function(err, files) {
-        cb(err, db, fileCursor, filteredFiles, numResults, files[0].date);
+        var date = files.length > 0 ? files[0].date : null;
+        cb(err, db, fileCursor, filteredFiles, numResults, date);
       });
     },
     function(db, fileCursor, filteredFiles, numResults, lowDate, cb) {
       db.collection("files").find(query).sort({date:-1}).limit(1).toArray(function(err, files) {
-        cb(err, db, fileCursor, filteredFiles, numResults, lowDate, files[0].date);
+        var date = files.length > 0 ? files[0].date : null;
+        cb(err, db, fileCursor, filteredFiles, numResults, lowDate, date);
       });
     },
     function(db, fileCursor, filteredFiles, numResults, lowDate, highDate, cb) {
