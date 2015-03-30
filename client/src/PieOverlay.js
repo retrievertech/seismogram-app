@@ -45,7 +45,8 @@ class PieOverlay extends LeafletD3Overlay {
     //   ...
     // }
 
-    var pieLayout = d3.layout.pie(); // generates parameters for pie arcs
+    var pieLayout = d3.layout.pie() // generates parameters for pie arcs
+      .sort(null); // don't sort (i.e. draw slices in order of array index)
     var arc = d3.svg.arc(); // generates arc path data
 
     var pieSegments = this.overlay
