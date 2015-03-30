@@ -57,9 +57,9 @@ class PieOverlay extends LeafletD3Overlay {
         // station data in renderStations(). Here we associate children <path>
         // elements with arcs generated from stationStatus data.
 
+        // Only draw pies for stations included in the stationStatuses query results
         var stationStatus = stationStatuses[station.stationId];
         if (!stationStatus) {
-          console.warn("No station status for", station);
           return "";
         }
 

@@ -33,6 +33,10 @@ body {
   height: 100%;
 }
 
+#query-button {
+  height: 40px; 
+}
+
 /* directives */
 
 .leaflet-map {
@@ -49,12 +53,14 @@ body {
 }
 
 #seismo-query-nubbins {
+  display: flex;
   height: 100px;
   width: 100%;
 }
 
-#seismo-query-nubbins div {
+#seismo-query-nubbins div, #seismo-time-nubbin div {
   display: inline-block;
+  margin: auto 0;
 }
 
 /* svg */
@@ -65,7 +71,7 @@ body {
 
 circle.outer-circle {
   fill: #044;
-  opacity: 0.5;
+  opacity: 0.25;
 }
 
 /* color scheme: http://paletton.com/#uid=7090L0kpjJgeGSpkpNzuSF8BHt4 */

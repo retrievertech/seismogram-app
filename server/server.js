@@ -18,7 +18,8 @@ var cache = {
   on: true,
   cache: {},
   key: function(query) {
-    return query.status + "_" + query.edited + "_" + query.dateFrom + "_" + query.dateTo + "_" + query.page;
+    return ["dateFrom", "dateTo", "status", "edited", "stationIds", "page"]
+      .map(function(field) { return query[field]; }).join("_");
   },
   hit: function(query) {
     return this.on ? this.cache[this.key(query)] : null;
@@ -93,11 +94,15 @@ app.get("/query", function(req, res, next) {
   if (Object.keys(dateComponents).length > 0) queryComponents.push({date: dateComponents});
 
   // edited bit
-  if (edited) queryComponents.push({edited: JSON.parse(edited)});
+  if (edited) {
+    var editedValue = JSON.parse(edited);
+    if (editedValue)
+      queryComponents.push({edited: JSON.parse(edited)});
+  }
   // station Ids to match
   if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
   // statuses
-  if (status.length > 0) queryComponents.push({status: {$in: status}});
+  queryComponents.push({status: {$in: status}});
 
   // final query
   var query = {};

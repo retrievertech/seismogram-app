@@ -10,7 +10,7 @@ class SeismoQuery {
     return serverUrl + path;
   }
   
-  doQuery(params) {
+  queryStations(params) {
     return this.http({
       method: "GET",
       url: queryUrl,
