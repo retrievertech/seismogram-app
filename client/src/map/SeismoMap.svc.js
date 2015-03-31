@@ -19,7 +19,19 @@ class SeismoMap {
     this.leafletMap = map.leafletMap;
     map.leafletMap.setView(new L.LatLng(0,0), 3);
     map.addLayers();
-    map.setBaseLayer(map.baseLayers[3]);
+    // map.setBaseLayer(map.baseLayers[3]);
+
+    // see https://www.mapbox.com/developers/api/maps/ for other tile styles
+    // e.g. try replacing mapbox.outdoors with mapbox.light to test a different style
+    map.setBaseLayer({
+      name: "Seismogram",
+      leafletLayer: new L.TileLayer("http://api.tiles.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVubmxpY2giLCJhIjoieUxHOHQyNCJ9.VLDDBTTdzeHKJvR5ABYaLA", {
+        minZoom: 2,
+        maxZoom: 18,
+        zIndex: 1,
+        zoomAnimation: false
+      })
+    });
 
     this.pieOverlay = new PieOverlay(this.leafletMap);
   }
