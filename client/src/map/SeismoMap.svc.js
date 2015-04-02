@@ -13,7 +13,7 @@ class SeismoMap {
 
   init(id) {
     var map = this.map = new Leaflet(id, null, {
-      minZoom: 1,
+      minZoom: 2,
       maxBounds: [[-90, -180], [90, 180]]
     });
     this.leafletMap = map.leafletMap;
