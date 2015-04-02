@@ -4,8 +4,8 @@ class LeafletMap {
       link: (scope, element, attrs) => {
         SeismoMap.init(attrs.id);
       }
-    }
+    };
   }
 }
 
-export { LeafletMap }
+export { LeafletMap };

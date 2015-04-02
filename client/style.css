@@ -74,20 +74,20 @@ circle.outer-circle {
   opacity: 0.25;
 }
 
-/* color scheme: http://paletton.com/#uid=7090L0kpjJgeGSpkpNzuSF8BHt4 */
+/* color scheme: http://paletton.com/#uid=50D0B0kGZr3qxC9DOA-KQlZPLgn */
 
 path.not-started {
-  fill: #2DD772;
+  fill: #FF372C;
 }
 
 path.ongoing {
-  fill: #FFB935;
+  fill: #FF8900;
 }
 
 path.needs-attention {
-  fill: #FF5C35;
+  fill: #AF0900;
 }
 
 path.complete {
-  fill: #3C6BD0;
+  fill: #820600;
 }
