@@ -6,21 +6,26 @@ class SeismoMain {
     window.SeismoStationMap = SeismoStationMap;
     window.SeismoQuery = SeismoQuery;
 
+    // add maps and services to scope
     $scope.SeismoStationMap = SeismoStationMap;
     $scope.SeismoImageMap = SeismoImageMap;
+    $scope.$http = $http;
 
-    $scope.model = {
-      files: []
-    };
+    // initialize data models and perform initial query
+    this.init($scope);
 
-    this.setDefaultQueryParams($scope);
+    $scope.viewSeismogram = (file) => {
+      $scope.showImageMap();
+      SeismoImageMap.loadImage(file.name);
+    }
 
-    // temporary for testing
-    $http({url: SeismoQuery.path("/stations")}).then((ret) => {
-      var stations = ret.data;
-      SeismoStationMap.pieOverlay.setStationModel(stations);
-      $scope.queryStationStatuses();
-    });
+    $scope.showImageMap = () => {
+      $scope.imageMapVisible = true;
+    }
+
+    $scope.hideImageMap = () => {
+      $scope.imageMapVisible = false;
+    }
 
     $scope.doQuery = (query) => {
       return SeismoQuery.queryStations(query).then((res) => {
@@ -57,8 +62,6 @@ class SeismoMain {
 
       var stationNames = queryParamModel.stationNames
         .split(",").map((stationName) => stationName.trim());
-
-
 
       var stationIds = SeismoStationMap.pieOverlay.stationModel
         .filter((station) => stationNames.find((stationName) =>
@@ -99,7 +102,21 @@ class SeismoMain {
 
   }
 
-  setDefaultQueryParams ($scope) {
+  init($scope) {
+    $scope.model = {
+      files: []
+    };
+
+    this.setDefaultQueryParams($scope);
+
+    $scope.$http({url: SeismoQuery.path("/stations")}).then((ret) => {
+      var stations = ret.data;
+      $scope.SeismoStationMap.pieOverlay.setStationModel(stations);
+      $scope.queryStationStatuses();
+    });
+  }
+
+  setDefaultQueryParams($scope) {
 
     // eventually dateFrom and dateTo should
     // come from the bounds in a query

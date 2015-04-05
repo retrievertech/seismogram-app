@@ -16,8 +16,16 @@
   <body ng-controller="SeismoMain">
     <div id="left-section">
         <div class="maps">
-            <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" ng-hide="showImageMap"></div>
-            <div id="image-map" class="leaflet-map" map-link="SeismoImageMap" ng-show="showImageMap"></div>
+            <div ng-hide="imageMapVisible">
+                <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap"></div>
+            </div>
+            <div ng-show="imageMapVisible">
+                <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
+                <div class="image-map-controls">
+                    <div ng-click="hideImageMap()">Back to map</div>
+                    <div>Edit this seismogram</div>
+                </div>
+            </div>
         </div>
         
         <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
@@ -28,7 +36,7 @@
     </div>
     <div id="right-section">
         <div class="seismo-list">
-            <div class="seismo-list-item" ng-repeat="file in model.files">
+            <div class="seismo-list-item" ng-repeat="file in model.files" ng-click="viewSeismogram(file)">
                 <div>{{ file.name }}</div>
             </div>
         </div>
