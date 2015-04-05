@@ -9,6 +9,10 @@ class SeismoMain {
     $scope.SeismoStationMap = SeismoStationMap;
     $scope.SeismoImageMap = SeismoImageMap;
 
+    $scope.model = {
+      files: []
+    };
+
     this.setDefaultQueryParams($scope);
 
     // temporary for testing
@@ -24,15 +28,16 @@ class SeismoMain {
         if (stationStatus) {
           SeismoStationMap.pieOverlay.setStationStatusModel(stationStatus);
         }
-        return stationStatus;
+        return res;
       });
     };
 
     $scope.queryStationStatuses = () => {
       var query = $scope.makeQueryParams();
       console.log("Doing query with params", query);
-      $scope.doQuery(query).then((statuses) => {
-        console.log("Query complete.", statuses);
+      $scope.doQuery(query).then((res) => {
+        console.log("Query complete.", res.data);
+        $scope.model.files = res.data.files;
       });
     };
 

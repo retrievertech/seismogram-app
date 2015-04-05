@@ -27,7 +27,11 @@
         <button id="query-button" ng-click="queryStationStatuses()">Query</button>
     </div>
     <div id="right-section">
-        <div seismo-list></div>
+        <div class="seismo-list">
+            <div class="seismo-list-item" ng-repeat="file in model.files">
+                <div>{{ file.name }}</div>
+            </div>
+        </div>
     </div>
   </body>
 </html>

@@ -71,6 +71,18 @@ body {
   margin: auto 0;
 }
 
+.seismo-list {
+  height: 100%;
+  overflow: scroll;
+}
+
+.seismo-list-item {
+  cursor: pointer;
+  text-align: center;
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+}
+
 /* svg */
 
 .inner-segments path {
