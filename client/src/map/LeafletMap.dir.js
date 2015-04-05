@@ -1,11 +1,12 @@
-class LeafletMap {
-  constructor(SeismoMap) {
+class MapLink {
+  constructor() {
     return {
       link: (scope, element, attrs) => {
-        SeismoMap.init(attrs.id);
+        var mapService = scope[attrs.mapLink];
+        mapService.init(attrs.id);
       }
     };
   }
 }
 
-export { LeafletMap };
+export { MapLink };

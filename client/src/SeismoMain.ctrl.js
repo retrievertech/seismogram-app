@@ -1,17 +1,19 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoMap, SeismoQuery) {
+  constructor($scope, $http, SeismoStationMap, SeismoQuery) {
 
     // debug
-    window.SeismoMap = SeismoMap;
+    window.SeismoStationMap = SeismoStationMap;
     window.SeismoQuery = SeismoQuery;
+
+    $scope.SeismoStationMap = SeismoStationMap;
 
     this.setDefaultQueryParams($scope);
 
     // temporary for testing
     $http({url: SeismoQuery.path("/stations")}).then((ret) => {
       var stations = ret.data;
-      SeismoMap.pieOverlay.setStationModel(stations);
+      SeismoStationMap.pieOverlay.setStationModel(stations);
       $scope.queryStationStatuses();
     });
 
@@ -19,7 +21,7 @@ class SeismoMain {
       return SeismoQuery.queryStations(query).then((res) => {
         var stationStatus = res.data.stations;
         if (stationStatus) {
-          SeismoMap.pieOverlay.setStationStatusModel(stationStatus);
+          SeismoStationMap.pieOverlay.setStationStatusModel(stationStatus);
         }
         return stationStatus;
       });
@@ -52,7 +54,7 @@ class SeismoMain {
 
 
 
-      var stationIds = SeismoMap.pieOverlay.stationModel
+      var stationIds = SeismoStationMap.pieOverlay.stationModel
         .filter((station) => stationNames.find((stationName) =>
           station.location.toLowerCase().indexOf(stationName.toLowerCase()) !== -1 ||
           station.code.toLowerCase().indexOf(stationName.toLowerCase()) !== -1

@@ -3,7 +3,7 @@ import {PieOverlay} from "../PieOverlay.js";
 
 var L = window.L;
 
-class SeismoMap {
+class SeismoStationMap {
   
   constructor() {
     this.map = null;
@@ -38,4 +38,4 @@ class SeismoMap {
 
 }
 
-export { SeismoMap }
+export { SeismoStationMap }
