@@ -1,12 +1,13 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap, SeismoQuery) {
+  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery) {
 
     // debug
     window.SeismoStationMap = SeismoStationMap;
     window.SeismoQuery = SeismoQuery;
 
     $scope.SeismoStationMap = SeismoStationMap;
+    $scope.SeismoImageMap = SeismoImageMap;
 
     this.setDefaultQueryParams($scope);
 
