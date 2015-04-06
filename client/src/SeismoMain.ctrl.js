@@ -4,6 +4,7 @@ class SeismoMain {
 
     // debug
     window.SeismoStationMap = SeismoStationMap;
+    window.SeismoImageMap = SeismoImageMap;
     window.SeismoQuery = SeismoQuery;
 
     // add maps and services to scope

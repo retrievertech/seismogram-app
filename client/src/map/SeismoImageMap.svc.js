@@ -22,7 +22,7 @@ class SeismoImageMap {
       })
     });
     
-    leafletMap.setView(new L.LatLng(85,-180), 5);
+    leafletMap.setView(new L.LatLng(74, -9.66), 2);
   }
 
   loadImage(imagename) {
