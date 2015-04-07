@@ -13,6 +13,6 @@
     "cors": "^2.5.3",
     "express": "^4.12.2",
     "mongodb": "^1.4.34",
-    "canvas": "~1.2.1"
+    "canvas": "git://github.com/Automattic/node-canvas.git#c81229609af85e35a33d5a4af6a963455d29cacf"
   }
 }
