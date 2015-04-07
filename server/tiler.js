@@ -1,4 +1,4 @@
-var Canvas = require('./node-canvas/lib/canvas');
+var Canvas = require('canvas');
 
 function Tiler(tileSize) {
   this.tileSize = tileSize || 256;

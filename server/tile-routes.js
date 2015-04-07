@@ -1,7 +1,7 @@
 var express = require("express"),
     router = express.Router();
 
-var Image = require("./node-canvas/lib/canvas").Image,
+var Image = require("canvas").Image,
     Tiler = require("./tiler"),
     fs = require("fs");
 
