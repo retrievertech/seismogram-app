@@ -1,35 +1,49 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoMap, SeismoQuery) {
+  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery) {
 
     // debug
-    window.SeismoMap = SeismoMap;
+    window.SeismoStationMap = SeismoStationMap;
+    window.SeismoImageMap = SeismoImageMap;
     window.SeismoQuery = SeismoQuery;
 
-    this.setDefaultQueryParams($scope);
+    // add maps and services to scope
+    $scope.SeismoStationMap = SeismoStationMap;
+    $scope.SeismoImageMap = SeismoImageMap;
+    $scope.$http = $http;
 
-    // temporary for testing
-    $http({url: SeismoQuery.path("/stations")}).then((ret) => {
-      var stations = ret.data;
-      SeismoMap.pieOverlay.setStationModel(stations);
-      $scope.queryStationStatuses();
-    });
+    // initialize data models and perform initial query
+    this.init($scope);
+
+    $scope.viewSeismogram = (file) => {
+      $scope.showImageMap();
+      SeismoImageMap.loadImage(file.name);
+    }
+
+    $scope.showImageMap = () => {
+      $scope.imageMapVisible = true;
+    }
+
+    $scope.hideImageMap = () => {
+      $scope.imageMapVisible = false;
+    }
 
     $scope.doQuery = (query) => {
       return SeismoQuery.queryStations(query).then((res) => {
         var stationStatus = res.data.stations;
         if (stationStatus) {
-          SeismoMap.pieOverlay.setStationStatusModel(stationStatus);
+          SeismoStationMap.pieOverlay.setStationStatusModel(stationStatus);
         }
-        return stationStatus;
+        return res;
       });
     };
 
     $scope.queryStationStatuses = () => {
       var query = $scope.makeQueryParams();
       console.log("Doing query with params", query);
-      $scope.doQuery(query).then((statuses) => {
-        console.log("Query complete.", statuses);
+      $scope.doQuery(query).then((res) => {
+        console.log("Query complete.", res.data);
+        $scope.model.files = res.data.files;
       });
     };
 
@@ -50,9 +64,7 @@ class SeismoMain {
       var stationNames = queryParamModel.stationNames
         .split(",").map((stationName) => stationName.trim());
 
-
-
-      var stationIds = SeismoMap.pieOverlay.stationModel
+      var stationIds = SeismoStationMap.pieOverlay.stationModel
         .filter((station) => stationNames.find((stationName) =>
           station.location.toLowerCase().indexOf(stationName.toLowerCase()) !== -1 ||
           station.code.toLowerCase().indexOf(stationName.toLowerCase()) !== -1
@@ -91,7 +103,21 @@ class SeismoMain {
 
   }
 
-  setDefaultQueryParams ($scope) {
+  init($scope) {
+    $scope.model = {
+      files: []
+    };
+
+    this.setDefaultQueryParams($scope);
+
+    $scope.$http({url: SeismoQuery.path("/stations")}).then((ret) => {
+      var stations = ret.data;
+      $scope.SeismoStationMap.pieOverlay.setStationModel(stations);
+      $scope.queryStationStatuses();
+    });
+  }
+
+  setDefaultQueryParams($scope) {
 
     // eventually dateFrom and dateTo should
     // come from the bounds in a query

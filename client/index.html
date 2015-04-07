@@ -15,16 +15,31 @@
   </head>
   <body ng-controller="SeismoMain">
     <div id="left-section">
-        <div id="leaflet-map" class="leaflet-map" leaflet-map></div>
+        <div class="maps">
+            <div ng-hide="imageMapVisible">
+                <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap"></div>
+            </div>
+            <div ng-show="imageMapVisible">
+                <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
+                <div class="image-map-controls">
+                    <div ng-click="hideImageMap()">Back to map</div>
+                    <div>Edit this seismogram</div>
+                </div>
+            </div>
+        </div>
+        
         <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
-
         <div id="seismo-query-nubbins" query-params="queryParamModel" seismo-query-nubbins></div>
 
         <!-- probably won't need this button eventually -->
         <button id="query-button" ng-click="queryStationStatuses()">Query</button>
     </div>
     <div id="right-section">
-        <div seismo-list></div>
+        <div class="seismo-list">
+            <div class="seismo-list-item" ng-repeat="file in model.files" ng-click="viewSeismogram(file)">
+                <div>{{ file.name }}</div>
+            </div>
+        </div>
     </div>
   </body>
 </html>
