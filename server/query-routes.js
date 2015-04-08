@@ -40,7 +40,7 @@ router.get("/stations", function(req, res, next) {
 });
 
 router.get("/search", function(req, res, next) {
-  console.log("--- processing /query ---", req.query);
+  console.log("--- processing search ---", req.query);
   var hit = cache.hit(req.query);
   if (hit) {
     console.log("result is cached");
