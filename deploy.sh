@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function command() {
-  ssh -i ~/.ssh/Seismo-ec2.pem ubuntu@54.191.45.106 $1
+  ssh ubuntu@54.191.45.106 $1
 }
 
 echo "== kill node" && \
