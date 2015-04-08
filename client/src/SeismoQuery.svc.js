@@ -7,7 +7,7 @@ class SeismoQuery {
   queryStations(params) {
     return this.http({
       method: "GET",
-      url: this.server.queryUrl,
+      url: this.server.searchUrl,
       params: params
     });
   }

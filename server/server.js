@@ -5,10 +5,10 @@ var app = express();
 var queryRoutes = require("./query-routes");
 var tileRoutes = require("./tile-routes");
 
-app.use("/", queryRoutes);
+app.use(cors());
+app.use("/query", queryRoutes);
 app.use("/tiles", tileRoutes);
 
-app.use(cors());
 app.use(function(err, req, res, next) {
   console.error(err);
   next(err);
