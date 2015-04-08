@@ -1,11 +1,10 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery) {
-
+  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer) {
     // debug
-    window.SeismoStationMap = SeismoStationMap;
-    window.SeismoImageMap = SeismoImageMap;
-    window.SeismoQuery = SeismoQuery;
+    //window.SeismoStationMap = SeismoStationMap;
+    //window.SeismoImageMap = SeismoImageMap;
+    //window.SeismoQuery = SeismoQuery;
 
     // add maps and services to scope
     $scope.SeismoStationMap = SeismoStationMap;
@@ -13,20 +12,20 @@ class SeismoMain {
     $scope.$http = $http;
 
     // initialize data models and perform initial query
-    this.init($scope);
+    this.init($scope, SeismoServer);
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
       SeismoImageMap.loadImage(file.name);
-    }
+    };
 
     $scope.showImageMap = () => {
       $scope.imageMapVisible = true;
-    }
+    };
 
     $scope.hideImageMap = () => {
       $scope.imageMapVisible = false;
-    }
+    };
 
     $scope.doQuery = (query) => {
       return SeismoQuery.queryStations(query).then((res) => {
@@ -103,14 +102,14 @@ class SeismoMain {
 
   }
 
-  init($scope) {
+  init($scope, SeismoServer) {
     $scope.model = {
       files: []
     };
 
     this.setDefaultQueryParams($scope);
 
-    $scope.$http({url: SeismoQuery.path("/stations")}).then((ret) => {
+    $scope.$http({url: SeismoServer.stationsUrl}).then((ret) => {
       var stations = ret.data;
       $scope.SeismoStationMap.pieOverlay.setStationModel(stations);
       $scope.queryStationStatuses();

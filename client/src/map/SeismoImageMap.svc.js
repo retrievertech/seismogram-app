@@ -2,7 +2,8 @@ var L = window.L;
 
 class SeismoImageMap {
   
-  constructor() {
+  constructor(SeismoServer) {
+    this.server = SeismoServer;
     this.leafletMap = null;
     this.imageLayer = null;
     this.imageLayerOpts = {
@@ -26,8 +27,7 @@ class SeismoImageMap {
   }
 
   loadImage(imagename) {
-    var serverUrl = "http://localhost:3000";
-    var url = serverUrl+"/tiles/"+imagename+"/{z}/{x}/{y}.png";
+    var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
 
     // lazy initialization
     if (!this.imageLayer) {
@@ -41,4 +41,4 @@ class SeismoImageMap {
 
 }
 
-export { SeismoImageMap }
+export { SeismoImageMap };
