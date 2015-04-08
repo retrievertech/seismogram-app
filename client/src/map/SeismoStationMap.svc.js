@@ -38,4 +38,4 @@ class SeismoStationMap {
 
 }
 
-export { SeismoStationMap }
+export { SeismoStationMap };

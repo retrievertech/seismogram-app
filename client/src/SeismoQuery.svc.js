@@ -1,19 +1,17 @@
-var serverUrl = "http://localhost:3000",
-    queryUrl = serverUrl + "/query";
-
 class SeismoQuery {
-  constructor($http) {
+  constructor($http, SeismoServer) {
     this.http = $http;
+    this.server = SeismoServer;
   }
   
   path(path) {
-    return serverUrl + path;
+    return this.server.url + path;
   }
   
   queryStations(params) {
     return this.http({
       method: "GET",
-      url: queryUrl,
+      url: this.server.queryUrl,
       params: params
     });
   }
