@@ -4,10 +4,6 @@ class SeismoQuery {
     this.server = SeismoServer;
   }
   
-  path(path) {
-    return this.server.url + path;
-  }
-  
   queryStations(params) {
     return this.http({
       method: "GET",
