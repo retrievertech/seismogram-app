@@ -11,7 +11,7 @@ var tiler = new Tiler();
 var cache = {};
 
 function localPath(filename) {
-  return __dirname + "/s3-local-cache/" + filename;
+  return __dirname + "/local-file-cache/" + filename;
 }
 
 router.get("/loadfile/:filename", function(req, res) {
@@ -19,11 +19,12 @@ router.get("/loadfile/:filename", function(req, res) {
   var path = localPath(filename);
 
   console.log("requested file", filename);
+
   if (fs.existsSync(path)) {
-    console.log("--> cached");
+    console.log("--> on local disk");
     res.send({ success: true });
   } else {
-    console.log("--> not cached");
+    console.log("--> *not* on local disk");
     console.time("s3fetch");
     exec("aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + path, function(err) {
       console.timeEnd("s3fetch");
