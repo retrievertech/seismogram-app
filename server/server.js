@@ -4,10 +4,11 @@ var cors = require("cors");
 var mongo = require("mongodb").MongoClient;
 var app = express();
 
+app.use(cors());
+
 var tileRoutes = require("./tile-routes");
 app.use("/tiles", tileRoutes);
 
-app.use(cors());
 app.use(function(err, req, res, next) {
   console.error(err);
   next(err);
