@@ -28,7 +28,7 @@ class SeismoMain {
     };
 
     $scope.doQuery = (query) => {
-      return SeismoQuery.queryStations(query).then((res) => {
+      return SeismoQuery.queryFiles(query).then((res) => {
         var stationStatus = res.data.stations;
         if (stationStatus) {
           SeismoStationMap.pieOverlay.setStationStatusModel(stationStatus);
