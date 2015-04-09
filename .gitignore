@@ -3,3 +3,4 @@ node_modules
 data-tools/files.json
 data-tools/stations.json
 data-tools/statuses.json
+server/local-file-cache/*_*.png
