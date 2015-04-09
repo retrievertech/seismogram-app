@@ -2,8 +2,9 @@ var L = window.L;
 
 class SeismoImageMap {
   
-  constructor(SeismoServer) {
+  constructor($http, SeismoServer) {
     this.server = SeismoServer;
+    this.http = $http;
     this.leafletMap = null;
     this.imageLayer = null;
     this.imageLayerOpts = {
@@ -27,16 +28,19 @@ class SeismoImageMap {
   }
 
   loadImage(imagename) {
-    var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
-
-    // lazy initialization
-    if (!this.imageLayer) {
-      this.imageLayer = L.tileLayer(url, this.imageLayerOpts)
-        .addTo(this.leafletMap);
-      return;
-    }
-
-    this.imageLayer.setUrl(url);
+    var loadUrl = this.server.loadfileUrl + "/" + imagename;
+    this.http({ method: "GET", url: loadUrl }).then((res) => {
+      if (res.data.success) {
+        var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
+        // lazy initialization
+        if (!this.imageLayer) {
+          this.imageLayer = L.tileLayer(url, this.imageLayerOpts)
+            .addTo(this.leafletMap);
+          return;
+        }
+        this.imageLayer.setUrl(url);
+      }
+    });
   }
 
 }
