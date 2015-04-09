@@ -15,6 +15,11 @@ function localPath(filename) {
 }
 
 router.get("/loadfile/:filename", function(req, res) {
+  if (process.env.NODE_ENV !== "production") {
+    res.send({ success: true });
+    return;
+  }
+
   var filename = req.params.filename;
   var path = localPath(filename);
 
@@ -37,15 +42,11 @@ router.get("/:filename/:z/:x/:y.png", function(req, res) {
 
   console.log("--- processing /tile ---", req.params);
 
-  var filename = req.params.filename,
+  var filename = process.env.NODE_ENV === "production" ? req.params.filename : "dummy-seismo.png",
       z = req.params.z,
       x = req.params.x,
       y = req.params.y,
       tile;
-  
-  // For the time being, always return tiles from a dummy seismogram.
-  // The dummy is actually 0051574_0615_0124_04.png.
-  // var filename = "dummy-seismo.png";
 
   if (!cache[filename]) {
     console.time("readFile");
