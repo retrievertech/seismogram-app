@@ -90,7 +90,7 @@ router.get("/files", function(req, res, next) {
   if (edited) {
     var editedValue = JSON.parse(edited);
     if (editedValue)
-      queryComponents.push({edited: JSON.parse(edited)});
+      queryComponents.push({edited: editedValue});
   }
   // station Ids to match
   if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
@@ -106,10 +106,14 @@ router.get("/files", function(req, res, next) {
     connect,
     function(db, cb) {
       console.time("filteredFiles");
-      db.collection("files").find(query).skip(pageSize * (page-1)).limit(pageSize).toArray(function(err, filteredFiles) {
-        console.timeEnd("filteredFiles");
-        cb(err, db, filteredFiles);
-      });
+      db.collection("files")
+        .find(query)
+        .skip(pageSize * (page-1))
+        .limit(pageSize)
+        .toArray(function(err, filteredFiles) {
+          console.timeEnd("filteredFiles");
+          cb(err, db, filteredFiles);
+        });
     },
     function(db, filteredFiles, cb) {
       console.time("numResults");
@@ -126,10 +130,14 @@ router.get("/files", function(req, res, next) {
       });
     },
     function(db, fileCursor, filteredFiles, numResults, lowDate, cb) {
-      db.collection("files").find(query).sort({date:-1}).limit(1).toArray(function(err, files) {
-        var date = files.length > 0 ? files[0].date : null;
-        cb(err, db, fileCursor, filteredFiles, numResults, lowDate, date);
-      });
+      db.collection("files")
+        .find(query)
+        .sort({date:-1})
+        .limit(1)
+        .toArray(function(err, files) {
+          var date = files.length > 0 ? files[0].date : null;
+          cb(err, db, fileCursor, filteredFiles, numResults, lowDate, date);
+        });
     },
     function(db, fileCursor, filteredFiles, numResults, lowDate, highDate, cb) {
       console.time("processing");
