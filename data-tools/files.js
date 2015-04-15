@@ -20,8 +20,6 @@ function validDateTime(dateString, timeString) {
   }
 }
 
-//var invalidStations = {};
-//var invalidTypes = {};
 function validStationId(stationId, stations, invalidStations) {
   if (!stationId) return null;
   // I figured these translation out by checking manually and observing
@@ -64,6 +62,17 @@ function validType(type, invalidTypes) {
   }
 }
 
+function generateStatus() {
+  if (Math.random() > 0.95)
+    return 3;
+  else if (Math.random() > 0.85)
+    return 2;
+  else if (Math.random() > 0.6)
+    return 1;
+  else
+    return 0;
+}
+
 module.exports = {
   parse: function(fileName) {
     var text = fs.readFileSync(fileName).toString();
@@ -86,7 +95,7 @@ module.exports = {
           stationId: stationId,
           type: type,
           name: fileName,
-          status: Math.floor(Math.random() * 4),
+          status: generateStatus(),
           edited: Math.floor(Math.random() * 2) === 1 ? true : false
         });
       }
@@ -115,5 +124,4 @@ module.exports = {
   }
 };
 
-//console.log(JSON.stringify(module.exports.parse("files.uniq.txt"), null, 2));
 
