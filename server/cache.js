@@ -37,9 +37,13 @@ var cache = {
       };
       
       this.data.push(item);
+    } else {
+      // the item is in the cache.
+      // update the access timestamp
+      item.time = Date.now();
     }
 
-    // eject the oldest image from memory when we reach
+    // eject the oldest item from memory when we reach
     // 15 elements in the cache
     if (this.data.length > 15) {
       this.data.sort(function(a, b) {
