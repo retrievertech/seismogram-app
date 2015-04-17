@@ -38,23 +38,47 @@ router.get("/loadfile/:filename", function(req, res) {
   }
 });
 
+function getFile(filename, cb) {
+  var path = localPath(filename);
+
+  if (fs.existsSync(path)) {
+    console.log("--> on local disk");
+    cb(null);
+  } else {
+    console.log("--> *not* on local disk");
+    console.time("s3fetch");
+    if (!loading[filename]) {
+      loading[filename] = [];
+      exec("aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + path, function(err) {
+        console.timeEnd("s3fetch");
+        loading[filename].forEach(function(cb) { cb(err); });
+      });
+    }
+    loading[filename].push(cb);
+  }
+}
+
+var loading = {};
+
 router.get("/:filename/:z/:x/:y.png", function(req, res) {
 
   console.log("--- processing /tile ---", req.params);
 
-  var filename = process.env.NODE_ENV === "production" ? req.params.filename : "dummy-seismo.png",
-      z = req.params.z,
-      x = req.params.x,
-      y = req.params.y,
-      tile;
+  var filename = process.env.NODE_ENV === "production" ? req.params.filename : "dummy-seismo.png";
+  getFile(filename, function(err) {
+    var z = req.params.z,
+        x = req.params.x,
+        y = req.params.y,
+        tile;
 
-  var img = cache.hit(filename);
+    var img = cache.hit(filename);
 
-  console.time("makeTile");
-  tile = tiler.createTile(img, z, x, y);
-  console.timeEnd("makeTile");
+    console.time("makeTile");
+    tile = tiler.createTile(img, z, x, y);
+    console.timeEnd("makeTile");
 
-  respondWithTile(tile, res);
+    respondWithTile(tile, res);
+  });
 });
 
 function respondWithTile(tile, res) {
