@@ -1,14 +1,14 @@
 var express = require("express"),
     router = express.Router();
 
-var Image = require("canvas").Image,
-    Tiler = require("./tiler"),
+var Tiler = require("./tiler"),
     fs = require("fs");
 
 var exec = require("child_process").exec;
 
+var cache = require("./cache");
+
 var tiler = new Tiler();
-var cache = {};
 
 function localPath(filename) {
   return __dirname + "/local-file-cache/" + filename;
@@ -48,21 +48,10 @@ router.get("/:filename/:z/:x/:y.png", function(req, res) {
       y = req.params.y,
       tile;
 
-  if (!cache[filename]) {
-    console.time("readFile");
-    var file = fs.readFileSync(localPath(filename));
-    console.timeEnd("readFile");
-    
-    console.time("convertToImage");
-    var img = new Image();
-    img.src = file;
-    console.timeEnd("convertToImage");
-    
-    cache[filename] = img;
-  }
+  var img = cache.hit(filename);
 
   console.time("makeTile");
-  tile = tiler.createTile(cache[filename], z, x, y);
+  tile = tiler.createTile(img, z, x, y);
   console.timeEnd("makeTile");
 
   respondWithTile(tile, res);
