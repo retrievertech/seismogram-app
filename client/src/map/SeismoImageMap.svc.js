@@ -28,19 +28,14 @@ class SeismoImageMap {
   }
 
   loadImage(imagename) {
-    var loadUrl = this.server.loadfileUrl + "/" + imagename;
-    this.http({ method: "GET", url: loadUrl }).then((res) => {
-      if (res.data.success) {
-        var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
-        // lazy initialization
-        if (!this.imageLayer) {
-          this.imageLayer = L.tileLayer(url, this.imageLayerOpts)
-            .addTo(this.leafletMap);
-          return;
-        }
-        this.imageLayer.setUrl(url);
-      }
-    });
+    var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
+    // lazy initialization
+    if (!this.imageLayer) {
+      this.imageLayer = L.tileLayer(url, this.imageLayerOpts)
+        .addTo(this.leafletMap);
+      return;
+    }
+    this.imageLayer.setUrl(url);
   }
 
 }
