@@ -19,7 +19,7 @@ var imageMapProjection = {
   bounds: L.bounds([0, imageCoordExtent], [0, imageCoordExtent])
 };
 
-// Defines a flat (null transformation) coordinate space with (0,0) in the top-right.
+// Defines a flat (null transformation) coordinate space with (0,0) in the top-left.
 var imageMapCRS = L.extend({}, L.CRS.Simple, {
   projection: imageMapProjection,
   transformation: new L.Transformation(1, 0, 1, 0)
