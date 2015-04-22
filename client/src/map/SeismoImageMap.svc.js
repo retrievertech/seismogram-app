@@ -42,7 +42,7 @@ class SeismoImageMap {
 
   init(id) {
     var leafletMap = this.leafletMap = L.map(id, {
-      maxZoom: 6,
+      maxZoom: 7,
       minZoom: 0,
       crs: imageMapCRS
     });
