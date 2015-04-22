@@ -1,17 +1,18 @@
-var Canvas = require('canvas');
+var Canvas = require("canvas");
+
+var imageCoordExtent = Math.pow(2, 15);
 
 function Tiler(tileSize) {
   this.tileSize = tileSize || 256;
   this.cache = {};
 }
 
-Tiler.prototype.tileRect = function(tx, ty, zoom, imageWidth, imageHeight) {
+Tiler.prototype.tileRect = function(tx, ty, zoom) {
   // Returns a rectangle [x, y, width, height] with dimensions
   // representing which coordinates in the source image are covered
   // by the tile at the specified zoom and tile coordinates (tx, ty).
 
   var tileCoordExtent = this.tileSize * Math.pow(2, zoom),
-      imageCoordExtent = this.smallestPowerOf2GreaterThan(Math.max(imageWidth, imageHeight)),
       scale = imageCoordExtent / tileCoordExtent; // number of image pixels in one tile pixel at this zoom
 
   var x = tx * this.tileSize * scale,
@@ -27,17 +28,12 @@ Tiler.prototype.createTile = function(image, z, x, y) {
 
   canvas.width = canvas.height = this.tileSize;
 
-  var tileRect = this.tileRect(x, y, z, image.width, image.height);
+  var tileRect = this.tileRect(x, y, z);
 
   ctx.drawImage(image, tileRect[0], tileRect[1], tileRect[2], tileRect[3],
                 0, 0, canvas.width, canvas.height);
 
   return canvas;
-};
-
-Tiler.prototype.smallestPowerOf2GreaterThan = function(num) {
-  var exponent = Math.ceil(Math.log(num) / Math.log(2));
-  return Math.pow(2, exponent);
 };
 
 module.exports = Tiler;
