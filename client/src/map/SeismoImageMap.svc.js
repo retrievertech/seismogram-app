@@ -57,7 +57,7 @@ class SeismoImageMap {
           opacity: 0.9
         }
       }, {
-        name: "Intersectons",
+        name: "Intersections",
         key: "intersections",
         on: false,
         zIndex: 12,
