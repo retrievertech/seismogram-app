@@ -26,6 +26,13 @@
             <div ng-click="hideImageMap()">Back to map</div>
             <div>Edit this seismogram</div>
           </div>
+          <div class="image-map-layers">
+            <div ng-repeat="ml in SeismoImageMap.metadataLayers"
+                 ng-class="{'active': ml.on}"
+                 ng-click="SeismoImageMap.toggleLayer(ml)">
+              {{ml.name}}
+            </div>
+          </div>
         </div>
       </div>
 

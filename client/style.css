@@ -89,7 +89,17 @@ body {
   right: 10px;
 }
 
-.image-map-controls div {
+.image-map-layers {
+  position: absolute;
+  top: 120px;
+  right: 10px;
+}
+
+.image-map-layers div.active {
+  background: #ADD6FF;
+}
+
+.image-map-controls div, .image-map-layers div {
   padding: 10px;
   cursor: pointer;
   background: white;

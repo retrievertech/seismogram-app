@@ -28,6 +28,7 @@ var imageMapCRS = L.extend({}, L.CRS.Simple, {
 class SeismoImageMap {
   
   constructor($http, $q, SeismoServer) {
+    window.imageMap = this;
     this.server = SeismoServer;
     this.http = $http;
     this.q = $q;
@@ -36,7 +37,7 @@ class SeismoImageMap {
       {
         name: "Region of Interest",
         key: "roi",
-        on: true,
+        on: false,
         zIndex: 10,
         leafletLayer: null,
         style: {
@@ -47,7 +48,7 @@ class SeismoImageMap {
       }, {
         name: "Mean Lines",
         key: "meanlines",
-        on: true,
+        on: false,
         zIndex: 11,
         leafletLayer: null,
         style: {
@@ -58,7 +59,7 @@ class SeismoImageMap {
       }, {
         name: "Intersectons",
         key: "intersections",
-        on: true,
+        on: false,
         zIndex: 12,
         leafletLayer: null,
         style: {
@@ -68,7 +69,7 @@ class SeismoImageMap {
               color: "white",
               weight: 1,
               opacity: 0.9,
-              radius: feature.properties.radius
+              radius: 2 //feature.properties.radius
             });
           }
         }
@@ -102,12 +103,38 @@ class SeismoImageMap {
       crs: imageMapCRS
     });
 
-    // for debugging, for now
-    leafletMap.on("click", function(e) {
-      console.log("x:", e.latlng.lng, ", y:", e.latlng.lat);
+    // Zoom-sensitive sizing of circle radii.
+    // Are these circles really this small? I see values in the 2-5 range... They seem
+    // almost meaningless for display purposes
+    leafletMap.on("zoomend", () => {
+      var zoom = leafletMap.getZoom();
+      var intersections = this.metadataLayers.find((layer) => layer.key === "intersections");
+
+      if (!intersections.leafletLayer) return;
+
+      var circles = intersections.leafletLayer.getLayers();
+      circles.forEach((circle) => {
+        if (zoom > 5) {
+          circle.setRadius(circle.feature.properties.radius / Math.pow(2, 7-zoom));
+        } else {
+          circle.setRadius(2);
+        }
+      });
+      
     });
     
     leafletMap.setView(new L.LatLng(2000, 7000), 2);
+  }
+
+  toggleLayer(layer) {
+    if (layer.on) {
+      this.leafletMap.removeLayer(layer.leafletLayer);
+    } else {
+      this.leafletMap.addLayer(layer.leafletLayer);
+      layer.leafletLayer.setZIndex(layer.zIndex);
+    }
+
+    layer.on = !layer.on;
   }
   
   loadImage(imagename) {
@@ -141,7 +168,7 @@ class SeismoImageMap {
     this.q.all(promises).then(() => {
       this.metadataLayers.forEach((layer) => {
         if (layer.on) {
-          this.leafletMap.addLayer(layer.leafletLayer, {zIndex: layer.zIndex});
+          this.leafletMap.addLayer(layer.leafletLayer);
         }
       });
     });
