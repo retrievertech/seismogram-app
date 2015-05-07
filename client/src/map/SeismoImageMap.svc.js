@@ -131,10 +131,14 @@ class SeismoImageMap {
       this.leafletMap.removeLayer(layer.leafletLayer);
     } else {
       this.leafletMap.addLayer(layer.leafletLayer);
-      layer.leafletLayer.setZIndex(layer.zIndex);
     }
 
     layer.on = !layer.on;
+
+    this.metadataLayers
+      .filter((layer) => layer.on)
+      .sort((l1, l2) => l1.zIndex - l2.zIndex)
+      .forEach((layer) => layer.leafletLayer.bringToFront());
   }
   
   loadImage(imagename) {
