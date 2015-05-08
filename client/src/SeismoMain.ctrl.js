@@ -19,6 +19,19 @@ class SeismoMain {
       SeismoImageMap.loadImage(file.name);
     };
 
+    $scope.editing = false;
+    $scope.startEditing = () => {
+      $scope.editing = true;
+    };
+
+    $scope.stopEditing = () => {
+      $scope.editing = false;
+    };
+
+    $scope.saveChanges = () => {
+
+    };
+
     $scope.showImageMap = () => {
       $scope.imageMapVisible = true;
     };

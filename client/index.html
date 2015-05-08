@@ -23,18 +23,24 @@
         </div>
         <div ng-show="imageMapVisible">
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
-          <div class="image-map-controls">
+          <div class="image-map-controls" ng-hide="editing">
             <div ng-click="hideImageMap()">Back to map</div>
-            <div>Edit this seismogram</div>
+            <div ng-click="startEditing()">Edit this seismogram</div>
           </div>
+
+          <div class="image-map-controls" ng-show="editing">
+            <div ng-click="stopEditing()">Discard Changes and Exit</div>
+            <div ng-click="saveChanges()">Save Changes</div>
+          </div>
+
           <div class="image-map-layers">
             <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
               <div class="layer-button"
-                 ng-class="{'active': ml.on}"
-                 ng-click="SeismoImageMap.toggleLayer(ml)">
+                   ng-class="{'active': ml.on}"
+                   ng-click="SeismoImageMap.toggleLayer(ml)">
                 {{ml.name}}
               </div>
-              <div class="edit-button">Edit</div>
+              <div class="edit-button" ng-show="editing">Edit</div>
             </div>
           </div>
         </div>
@@ -48,7 +54,7 @@
       </div>
     </div>
 
-    <div id="right-section">
+    <div id="right-section" ng-hide="editing">
       <div class="seismo-list">
         <div class="seismo-list-item" ng-repeat="file in model.files" ng-click="viewSeismogram(file)">
           <div>{{ file.name }}</div>
