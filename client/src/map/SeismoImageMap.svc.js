@@ -178,6 +178,7 @@ class SeismoImageMap {
       return this.http({url: s3Prefix + layer.key + ".json"}).then((ret) => {
         console.log(layer.key + ":", ret.data);
         layer.leafletLayer = L.geoJson(ret.data, layer.style);
+        layer.leafletLayer.on("dblclick", () => this.leafletMap.zoomIn());
         layer.originalData = JSON.stringify(ret.data);
       });
     });
