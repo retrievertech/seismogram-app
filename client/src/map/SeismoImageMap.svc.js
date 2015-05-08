@@ -28,7 +28,8 @@ var imageMapCRS = L.extend({}, L.CRS.Simple, {
 class SeismoImageMap {
   
   constructor($http, $q, SeismoServer) {
-    window.imageMap = this;
+    var map = window.imageMap = this;
+
     this.server = SeismoServer;
     this.http = $http;
     this.q = $q;
@@ -64,13 +65,24 @@ class SeismoImageMap {
         leafletLayer: null,
         style: {
           pointToLayer: function(feature, latlng) {
+            var intersectionLayer = map.metadataLayers.find((layer) => layer.key === "intersections");
             return L.circleMarker(latlng, {
-              fillColor: "red",
-              color: "white",
+              fillColor: "yellow",
+              color: "red",
               weight: 1,
-              opacity: 0.9,
-              radius: 2 //feature.properties.radius
+              opacity: 1,
+              fillOpacity: 0.9,
+              radius: intersectionLayer.zoomFunction(feature)
             });
+          }
+        },
+        zoomFunction: function(feature) {
+          var zoom = map.leafletMap.getZoom();
+
+          if (zoom > 5) {
+            return feature.properties.radius / Math.pow(2, 7 - zoom);
+          } else {
+            return 3;
           }
         }
       }, {
@@ -111,20 +123,12 @@ class SeismoImageMap {
     // Are these circles really this small? I see values in the 2-5 range... They seem
     // almost meaningless for display purposes
     leafletMap.on("zoomend", () => {
-      var zoom = leafletMap.getZoom();
       var intersections = this.metadataLayers.find((layer) => layer.key === "intersections");
 
       if (!intersections.leafletLayer) return;
 
       var circles = intersections.leafletLayer.getLayers();
-      circles.forEach((circle) => {
-        if (zoom > 5) {
-          circle.setRadius(circle.feature.properties.radius / Math.pow(2, 7-zoom));
-        } else {
-          circle.setRadius(2);
-        }
-      });
-      
+      circles.forEach((circle) => circle.setRadius(intersections.zoomFunction(circle.feature)));
     });
     
     leafletMap.setView(new L.LatLng(2000, 7000), 2);
