@@ -144,7 +144,12 @@ class SeismoImageMap {
       .sort((l1, l2) => l1.zIndex - l2.zIndex)
       .forEach((layer) => layer.leafletLayer.bringToFront());
   }
-  
+
+  resetLayer(layer) {
+    layer.leafletLayer.clearLayers();
+    layer.leafletLayer.addData(JSON.parse(layer.originalData));
+  }
+
   loadImage(imagename) {
     var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04/";
     var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
@@ -169,6 +174,7 @@ class SeismoImageMap {
       return this.http({url: s3Prefix + layer.key + ".json"}).then((ret) => {
         console.log(layer.key + ":", ret.data);
         layer.leafletLayer = L.geoJson(ret.data, layer.style);
+        layer.originalData = JSON.stringify(ret.data);
       });
     });
 

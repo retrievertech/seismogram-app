@@ -30,10 +30,11 @@
 
           <div class="image-map-controls" ng-show="editing">
             <div ng-click="saveChanges()">Save Changes</div>
+            <div ng-click="discardChanges()">Discard Changes</div>
             <div ng-click="exitEditing()">Exit</div>
           </div>
 
-          <div class="image-map-layers">
+          <div class="image-map-layers" ng-class="{'while-editing': editing}">
             <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
               <div class="layer-button"
                    ng-class="{'active': ml.on}"

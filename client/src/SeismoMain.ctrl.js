@@ -30,6 +30,8 @@ class SeismoMain {
       if ($scope.layerBeingEdited !== null) {
         $scope.layerBeingEdited.leafletLayer.getLayers().forEach((object) => object.disableEdit());
       }
+
+      $scope.layerBeingEdited = null;
     };
 
     $scope.startEditingLayer = (layer) => {
@@ -48,6 +50,14 @@ class SeismoMain {
       $scope.layerBeingEdited = layer;
 
       layer.leafletLayer.getLayers().forEach((object) => object.enableEdit());
+    };
+
+    $scope.discardChanges = () => {
+      stopEditing();
+
+      $scope.SeismoImageMap.metadataLayers
+        .filter((layer) => layer.key === "meanlines" || layer.key === "roi")
+        .forEach((layer) => $scope.SeismoImageMap.resetLayer(layer));
     };
 
     $scope.exitEditing = () => {
