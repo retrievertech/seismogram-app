@@ -109,13 +109,15 @@ html {
               .button;
               width: 120px;
               display: inline-block;
-              &.active {
-                background: #ADD6FF;
-              }
             }
             .edit-button {
               display: inline-block;
               .button;
+            }
+            .layer-button, .edit-button {
+              &.active {
+                background: #ADD6FF;
+              }
             }
           }
         }
@@ -160,7 +162,7 @@ html {
         .seismo-list-item {
           cursor: pointer;
           text-align: center;
-          padding: 10px;
+          padding: 15px;
           border-bottom: 1px solid #eee;
         }
       }

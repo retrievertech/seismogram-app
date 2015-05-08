@@ -20,16 +20,52 @@ class SeismoMain {
     };
 
     $scope.editing = false;
+    $scope.layerBeingEdited = null;
+
     $scope.startEditing = () => {
       $scope.editing = true;
     };
 
-    $scope.stopEditing = () => {
+    var stopEditing = function() {
+      if ($scope.layerBeingEdited !== null) {
+        $scope.layerBeingEdited.leafletLayer.getLayers().forEach((object) => object.disableEdit());
+      }
+    };
+
+    $scope.startEditingLayer = (layer) => {
+      stopEditing();
+
+      // if the layer is off, turn it on
+      if (!layer.on) {
+        $scope.SeismoImageMap.toggleLayer(layer);
+      }
+
+      // not yet for these
+      if (layer.key === "intersections" || layer.key === "segments") {
+        return;
+      }
+
+      $scope.layerBeingEdited = layer;
+
+      layer.leafletLayer.getLayers().forEach((object) => object.enableEdit());
+    };
+
+    $scope.exitEditing = () => {
+      stopEditing();
       $scope.editing = false;
     };
 
     $scope.saveChanges = () => {
+      var layers = $scope.SeismoImageMap.metadataLayers;
 
+      var roi = layers.find((layer) => layer.key === "roi");
+      var meanLines = layers.find((layer) => layer.key === "meanlines");
+
+      var roiGeoJson = JSON.stringify(roi.leafletLayer.toGeoJSON());
+      var meanLinesGeoJson = JSON.stringify(meanLines.leafletLayer.toGeoJSON());
+
+      console.log("geoJson for roi:", roiGeoJson);
+      console.log("geoJson for mean lines:", meanLinesGeoJson);
     };
 
     $scope.showImageMap = () => {

@@ -29,7 +29,7 @@
           </div>
 
           <div class="image-map-controls" ng-show="editing">
-            <div ng-click="stopEditing()">Discard Changes and Exit</div>
+            <div ng-click="exitEditing()">Discard Changes and Exit</div>
             <div ng-click="saveChanges()">Save Changes</div>
           </div>
 
@@ -40,7 +40,10 @@
                    ng-click="SeismoImageMap.toggleLayer(ml)">
                 {{ml.name}}
               </div>
-              <div class="edit-button" ng-show="editing">Edit</div>
+              <div class="edit-button"
+                   ng-show="editing"
+                   ng-class="{'active': layerBeingEdited == ml}"
+                   ng-click="startEditingLayer(ml)">Edit</div>
             </div>
           </div>
         </div>
