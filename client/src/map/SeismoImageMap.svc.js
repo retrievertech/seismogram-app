@@ -100,7 +100,11 @@ class SeismoImageMap {
     var leafletMap = this.leafletMap = L.map(id, {
       maxZoom: 7,
       minZoom: 0,
-      crs: imageMapCRS
+      crs: imageMapCRS,
+      editable: true,
+      editOptions: {
+        skipMiddleMarkers: true
+      }
     });
 
     // Zoom-sensitive sizing of circle radii.
