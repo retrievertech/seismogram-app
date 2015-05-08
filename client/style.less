@@ -123,6 +123,29 @@ html {
         .image-map-controls div, .image-map-layers div {
         }
       }
+
+      #query-ui {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        width: 400px;
+        background: white;
+        padding: 10px;
+        z-index: 15;
+
+        #seismo-time-nubbin {}
+
+        #seismo-query-nubbins {}
+
+        #seismo-query-nubbins div, #seismo-time-nubbin div {
+          display: inline-block;
+          margin: auto 0;
+        }
+
+        #query-button {
+          height: 40px;
+        }
+      }
     }
 
     #right-section {
@@ -140,29 +163,6 @@ html {
           padding: 10px;
           border-bottom: 1px solid #eee;
         }
-      }
-    }
-
-    #query-ui {
-      position: absolute;
-      bottom: 20px;
-      left: 20px;
-      width: 400px;
-      background: white;
-      padding: 10px;
-      z-index: 15;
-
-      #seismo-time-nubbin {}
-
-      #seismo-query-nubbins {}
-
-      #seismo-query-nubbins div, #seismo-time-nubbin div {
-        display: inline-block;
-        margin: auto 0;
-      }
-
-      #query-button {
-        height: 40px; 
       }
     }
   }
