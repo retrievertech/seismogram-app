@@ -1,4 +1,4 @@
-import { ImageMapCRS } from "./ImageMapCRS.js";
+import { SeismoImageMapCRS } from "./SeismoImageMapCRS.js";
 var L = window.L;
 
 var IntersectionCircle = L.CircleMarker.extend({
@@ -93,7 +93,7 @@ class SeismoImageMap {
     var leafletMap = this.leafletMap = L.map(id, {
       maxZoom: 7,
       minZoom: 0,
-      crs: ImageMapCRS,
+      crs: SeismoImageMapCRS,
       editable: true,
       editOptions: {
         skipMiddleMarkers: true
