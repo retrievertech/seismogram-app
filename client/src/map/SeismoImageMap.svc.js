@@ -32,6 +32,10 @@ var IntersectionCircle = L.CircleMarker.extend({
     } else {
       return 3;
     }
+  },
+  updateRadius: function(zoom, feature) {
+    feature = feature || this.feature;
+    this.setRadius(this.getRadius(zoom, feature));
   }
 });
 
@@ -82,7 +86,7 @@ class SeismoImageMap {
               opacity: 1,
               fillOpacity: 0.9
             });
-            marker.setRadius(marker.getRadius(map.leafletMap.getZoom(), feature));
+            marker.updateRadius(map.leafletMap.getZoom(), feature);
             return marker;
           }
         }
@@ -130,7 +134,7 @@ class SeismoImageMap {
 
       var circles = intersections.leafletLayer.getLayers();
       var zoom = leafletMap.getZoom();
-      circles.forEach((circle) => circle.setRadius(circle.getRadius(zoom, circle.feature)));
+      circles.forEach((circle) => circle.updateRadius(zoom));
     });
     
     leafletMap.setView(new L.LatLng(2000, 7000), 2);
