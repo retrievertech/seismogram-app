@@ -25,6 +25,16 @@ var imageMapCRS = L.extend({}, L.CRS.Simple, {
   transformation: new L.Transformation(1, 0, 1, 0)
 });
 
+var IntersectionCircle = L.CircleMarker.extend({
+  getRadius: function(zoom, feature) {
+    if (zoom > 5) {
+      return feature.properties.radius / Math.pow(2, 7 - zoom);
+    } else {
+      return 3;
+    }
+  }
+});
+
 class SeismoImageMap {
   
   constructor($http, $q, SeismoServer) {
@@ -65,24 +75,15 @@ class SeismoImageMap {
         leafletLayer: null,
         style: {
           pointToLayer: function(feature, latlng) {
-            var intersectionLayer = map.metadataLayers.find((layer) => layer.key === "intersections");
-            return L.circleMarker(latlng, {
+            var marker = new IntersectionCircle(latlng, {
               fillColor: "yellow",
               color: "red",
               weight: 1,
               opacity: 1,
-              fillOpacity: 0.9,
-              radius: intersectionLayer.zoomFunction(feature)
+              fillOpacity: 0.9
             });
-          }
-        },
-        zoomFunction: function(feature) {
-          var zoom = map.leafletMap.getZoom();
-
-          if (zoom > 5) {
-            return feature.properties.radius / Math.pow(2, 7 - zoom);
-          } else {
-            return 3;
+            marker.setRadius(marker.getRadius(map.leafletMap.getZoom(), feature));
+            return marker;
           }
         }
       }, {
@@ -128,7 +129,8 @@ class SeismoImageMap {
       if (!intersections.leafletLayer) return;
 
       var circles = intersections.leafletLayer.getLayers();
-      circles.forEach((circle) => circle.setRadius(intersections.zoomFunction(circle.feature)));
+      var zoom = leafletMap.getZoom();
+      circles.forEach((circle) => circle.setRadius(circle.getRadius(zoom, circle.feature)));
     });
     
     leafletMap.setView(new L.LatLng(2000, 7000), 2);
