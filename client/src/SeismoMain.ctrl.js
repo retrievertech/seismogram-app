@@ -164,8 +164,6 @@ class SeismoMain {
       } else {
         layer.leafletLayer.getLayers().forEach((object) => object.enableEdit());
       }
-
-      map.fire("map-container-resize");
     };
 
     $scope.discardChanges = () => {
