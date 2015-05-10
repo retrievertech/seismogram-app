@@ -19,6 +19,50 @@ class SeismoMain {
       SeismoImageMap.loadImage(file.name);
     };
 
+    $scope.formatDate = (file) => {
+      var pad = (val) => {
+        val = val + "";
+        return val.length === 1 ? "0" + val : val;
+      };
+
+      var date = new Date(file.date);
+      var month = pad(date.getUTCMonth() + 1);
+      var day = pad(date.getUTCDate());
+      var year = date.getUTCFullYear();
+      var hours = pad(date.getUTCHours());
+      var minutes = pad(date.getUTCMinutes());
+
+      return month + "/" + day + "/" + year + " " + hours + ":" + minutes;
+    };
+
+    $scope.stationLocation = (file) => {
+      var stations = $scope.SeismoStationMap.pieOverlay.stationModel;
+      var station = stations.find((station) => station.stationId === file.stationId);
+      return station.location;
+    };
+
+    $scope.seismoType = (file) => {
+      var type = parseInt(file.type);
+
+      if (type >= 1 && type <= 3) {
+        return "Long-period";
+      } else {
+        return "Short-period";
+      }
+    };
+
+    $scope.seismoDirection = (file) => {
+      var type = parseInt(file.type);
+
+      if (type == 1 || type === 4) {
+        return "up-down";
+      } else if (type === 2 || type === 5) {
+        return "north-south";
+      } else {
+        return "east-west";
+      }
+    };
+
     $scope.editing = false;
     $scope.layerBeingEdited = null;
 
@@ -198,7 +242,7 @@ class SeismoMain {
         .map((station) => station.stationId);
 
       // If the text box is *not* empty (so the user did enter a query)
-      // and this query matches no station ids or codes, we send the 
+      // and this query matches no station ids or codes, we send the
       // server an impossible code, so it returns no results.
 
       // Obviously, there seems like a shorter way to express zero results

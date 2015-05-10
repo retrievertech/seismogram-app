@@ -61,7 +61,10 @@
     <div id="right-section" ng-hide="editing">
       <div class="seismo-list">
         <div class="seismo-list-item" ng-repeat="file in model.files" ng-click="viewSeismogram(file)">
-          <div>{{ file.name }}</div>
+          {{ formatDate(file) }}<br/>
+          {{ stationLocation(file) }}<br/>
+          {{ seismoType(file) }}, {{ seismoDirection(file) }}
+          <div class="filename">{{ file.name }}</div>
         </div>
       </div>
     </div>
