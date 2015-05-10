@@ -4,13 +4,14 @@
     <title>Seismogram Browser</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <link rel="stylesheet" type="text/css" href="bower_components/leaflet/dist/leaflet.css"/>
-    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <link rel="stylesheet/less" type="text/css" href="style.less"/>
     <script type="text/javascript" src="bower_components/traceur/traceur.js"></script>
     <script type="text/javascript">new traceur.WebPageTranscoder(document.location.href).run();</script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
     <script type="text/javascript" src="bower_components/leaflet/dist/leaflet.js"></script>
-    <script type="text/javascript" src="bower_components/Leaflet.label/dist/Leaflet.label.js"></script>
+    <script type="text/javascript" src="bower_components/leaflet.editable/src/Leaflet.Editable.js"></script>
+    <script type="text/javascript" src="bower_components/less/dist/less.js"></script>
     <script type="text/javascript" src="bower_components/d3/d3.js"></script>
     <script type="module">import "src/SeismoApp.js"</script>
   </head>
@@ -22,30 +23,48 @@
         </div>
         <div ng-show="imageMapVisible">
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
-          <div class="image-map-controls">
+          <div class="image-map-controls" ng-hide="editing">
             <div ng-click="hideImageMap()">Back to map</div>
-            <div>Edit this seismogram</div>
+            <div ng-click="startEditing()">Edit this seismogram</div>
           </div>
-          <div class="image-map-layers">
-            <div ng-repeat="ml in SeismoImageMap.metadataLayers"
-                 ng-class="{'active': ml.on}"
-                 ng-click="SeismoImageMap.toggleLayer(ml)">
-              {{ml.name}}
+
+          <div class="image-map-controls" ng-show="editing">
+            <div ng-click="saveChanges()">Save Changes</div>
+            <div ng-click="discardChanges()">Discard Changes</div>
+            <div ng-click="exitEditing()">Exit</div>
+          </div>
+
+          <div class="image-map-layers" ng-class="{'while-editing': editing}">
+            <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
+              <div class="layer-button"
+                   ng-class="{'active': ml.on}"
+                   ng-click="SeismoImageMap.toggleLayer(ml)">
+                {{ml.name}}
+              </div>
+              <div class="edit-button"
+                   ng-show="editing"
+                   ng-class="{'active': layerBeingEdited == ml}"
+                   ng-click="startEditingLayer(ml)">Edit</div>
             </div>
           </div>
         </div>
       </div>
 
-      <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
-      <div id="seismo-query-nubbins" query-params="queryParamModel" seismo-query-nubbins></div>
-
-      <!-- probably won't need this button eventually -->
-      <button id="query-button" ng-click="queryStationStatuses()">Query</button>
+      <div id="query-ui">
+        <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
+        <div id="seismo-query-nubbins" query-params="queryParamModel" seismo-query-nubbins></div>
+        <!-- probably won't need this button eventually -->
+        <button id="query-button" ng-click="queryStationStatuses()">Query</button>
+      </div>
     </div>
-    <div id="right-section">
+
+    <div id="right-section" ng-hide="editing">
       <div class="seismo-list">
         <div class="seismo-list-item" ng-repeat="file in model.files" ng-click="viewSeismogram(file)">
-          <div>{{ file.name }}</div>
+          {{ formatDate(file) }}<br/>
+          {{ stationLocation(file) }}<br/>
+          {{ seismoType(file) }}, {{ seismoDirection(file) }}
+          <div class="filename">{{ file.name }}</div>
         </div>
       </div>
     </div>

@@ -1,34 +1,25 @@
+import { SeismoImageMapCRS } from "./SeismoImageMapCRS.js";
 var L = window.L;
 
-// This has to agree with the same value in server/tiler.js
-var imageCoordExtent = Math.pow(2, 15);
-// Assume 256px tiles
-var scale = 256 / imageCoordExtent;
-
-// Translation between tile coords and image coords
-var imageMapProjection = {
-  project: function (latlng) {
-    return new L.Point(latlng.lng * scale, latlng.lat * scale);
+var IntersectionCircle = L.CircleMarker.extend({
+  getRadius: function(zoom, feature) {
+    if (zoom > 5) {
+      return feature.properties.radius / Math.pow(2, 7 - zoom);
+    } else {
+      return 3;
+    }
   },
-
-  unproject: function (point) {
-    return new L.LatLng(point.y / scale, point.x / scale);
-  },
-
-  // Defines a coordinate space with (0,0) in the top-left
-  bounds: L.bounds([0, imageCoordExtent], [0, imageCoordExtent])
-};
-
-// Defines a flat (null transformation) coordinate space with (0,0) in the top-left.
-var imageMapCRS = L.extend({}, L.CRS.Simple, {
-  projection: imageMapProjection,
-  transformation: new L.Transformation(1, 0, 1, 0)
+  updateRadius: function(zoom, feature) {
+    feature = feature || this.feature;
+    this.setRadius(this.getRadius(zoom, feature));
+  }
 });
 
 class SeismoImageMap {
   
   constructor($http, $q, SeismoServer) {
-    window.imageMap = this;
+    var map = window.imageMap = this;
+
     this.server = SeismoServer;
     this.http = $http;
     this.q = $q;
@@ -64,13 +55,15 @@ class SeismoImageMap {
         leafletLayer: null,
         style: {
           pointToLayer: function(feature, latlng) {
-            return L.circleMarker(latlng, {
-              fillColor: "red",
-              color: "white",
+            var marker = new IntersectionCircle(latlng, {
+              fillColor: "yellow",
+              color: "red",
               weight: 1,
-              opacity: 0.9,
-              radius: 2 //feature.properties.radius
+              opacity: 1,
+              fillOpacity: 0.9
             });
+            marker.updateRadius(map.leafletMap.getZoom(), feature);
+            return marker;
           }
         }
       }, {
@@ -100,27 +93,22 @@ class SeismoImageMap {
     var leafletMap = this.leafletMap = L.map(id, {
       maxZoom: 7,
       minZoom: 0,
-      crs: imageMapCRS
+      crs: SeismoImageMapCRS,
+      editable: true,
+      editOptions: {
+        skipMiddleMarkers: true
+      }
     });
 
     // Zoom-sensitive sizing of circle radii.
-    // Are these circles really this small? I see values in the 2-5 range... They seem
-    // almost meaningless for display purposes
     leafletMap.on("zoomend", () => {
-      var zoom = leafletMap.getZoom();
       var intersections = this.metadataLayers.find((layer) => layer.key === "intersections");
 
       if (!intersections.leafletLayer) return;
 
       var circles = intersections.leafletLayer.getLayers();
-      circles.forEach((circle) => {
-        if (zoom > 5) {
-          circle.setRadius(circle.feature.properties.radius / Math.pow(2, 7-zoom));
-        } else {
-          circle.setRadius(2);
-        }
-      });
-      
+      var zoom = leafletMap.getZoom();
+      circles.forEach((circle) => circle.updateRadius(zoom));
     });
     
     leafletMap.setView(new L.LatLng(2000, 7000), 2);
@@ -140,7 +128,12 @@ class SeismoImageMap {
       .sort((l1, l2) => l1.zIndex - l2.zIndex)
       .forEach((layer) => layer.leafletLayer.bringToFront());
   }
-  
+
+  resetLayer(layer) {
+    layer.leafletLayer.clearLayers();
+    layer.leafletLayer.addData(JSON.parse(layer.originalData));
+  }
+
   loadImage(imagename) {
     var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04/";
     var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
@@ -165,6 +158,8 @@ class SeismoImageMap {
       return this.http({url: s3Prefix + layer.key + ".json"}).then((ret) => {
         console.log(layer.key + ":", ret.data);
         layer.leafletLayer = L.geoJson(ret.data, layer.style);
+        layer.leafletLayer.on("dblclick", () => this.leafletMap.zoomIn());
+        layer.originalData = JSON.stringify(ret.data);
       });
     });
 
