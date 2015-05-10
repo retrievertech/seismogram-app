@@ -101,8 +101,6 @@ class SeismoImageMap {
     });
 
     // Zoom-sensitive sizing of circle radii.
-    // Are these circles really this small? I see values in the 2-5 range... They seem
-    // almost meaningless for display purposes
     leafletMap.on("zoomend", () => {
       var intersections = this.metadataLayers.find((layer) => layer.key === "intersections");
 
