@@ -60,10 +60,10 @@
 
     <div id="right-section" ng-hide="editing">
       <div class="seismo-list">
-        <div class="seismo-list-item" ng-repeat="file in model.files" ng-click="viewSeismogram(file)">
-          {{ formatDate(file) }}<br/>
-          {{ stationLocation(file) }}<br/>
-          {{ seismoType(file) }}, {{ seismoDirection(file) }}
+        <div class="seismo-list-item" ng-repeat="file in SeismoData.files" ng-click="viewSeismogram(file)">
+          {{ SeismoData.formatDate(file) }}<br/>
+          {{ SeismoData.stationLocation(file) }}<br/>
+          {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}
           <div class="filename">{{ file.name }}</div>
         </div>
       </div>

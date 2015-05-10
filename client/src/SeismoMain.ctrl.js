@@ -1,6 +1,6 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer) {
+  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer, SeismoData) {
     // debug
     //window.SeismoStationMap = SeismoStationMap;
     //window.SeismoImageMap = SeismoImageMap;
@@ -9,6 +9,7 @@ class SeismoMain {
     // add maps and services to scope
     $scope.SeismoStationMap = SeismoStationMap;
     $scope.SeismoImageMap = SeismoImageMap;
+    $scope.SeismoData = SeismoData;
     $scope.$http = $http;
 
     // initialize data models and perform initial query
@@ -17,50 +18,6 @@ class SeismoMain {
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
       SeismoImageMap.loadImage(file.name);
-    };
-
-    $scope.formatDate = (file) => {
-      var pad = (val) => {
-        val = val + "";
-        return val.length === 1 ? "0" + val : val;
-      };
-
-      var date = new Date(file.date);
-      var month = pad(date.getUTCMonth() + 1);
-      var day = pad(date.getUTCDate());
-      var year = date.getUTCFullYear();
-      var hours = pad(date.getUTCHours());
-      var minutes = pad(date.getUTCMinutes());
-
-      return month + "/" + day + "/" + year + " " + hours + ":" + minutes;
-    };
-
-    $scope.stationLocation = (file) => {
-      var stations = $scope.SeismoStationMap.pieOverlay.stationModel;
-      var station = stations.find((station) => station.stationId === file.stationId);
-      return station.location;
-    };
-
-    $scope.seismoType = (file) => {
-      var type = parseInt(file.type);
-
-      if (type >= 1 && type <= 3) {
-        return "Long-period";
-      } else {
-        return "Short-period";
-      }
-    };
-
-    $scope.seismoDirection = (file) => {
-      var type = parseInt(file.type);
-
-      if (type == 1 || type === 4) {
-        return "up-down";
-      } else if (type === 2 || type === 5) {
-        return "north-south";
-      } else {
-        return "east-west";
-      }
     };
 
     $scope.editing = false;
@@ -211,7 +168,7 @@ class SeismoMain {
       console.log("Doing query with params", query);
       $scope.doQuery(query).then((res) => {
         console.log("Query complete.", res.data);
-        $scope.model.files = res.data.files;
+        SeismoData.files = res.data.files;
       });
     };
 
@@ -272,15 +229,12 @@ class SeismoMain {
   }
 
   init($scope, SeismoServer) {
-    $scope.model = {
-      files: []
-    };
-
     this.setDefaultQueryParams($scope);
 
     $scope.$http({url: SeismoServer.stationsUrl}).then((ret) => {
       var stations = ret.data;
       $scope.SeismoStationMap.pieOverlay.setStationModel(stations);
+      $scope.SeismoData.stations = stations;
       $scope.queryStationStatuses();
     });
   }
