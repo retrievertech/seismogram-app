@@ -10,11 +10,11 @@ function validDateTime(dateString, timeString) {
     var year = "19" + dateString.substr(4, 2);
     var hour = timeString.substr(0, 2);
     var minute = timeString.substr(2, 2);
-    var dt = month + "-" + day + "-" + year + " " + hour + ":" + minute;
+    var dt = month + "-" + day + "-" + year + " " + hour + ":" + minute + " GMT+0000";
     var parsed = Date.parse(dt);
     if (isNaN(parsed))
       return null;
-    return new Date(Date.parse(dt));
+    return new Date(parsed);
   } catch(e) {
     return null;
   }
@@ -123,5 +123,3 @@ module.exports = {
     return seismos;
   }
 };
-
-
