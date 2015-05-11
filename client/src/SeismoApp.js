@@ -7,7 +7,7 @@ import { SeismoStationMap } from "./map/SeismoStationMap.svc.js";
 import { SeismoImageMap } from "./map/SeismoImageMap.svc.js";
 import { SeismoQuery } from "./SeismoQuery.svc.js";
 import { SeismoServer } from "./SeismoServer.svc.js";
-import { PieOverlay } from "./map/PieOverlay.js";
+import { PieOverlay } from "./map/PieOverlay.svc.js";
 import { SeismoTimeNubbin } from "./seismo-query-nubbins/SeismoTimeNubbin.dir.js";
 import { SeismoQueryNubbins } from "./seismo-query-nubbins/SeismoQueryNubbins.dir.js";
 import { SeismoData } from "./SeismoData.svc.js";

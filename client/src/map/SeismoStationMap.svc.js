@@ -1,5 +1,4 @@
 import {Leaflet} from "../../bower_components/redfish-core/lib/Leaflet.js";
-import {PieOverlay} from "./PieOverlay.js";
 
 var L = window.L;
 
