@@ -1,6 +1,6 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer, SeismoData) {
+  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer, SeismoData, PieOverlay) {
     // debug
     //window.SeismoStationMap = SeismoStationMap;
     //window.SeismoImageMap = SeismoImageMap;
@@ -10,6 +10,7 @@ class SeismoMain {
     $scope.SeismoStationMap = SeismoStationMap;
     $scope.SeismoImageMap = SeismoImageMap;
     $scope.SeismoData = SeismoData;
+    $scope.PieOverlay = PieOverlay;
     $scope.$http = $http;
 
     // initialize data models and perform initial query
@@ -160,8 +161,8 @@ class SeismoMain {
         console.log("Query complete.", res.data);
         SeismoData.files = res.data.files;
         SeismoData.stationStatuses = res.data.stations;
-        SeismoStationMap.leafletMap.fitBounds(SeismoData.resultsBBox());
-        SeismoStationMap.pieOverlay.setStationStatusModel(res.data.stations);
+        SeismoStationMap.updateBounds();
+        PieOverlay.renderStatuses();
       });
     };
 
@@ -224,10 +225,16 @@ class SeismoMain {
   init($scope, SeismoServer) {
     this.setDefaultQueryParams($scope);
 
-    $scope.$http({url: SeismoServer.stationsUrl}).then((ret) => {
-      var stations = ret.data;
-      $scope.SeismoStationMap.pieOverlay.setStationModel(stations);
-      $scope.SeismoData.stations = stations;
+    $scope.SeismoStationMap.deferred.promise.then(() => {
+      // the map is initialized; initiaize the pies
+      $scope.PieOverlay.init($scope.SeismoStationMap.leafletMap);
+      // load the stations
+      return $scope.$http({url: SeismoServer.stationsUrl});
+    }).then((ret) => {
+      // stations are loaded; render them
+      $scope.SeismoData.stations = ret.data;
+      $scope.PieOverlay.renderStations();
+      // perform initial query
       $scope.queryStationStatuses();
     });
   }

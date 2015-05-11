@@ -4,11 +4,15 @@ import {PieOverlay} from "./PieOverlay.js";
 var L = window.L;
 
 class SeismoStationMap {
-  
-  constructor() {
+
+  constructor($q, SeismoData) {
+    this.SeismoData = SeismoData;
+
     this.map = null;
     this.leafletMap = null;
     this.pies = [];
+
+    this.deferred = $q.defer();
   }
 
   init(id) {
@@ -33,9 +37,12 @@ class SeismoStationMap {
       })
     });
 
-    this.pieOverlay = new PieOverlay(this.leafletMap);
+    this.deferred.resolve();
   }
 
+  updateBounds() {
+    this.leafletMap.fitBounds(this.SeismoData.resultsBBox());
+  }
 }
 
 export { SeismoStationMap };
