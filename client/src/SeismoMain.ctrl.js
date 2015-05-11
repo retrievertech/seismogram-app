@@ -189,7 +189,7 @@ class SeismoMain {
       var stationNames = queryParamModel.stationNames
         .split(",").map((stationName) => stationName.trim());
 
-      var stationIds = SeismoStationMap.pieOverlay.stationModel
+      var stationIds = SeismoData.stations
         .filter((station) => stationNames.find((stationName) =>
           station.location.toLowerCase().indexOf(stationName.toLowerCase()) !== -1 ||
           station.code.toLowerCase().indexOf(stationName.toLowerCase()) !== -1
