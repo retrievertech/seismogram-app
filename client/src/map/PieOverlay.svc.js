@@ -22,7 +22,7 @@ class PieOverlay extends LeafletD3Overlay {
     this.overlay = this.createGroup();
 
     leafletMap.on("viewreset", () => {
-      this.renderStations(this.SeismoData.stations);
+      this.renderStations();
     });
   }
 
