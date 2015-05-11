@@ -157,6 +157,8 @@ class SeismoMain {
       return SeismoQuery.queryFiles(query).then((res) => {
         var stationStatus = res.data.stations;
         if (stationStatus) {
+          SeismoData.stationStatuses = stationStatus;
+          SeismoStationMap.leafletMap.fitBounds(SeismoData.resultsBBox());
           SeismoStationMap.pieOverlay.setStationStatusModel(stationStatus);
         }
         return res;
