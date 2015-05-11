@@ -153,24 +153,15 @@ class SeismoMain {
       $scope.imageMapVisible = false;
     };
 
-    $scope.doQuery = (query) => {
-      return SeismoQuery.queryFiles(query).then((res) => {
-        var stationStatus = res.data.stations;
-        if (stationStatus) {
-          SeismoData.stationStatuses = stationStatus;
-          SeismoStationMap.leafletMap.fitBounds(SeismoData.resultsBBox());
-          SeismoStationMap.pieOverlay.setStationStatusModel(stationStatus);
-        }
-        return res;
-      });
-    };
-
     $scope.queryStationStatuses = () => {
       var query = $scope.makeQueryParams();
       console.log("Doing query with params", query);
-      $scope.doQuery(query).then((res) => {
+      SeismoQuery.queryFiles(query).then((res) => {
         console.log("Query complete.", res.data);
         SeismoData.files = res.data.files;
+        SeismoData.stationStatuses = res.data.stations;
+        SeismoStationMap.leafletMap.fitBounds(SeismoData.resultsBBox());
+        SeismoStationMap.pieOverlay.setStationStatusModel(res.data.stations);
       });
     };
 
