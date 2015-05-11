@@ -2,7 +2,29 @@ class SeismoData {
 
   constructor() {
     this.files = [];
+    this.stationStatuses = {};
     this.stations = [];
+  }
+
+  resultsBBox() {
+    var stationIds = Object.keys(this.stationStatuses);
+
+    // return max bounds if there are no results
+    if (stationIds.length === 0) {
+      return L.latLngBounds([-180, -90], [180, 90]);
+    }
+
+    // get the station points in the result set
+    var points = stationIds.map((stationId) => {
+      var station = this.stations.find((station) => station.stationId === stationId);
+      return L.latLng(station.lat, station.lon);
+    });
+
+    // make a minimal bbox around the first point
+    var minBBox = L.latLngBounds(points[0], points[0]);
+
+    // extend the minimal bbox with every subsequent point
+    return points.reduce((bbox, point) => bbox.extend(point), minBBox);
   }
 
   formatDate(file) {
@@ -39,7 +61,7 @@ class SeismoData {
   seismoDirection(file) {
     var type = parseInt(file.type);
 
-    if (type == 1 || type === 4) {
+    if (type === 1 || type === 4) {
       return "up-down";
     } else if (type === 2 || type === 5) {
       return "north-south";
