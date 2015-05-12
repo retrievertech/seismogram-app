@@ -32,6 +32,7 @@ class SeismoMain {
       $scope.editing = false;
     };
 
+    $scope.imageMapVisible = false;
 
     $scope.showImageMap = () => {
       $scope.imageMapVisible = true;
