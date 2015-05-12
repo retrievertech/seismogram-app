@@ -31,27 +31,30 @@
                  ng-hide="Loading.loading">Edit this seismogram</div>
           </div>
 
-          <div class="image-map-controls" ng-show="editing">
-            <div ng-click="saveChanges()">Save Changes</div>
-            <div ng-click="discardChanges()">Discard Changes</div>
-            <div ng-click="exitEditing()">Exit</div>
-          </div>
+          <div ng-controller="SeismoEditor">
+            <div class="image-map-controls" ng-show="editing">
+              <div ng-click="saveChanges()">Save Changes</div>
+              <div ng-click="discardChanges()">Discard Changes</div>
+              <div ng-click="finishEditing()">Exit</div>
+            </div>
 
-          <div class="image-map-layers"
-               ng-class="{'while-editing': editing}"
-               ng-hide="Loading.loading">
-            <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
-              <div class="layer-button"
-                   ng-class="{'active': ml.on}"
-                   ng-click="SeismoImageMap.toggleLayer(ml)">
-                {{ml.name}}
+            <div class="image-map-layers"
+                 ng-class="{'while-editing': editing}"
+                 ng-hide="Loading.loading">
+              <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
+                <div class="layer-button"
+                     ng-class="{'active': ml.on}"
+                     ng-click="SeismoImageMap.toggleLayer(ml)">
+                  {{ml.name}}
+                </div>
+                <div class="edit-button"
+                     ng-show="editing"
+                     ng-class="{'active': layerBeingEdited == ml}"
+                     ng-click="startEditingLayer(ml)">Edit</div>
               </div>
-              <div class="edit-button"
-                   ng-show="editing"
-                   ng-class="{'active': layerBeingEdited == ml}"
-                   ng-click="startEditingLayer(ml)">Edit</div>
             </div>
           </div>
+
         </div>
       </div>
 
