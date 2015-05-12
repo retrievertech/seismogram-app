@@ -228,18 +228,14 @@ class SeismoMain {
   init($scope, SeismoServer) {
     this.setDefaultQueryParams($scope);
 
-    $scope.SeismoStationMap.deferred.promise.then(() => {
-      // the map is initialized; initiaize the pies
-      $scope.PieOverlay.init($scope.SeismoStationMap.leafletMap);
-      // load the stations
-      return $scope.$http({url: SeismoServer.stationsUrl});
-    }).then((ret) => {
-      // stations are loaded; render them
-      $scope.SeismoData.stations = ret.data;
-      $scope.PieOverlay.renderStations();
-      // perform initial query
-      $scope.queryStationStatuses();
-    });
+    $scope.$http({url: SeismoServer.stationsUrl})
+      .then((ret) => {
+        // stations are loaded; render them
+        $scope.SeismoData.stations = ret.data;
+        $scope.PieOverlay.renderStations();
+        // perform initial query
+        $scope.queryStationStatuses();
+      });
   }
 
   setDefaultQueryParams($scope) {
