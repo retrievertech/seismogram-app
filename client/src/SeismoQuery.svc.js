@@ -6,7 +6,7 @@ class SeismoQuery {
   }
   
   queryFiles(paramModel) {
-    var params = this.makeQueryParams(paramModel);
+    var params = this.createQuery(paramModel);
     return this.http({
       method: "GET",
       url: this.SeismoServer.filesUrl,
@@ -14,7 +14,7 @@ class SeismoQuery {
     });
   }
 
-  makeQueryParams(queryParamModel) {
+  createQuery(queryParamModel) {
     // The server expects something that looks like:
     // {
     //   dateFrom: "",
