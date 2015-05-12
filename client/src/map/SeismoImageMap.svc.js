@@ -136,7 +136,7 @@ class SeismoImageMap {
   }
 
   loadImage(imagename) {
-    var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04/";
+    var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04.png/";
     var url = this.SeismoServer.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
 
     // lazy initialization
