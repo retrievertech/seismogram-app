@@ -226,7 +226,7 @@ class SeismoMain {
   }
 
   init($scope, SeismoServer) {
-    this.setDefaultQueryParams($scope);
+    this.initQueryParams($scope);
 
     $scope.$http({url: SeismoServer.stationsUrl})
       .then((ret) => {
@@ -238,7 +238,7 @@ class SeismoMain {
       });
   }
 
-  setDefaultQueryParams($scope) {
+  initQueryParams($scope) {
 
     // eventually dateFrom and dateTo should
     // come from the bounds in a query

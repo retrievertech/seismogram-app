@@ -1,13 +1,13 @@
 class SeismoQuery {
   constructor($http, SeismoServer) {
     this.http = $http;
-    this.server = SeismoServer;
+    this.SeismoServer = SeismoServer;
   }
   
   queryFiles(params) {
     return this.http({
       method: "GET",
-      url: this.server.filesUrl,
+      url: this.SeismoServer.filesUrl,
       params: params
     });
   }
