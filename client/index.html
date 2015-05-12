@@ -15,9 +15,11 @@
     <script type="text/javascript" src="bower_components/d3/d3.js"></script>
     <script type="module">import "src/SeismoApp.js"</script>
   </head>
-  <body ng-controller="SeismoMain">
+  <body ng-controller="SeismoMain" ng-cloak>
     <div id="left-section">
       <div class="maps">
+        <div class="loading-spinner"
+             ng-show="Loading.loading">{{ Loading.message }}</div>
         <div ng-hide="imageMapVisible">
           <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap"></div>
         </div>
@@ -25,7 +27,8 @@
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
           <div class="image-map-controls" ng-hide="editing">
             <div ng-click="hideImageMap()">Back to map</div>
-            <div ng-click="startEditing()">Edit this seismogram</div>
+            <div ng-click="startEditing()"
+                 ng-hide="Loading.loading">Edit this seismogram</div>
           </div>
 
           <div class="image-map-controls" ng-show="editing">
@@ -34,7 +37,9 @@
             <div ng-click="exitEditing()">Exit</div>
           </div>
 
-          <div class="image-map-layers" ng-class="{'while-editing': editing}">
+          <div class="image-map-layers"
+               ng-class="{'while-editing': editing}"
+               ng-hide="Loading.loading">
             <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
               <div class="layer-button"
                    ng-class="{'active': ml.on}"

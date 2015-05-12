@@ -1,6 +1,6 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer, SeismoData, PieOverlay) {
+  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer, SeismoData, PieOverlay, Loading) {
     // debug
     //window.SeismoStationMap = SeismoStationMap;
     //window.SeismoImageMap = SeismoImageMap;
@@ -11,6 +11,7 @@ class SeismoMain {
     $scope.SeismoImageMap = SeismoImageMap;
     $scope.SeismoData = SeismoData;
     $scope.PieOverlay = PieOverlay;
+    $scope.Loading = Loading;
     $scope.$http = $http;
 
     // initialize data models and perform initial query
@@ -157,12 +158,14 @@ class SeismoMain {
     $scope.queryStationStatuses = () => {
       var query = $scope.makeQueryParams();
       console.log("Doing query with params", query);
+      Loading.start("Loading results...");
       SeismoQuery.queryFiles(query).then((res) => {
         console.log("Query complete.", res.data);
         SeismoData.files = res.data.files;
         SeismoData.stationStatuses = res.data.stations;
         SeismoStationMap.updateBounds();
         PieOverlay.renderStatuses();
+        Loading.stop();
       });
     };
 

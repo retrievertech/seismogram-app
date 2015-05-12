@@ -16,11 +16,12 @@ var IntersectionCircle = L.CircleMarker.extend({
 });
 
 class SeismoImageMap {
-  
-  constructor($http, $q, SeismoServer) {
+
+  constructor($http, $q, SeismoServer, Loading) {
     var map = window.imageMap = this;
 
-    this.server = SeismoServer;
+    this.SeismoServer = SeismoServer;
+    this.Loading = Loading;
     this.http = $http;
     this.q = $q;
     this.leafletMap = null;
@@ -110,7 +111,7 @@ class SeismoImageMap {
       var zoom = leafletMap.getZoom();
       circles.forEach((circle) => circle.updateRadius(zoom));
     });
-    
+
     leafletMap.setView(new L.LatLng(2000, 7000), 2);
   }
 
@@ -136,7 +137,7 @@ class SeismoImageMap {
 
   loadImage(imagename) {
     var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04/";
-    var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
+    var url = this.SeismoServer.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
 
     // lazy initialization
     if (!this.imageLayer) {
@@ -145,6 +146,8 @@ class SeismoImageMap {
     } else {
       this.imageLayer.setUrl(url);
     }
+
+    this.Loading.start("Loading metadata...");
 
     // remove metadata layers from the map if any
     this.metadataLayers.forEach((layer) => {
@@ -170,6 +173,8 @@ class SeismoImageMap {
           this.leafletMap.addLayer(layer.leafletLayer);
         }
       });
+
+      this.Loading.stop();
     });
   }
 
