@@ -1,6 +1,8 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap, SeismoImageMap, SeismoQuery, SeismoServer, SeismoData, PieOverlay, Loading) {
+  constructor($scope, $http, SeismoStationMap,
+    SeismoImageMap, SeismoQuery, SeismoServer,
+    SeismoData, SeismoEditor, PieOverlay, Loading) {
     // debug
     //window.SeismoStationMap = SeismoStationMap;
     //window.SeismoImageMap = SeismoImageMap;
@@ -10,6 +12,7 @@ class SeismoMain {
     $scope.SeismoStationMap = SeismoStationMap;
     $scope.SeismoImageMap = SeismoImageMap;
     $scope.SeismoData = SeismoData;
+    $scope.SeismoEditor = SeismoEditor;
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
     $scope.$http = $http;
@@ -29,6 +32,7 @@ class SeismoMain {
     };
 
     $scope.exitEditing = () => {
+      SeismoEditor.stopEditing();
       $scope.editing = false;
     };
 

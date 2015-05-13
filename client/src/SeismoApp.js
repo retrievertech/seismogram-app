@@ -17,12 +17,12 @@ import { MapLink } from "./map/MapLink.dir.js";
 
 angular.module("SeismoApp", [])
   .controller("SeismoMain", SeismoMain)
-  .controller("SeismoEditor", SeismoEditor)
   .service("SeismoStationMap", SeismoStationMap)
   .service("SeismoImageMap", SeismoImageMap)
   .service("SeismoQuery", SeismoQuery)
   .service("SeismoServer", SeismoServer)
   .service("SeismoData", SeismoData)
+  .service("SeismoEditor", SeismoEditor)
   .service("PieOverlay", PieOverlay)
   .service("Loading", Loading)
   .directive("seismoTimeNubbin", SeismoTimeNubbin)
