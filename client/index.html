@@ -83,7 +83,7 @@
       <div class="seismo-list">
         <div class="seismo-list-item"
              ng-repeat="file in SeismoData.files"
-             ng-class="{'active' : file == SeismogramImageMap.currentFile }"
+             ng-class="{'active' : file == SeismoImageMap.currentFile }"
              ng-click="viewSeismogram(file)">
           {{ SeismoData.formatDate(file) }}<br/>
           {{ SeismoData.stationLocation(file) }}<br/>
