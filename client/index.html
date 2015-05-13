@@ -13,6 +13,7 @@
     <script type="text/javascript" src="bower_components/leaflet.editable/src/Leaflet.Editable.js"></script>
     <script type="text/javascript" src="bower_components/less/dist/less.js"></script>
     <script type="text/javascript" src="bower_components/d3/d3.js"></script>
+    <script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
     <script type="module">import "src/SeismoApp.js"</script>
   </head>
   <body ng-controller="SeismoMain" ng-cloak>
@@ -25,10 +26,23 @@
         </div>
         <div ng-show="imageMapVisible">
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
+
           <div class="image-map-controls" ng-hide="editing">
             <div ng-click="hideImageMap()">Back to map</div>
+
+            <div ng-click="startProcessing()"
+                 ng-show="!Loading.loading && canProcess()">
+              Start Processing
+            </div>
+
+            <div class="disabled-button" ng-show="isProcessing()">
+              Processing...
+            </div>
+
             <div ng-click="startEditing()"
-                 ng-hide="Loading.loading">Edit this seismogram</div>
+                 ng-show="!Loading.loading && canEdit()">
+              Edit this seismogram
+            </div>
           </div>
 
           <div class="image-map-controls" ng-show="editing">
@@ -39,7 +53,7 @@
 
           <div class="image-map-layers"
                ng-class="{'while-editing': editing}"
-               ng-hide="Loading.loading">
+               ng-show="!Loading.loading && canEdit()">
             <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
               <div class="layer-button"
                    ng-class="{'active': ml.on}"
@@ -49,7 +63,9 @@
               <div class="edit-button"
                    ng-show="editing"
                    ng-class="{'active': SeismoEditor.layerBeingEdited == ml}"
-                   ng-click="SeismoEditor.startEditingLayer(ml)">Edit</div>
+                   ng-click="SeismoEditor.startEditingLayer(ml)">
+                Edit
+              </div>
             </div>
           </div>
 
@@ -66,7 +82,10 @@
 
     <div id="right-section" ng-hide="editing">
       <div class="seismo-list">
-        <div class="seismo-list-item" ng-repeat="file in SeismoData.files" ng-click="viewSeismogram(file)">
+        <div class="seismo-list-item"
+             ng-repeat="file in SeismoData.files"
+             ng-class="{'active' : file == SeismoImageMap.currentFile }"
+             ng-click="viewSeismogram(file)">
           {{ SeismoData.formatDate(file) }}<br/>
           {{ SeismoData.stationLocation(file) }}<br/>
           {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}
