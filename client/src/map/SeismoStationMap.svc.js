@@ -4,14 +4,13 @@ var L = window.L;
 
 class SeismoStationMap {
 
-  constructor($q, SeismoData) {
+  constructor(SeismoData, PieOverlay) {
     this.SeismoData = SeismoData;
+    this.PieOverlay = PieOverlay;
 
     this.map = null;
     this.leafletMap = null;
     this.pies = [];
-
-    this.deferred = $q.defer();
   }
 
   init(id) {
@@ -36,7 +35,7 @@ class SeismoStationMap {
       })
     });
 
-    this.deferred.resolve();
+    this.PieOverlay.init(this.leafletMap);
   }
 
   updateBounds() {
