@@ -19,10 +19,10 @@
     <div id="left-section">
       <div class="maps">
         <div ng-hide="imageMapVisible">
-          <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap"></div>
+          <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="imageMapVisible"></div>
         </div>
         <div ng-show="imageMapVisible">
-          <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
+          <div id="image-map" class="leaflet-map" map-link="SeismoImageMap" view-reset="[editing, imageMapVisible]"></div>
           <div class="image-map-controls" ng-hide="editing">
             <div ng-click="hideImageMap()">Back to map</div>
             <div ng-click="startEditing()">Edit this seismogram</div>
