@@ -6,6 +6,7 @@ class SeismoServer {
     this.stationsUrl = this.url + "/query/stations";
     this.tilesUrl = this.url + "/tiles";
     this.loadfileUrl = this.tilesUrl + "/loadfile";
+    this.processingUrl = this.url + "/processing/start";
   }
 }
 

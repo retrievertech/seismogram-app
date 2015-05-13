@@ -16,14 +16,16 @@ var IntersectionCircle = L.CircleMarker.extend({
 });
 
 class SeismoImageMap {
-  
-  constructor($http, $q, SeismoServer) {
+
+  constructor($http, $q, SeismoServer, Loading) {
     var map = window.imageMap = this;
 
-    this.server = SeismoServer;
+    this.SeismoServer = SeismoServer;
+    this.Loading = Loading;
     this.http = $http;
     this.q = $q;
     this.leafletMap = null;
+    this.currentFile = null;
     this.metadataLayers = [
       {
         name: "Region of Interest",
@@ -110,7 +112,7 @@ class SeismoImageMap {
       var zoom = leafletMap.getZoom();
       circles.forEach((circle) => circle.updateRadius(zoom));
     });
-    
+
     leafletMap.setView(new L.LatLng(2000, 7000), 2);
   }
 
@@ -134,9 +136,11 @@ class SeismoImageMap {
     layer.leafletLayer.addData(JSON.parse(layer.originalData));
   }
 
-  loadImage(imagename) {
-    var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04/";
-    var url = this.server.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
+  loadImage(file) {
+    this.currentFile = file;
+
+    var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/" + file.name + "/";
+    var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
     // lazy initialization
     if (!this.imageLayer) {
@@ -152,6 +156,13 @@ class SeismoImageMap {
         this.leafletMap.removeLayer(layer.leafletLayer);
       }
     });
+
+    if (file.status !== 3) {
+      // nothing to load
+      return;
+    }
+
+    this.Loading.start("Loading metadata...");
 
     // load the data and recreate the layers
     var promises = this.metadataLayers.map((layer) => {
@@ -170,6 +181,8 @@ class SeismoImageMap {
           this.leafletMap.addLayer(layer.leafletLayer);
         }
       });
+
+      this.Loading.stop();
     });
   }
 

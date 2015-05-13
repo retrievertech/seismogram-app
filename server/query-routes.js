@@ -2,25 +2,10 @@ var express = require("express");
 var router = express.Router();
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
+var queryCache = require("./query-cache");
 
 var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
-};
-
-var cache = {
-  on: true,
-  cache: {},
-  key: function(query) {
-    return ["dateFrom", "dateTo", "status", "edited", "stationIds", "page"]
-      .map(function(field) { return query[field]; }).join("_");
-  },
-  hit: function(query) {
-    return this.on ? this.cache[this.key(query)] : null;
-  },
-  put: function(query, payload) {
-    var key = this.key(query);
-    this.cache[key] = payload;
-  }
 };
 
 router.get("/stations", function(req, res, next) {
@@ -41,7 +26,7 @@ router.get("/stations", function(req, res, next) {
 
 router.get("/files", function(req, res, next) {
   console.log("--- processing files query ---", req.query);
-  var hit = cache.hit(req.query);
+  var hit = queryCache.hit(req.query);
   if (hit) {
     console.log("result is cached");
     res.send(hit);
@@ -161,7 +146,7 @@ router.get("/files", function(req, res, next) {
             numResults: numResults,
             files: filteredFiles
           };
-          cache.put(req.query, payload);
+          queryCache.put(req.query, payload);
           res.send(payload);
           db.close();
           cb(null);

@@ -1,9 +1,26 @@
+var L = window.L;
+var io = window.io;
+
 class SeismoData {
 
-  constructor() {
+  constructor($timeout, SeismoServer, SeismoImageMap) {
     this.files = [];
     this.stationStatuses = {};
     this.stations = [];
+
+    io(SeismoServer.url).on("status-update", (obj) => {
+      console.log("status-update", obj);
+      this.files.forEach((file) => {
+        if (file.name === obj.filename) {
+          $timeout(() => {
+            file.status = obj.status;
+            if (file.status === 3 && file === SeismoImageMap.currentFile) {
+              SeismoImageMap.loadImage(file);
+            }
+          });
+        }
+      });
+    });
   }
 
   resultsBBox() {
@@ -48,10 +65,18 @@ class SeismoData {
     return station.location;
   }
 
-  seismoType(file) {
+  isLongPeriod(file) {
     var type = parseInt(file.type);
+    return type >= 4 && type <= 6;
+  }
 
-    if (type >= 1 && type <= 3) {
+  isShortPriod(file) {
+    var type = parseInt(file.type);
+    return type >= 1 && type <= 3;
+  }
+
+  seismoType(file) {
+    if (this.isLongPeriod(file)) {
       return "Long-period";
     } else {
       return "Short-period";
