@@ -4,6 +4,7 @@ var async = require("async");
 var exec = require("child_process").exec;
 var diskCache = require("./disk-cache");
 var queryCache = require("./query-cache");
+var statusSocket = require("./status-socket");
 
 var pipelinePath = __dirname + "/../../seismogram-pipeline";
 
@@ -48,6 +49,11 @@ router.get("/setstatus/:filename/:status", function(req, res, next) {
       db.close();
 
       if (result === 1) {
+        statusSocket.broadcast("status-update", {
+          filename: req.params.filename,
+          status: status
+        });
+
         // update was successful
         // update the cached queries
         queryCache.forEachFile(function(file) {
