@@ -1,6 +1,6 @@
 var router = require("express").Router();
 var Tiler = require("./tiler");
-var cache = require("./cache");
+var imageCache = require("./image-cache");
 var diskCache = require("./disk-cache");
 
 var tiler = new Tiler();
@@ -17,7 +17,7 @@ router.get("/:filename/:z/:x/:y.png", function(req, res) {
         y = req.params.y,
         tile;
 
-    var img = cache.hit(filename);
+    var img = imageCache.hit(filename);
 
     console.time("makeTile");
     tile = tiler.createTile(img, z, x, y);
