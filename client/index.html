@@ -13,6 +13,7 @@
     <script type="text/javascript" src="bower_components/leaflet.editable/src/Leaflet.Editable.js"></script>
     <script type="text/javascript" src="bower_components/less/dist/less.js"></script>
     <script type="text/javascript" src="bower_components/d3/d3.js"></script>
+    <script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
     <script type="module">import "src/SeismoApp.js"</script>
   </head>
   <body ng-controller="SeismoMain" ng-cloak>
@@ -26,6 +27,7 @@
         <div ng-show="imageMapVisible">
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
           <div class="image-map-controls" ng-hide="editing">
+            <div>Status: {{SeismoImageMap.currentFile.status}}</div>
             <div ng-click="hideImageMap()">Back to map</div>
             <div ng-click="startEditing()"
                  ng-hide="Loading.loading">Edit this seismogram</div>

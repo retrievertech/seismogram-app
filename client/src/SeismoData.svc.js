@@ -1,9 +1,21 @@
+var L = window.L;
+var io = window.io;
+
 class SeismoData {
 
-  constructor() {
+  constructor($timeout, SeismoServer) {
     this.files = [];
     this.stationStatuses = {};
     this.stations = [];
+
+    io(SeismoServer.url).on("status-update", (obj) => {
+      console.log("status-update", obj);
+      this.files.forEach((file) => {
+        if (file.name === obj.filename) {
+          $timeout(() => file.status = obj.status);
+        }
+      });
+    });
   }
 
   resultsBBox() {

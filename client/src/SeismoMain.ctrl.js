@@ -19,7 +19,7 @@ class SeismoMain {
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
-      SeismoImageMap.loadImage(file.name);
+      SeismoImageMap.loadImage(file);
     };
 
     $scope.editing = false;

@@ -25,6 +25,7 @@ class SeismoImageMap {
     this.http = $http;
     this.q = $q;
     this.leafletMap = null;
+    this.currentFile = null;
     this.metadataLayers = [
       {
         name: "Region of Interest",
@@ -135,9 +136,11 @@ class SeismoImageMap {
     layer.leafletLayer.addData(JSON.parse(layer.originalData));
   }
 
-  loadImage(imagename) {
+  loadImage(file) {
+    this.currentFile = file;
+
     var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04.png/";
-    var url = this.SeismoServer.tilesUrl + "/" + imagename + "/{z}/{x}/{y}.png";
+    var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
     // lazy initialization
     if (!this.imageLayer) {
