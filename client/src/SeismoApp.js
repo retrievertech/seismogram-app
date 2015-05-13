@@ -12,7 +12,7 @@ import { Loading } from "./Loading.svc.js";
 import { SeismoTimeNubbin } from "./seismo-query-nubbins/SeismoTimeNubbin.dir.js";
 import { SeismoQueryNubbins } from "./seismo-query-nubbins/SeismoQueryNubbins.dir.js";
 import { SeismoData } from "./SeismoData.svc.js";
-import { SeismoEditor } from "./SeismoEditor.ctrl.js";
+import { SeismoEditor } from "./SeismoEditor.svc.js";
 import { MapLink } from "./map/MapLink.dir.js";
 
 angular.module("SeismoApp", [])
