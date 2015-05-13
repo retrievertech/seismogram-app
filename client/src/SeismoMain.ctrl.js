@@ -22,6 +22,11 @@ class SeismoMain {
       SeismoImageMap.loadImage(file);
     };
 
+    $scope.startProcessing = () => {
+      var file = SeismoImageMap.currentFile;
+      $http({ url: SeismoServer.processingUrl + "/" + file.name });
+    };
+
     $scope.editing = false;
     $scope.layerBeingEdited = null;
 

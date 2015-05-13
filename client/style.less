@@ -110,6 +110,11 @@ html {
           z-index: 25;
           div {
             .button;
+            &.disabled-button {
+              background-color: #eee;
+              font-style: italic;
+              cursor: wait;
+            }
           }
         }
 
@@ -187,6 +192,9 @@ html {
             font-size: 10px;
             margin-top: 10px;
             color: #888;
+          }
+          &.active {
+            background: #add6ff;
           }
         }
       }

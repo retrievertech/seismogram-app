@@ -26,11 +26,23 @@
         </div>
         <div ng-show="imageMapVisible">
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap"></div>
+
           <div class="image-map-controls" ng-hide="editing">
-            <div>Status: {{SeismoImageMap.currentFile.status}}</div>
             <div ng-click="hideImageMap()">Back to map</div>
+
+            <div ng-click="startProcessing()"
+                 ng-hide="Loading.loading || SeismoImageMap.currentFile.status != 0">
+              Start Processing
+            </div>
+
+            <div class="disabled-button" ng-show="SeismoImageMap.currentFile.status == 1">
+              Processing...
+            </div>
+
             <div ng-click="startEditing()"
-                 ng-hide="Loading.loading">Edit this seismogram</div>
+                 ng-hide="Loading.loading || SeismoImageMap.currentFile.status != 3">
+              Edit this seismogram
+            </div>
           </div>
 
           <div class="image-map-controls" ng-show="editing">
@@ -41,7 +53,7 @@
 
           <div class="image-map-layers"
                ng-class="{'while-editing': editing}"
-               ng-hide="Loading.loading">
+               ng-hide="Loading.loading || SeismoImageMap.currentFile.status != 3">
             <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
               <div class="layer-button"
                    ng-class="{'active': ml.on}"
@@ -51,7 +63,9 @@
               <div class="edit-button"
                    ng-show="editing"
                    ng-class="{'active': layerBeingEdited == ml}"
-                   ng-click="startEditingLayer(ml)">Edit</div>
+                   ng-click="startEditingLayer(ml)">
+                Edit
+              </div>
             </div>
           </div>
         </div>
@@ -67,7 +81,10 @@
 
     <div id="right-section" ng-hide="editing">
       <div class="seismo-list">
-        <div class="seismo-list-item" ng-repeat="file in SeismoData.files" ng-click="viewSeismogram(file)">
+        <div class="seismo-list-item"
+             ng-repeat="file in SeismoData.files"
+             ng-class="{'active' : file == SeismogramImageMap.currentFile }"
+             ng-click="viewSeismogram(file)">
           {{ SeismoData.formatDate(file) }}<br/>
           {{ SeismoData.stationLocation(file) }}<br/>
           {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}

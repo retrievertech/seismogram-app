@@ -139,7 +139,7 @@ class SeismoImageMap {
   loadImage(file) {
     this.currentFile = file;
 
-    var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/010162_1742_0007_04.png/";
+    var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/" + file.name + "/";
     var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
     // lazy initialization
@@ -150,14 +150,19 @@ class SeismoImageMap {
       this.imageLayer.setUrl(url);
     }
 
-    this.Loading.start("Loading metadata...");
-
     // remove metadata layers from the map if any
     this.metadataLayers.forEach((layer) => {
       if (this.leafletMap.hasLayer(layer.leafletLayer)) {
         this.leafletMap.removeLayer(layer.leafletLayer);
       }
     });
+
+    if (file.status !== 3) {
+      // nothing to load
+      return;
+    }
+
+    this.Loading.start("Loading metadata...");
 
     // load the data and recreate the layers
     var promises = this.metadataLayers.map((layer) => {
