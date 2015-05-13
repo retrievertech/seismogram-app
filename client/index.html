@@ -31,16 +31,16 @@
             <div ng-click="hideImageMap()">Back to map</div>
 
             <div ng-click="startProcessing()"
-                 ng-hide="Loading.loading || SeismoImageMap.currentFile.status != 0">
+                 ng-show="!Loading.loading && canProcess()">
               Start Processing
             </div>
 
-            <div class="disabled-button" ng-show="SeismoImageMap.currentFile.status == 1">
+            <div class="disabled-button" ng-show="isProcessing()">
               Processing...
             </div>
 
             <div ng-click="startEditing()"
-                 ng-hide="Loading.loading || SeismoImageMap.currentFile.status != 3">
+                 ng-show="!Loading.loading && canEdit()">
               Edit this seismogram
             </div>
           </div>
@@ -53,7 +53,7 @@
 
           <div class="image-map-layers"
                ng-class="{'while-editing': editing}"
-               ng-hide="Loading.loading || SeismoImageMap.currentFile.status != 3">
+               ng-show="!Loading.loading && canEdit()">
             <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
               <div class="layer-button"
                    ng-class="{'active': ml.on}"

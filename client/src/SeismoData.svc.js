@@ -65,10 +65,18 @@ class SeismoData {
     return station.location;
   }
 
-  seismoType(file) {
+  isLongPeriod(file) {
     var type = parseInt(file.type);
+    return type >= 4 && type <= 6;
+  }
 
-    if (type >= 1 && type <= 3) {
+  isShortPriod(file) {
+    var type = parseInt(file.type);
+    return type >= 1 && type <= 3;
+  }
+
+  seismoType(file) {
+    if (this.isLongPeriod(file)) {
       return "Long-period";
     } else {
       return "Short-period";

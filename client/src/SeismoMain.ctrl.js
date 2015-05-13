@@ -27,6 +27,21 @@ class SeismoMain {
       $http({ url: SeismoServer.processingUrl + "/" + file.name });
     };
 
+    $scope.isProcessing = () => {
+      var file = SeismoImageMap.currentFile;
+      return file && file.status === 1;
+    };
+
+    $scope.canProcess = () => {
+      var file = SeismoImageMap.currentFile;
+      return file && SeismoData.isLongPeriod(file) && file.status === 0;
+    };
+
+    $scope.canEdit = () => {
+      var file = SeismoImageMap.currentFile;
+      return file && file.status === 3;
+    };
+
     $scope.editing = false;
     $scope.layerBeingEdited = null;
 
