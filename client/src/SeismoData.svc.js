@@ -3,7 +3,7 @@ var io = window.io;
 
 class SeismoData {
 
-  constructor($timeout, SeismoServer) {
+  constructor($timeout, SeismoServer, SeismoImageMap) {
     this.files = [];
     this.stationStatuses = {};
     this.stations = [];
@@ -12,7 +12,12 @@ class SeismoData {
       console.log("status-update", obj);
       this.files.forEach((file) => {
         if (file.name === obj.filename) {
-          $timeout(() => file.status = obj.status);
+          $timeout(() => {
+            file.status = obj.status;
+            if (file.status === 3 && file === SeismoImageMap.currentFile) {
+              SeismoImageMap.loadImage(file);
+            }
+          });
         }
       });
     });
