@@ -24,21 +24,19 @@ router.get("/start/:filename", function(req, res) {
 
     exec("sh get_all_metadata_s3.sh " + filename + " " + path, function(err) {
       if (err) {
-        console.log("script run failure", err);
+        console.log("processing error", err);
+        setStatus(filename, 0);
       }
     });
   });
 });
 
-router.get("/setstatus/:filename/:status", function(req, res, next) {
-  var status = parseInt(req.params.status);
-  console.log("set status", req.params.filename, status);
-
+function setStatus(filename, status, callback) {
   async.waterfall([
     connect,
     function(db, cb) {
       db.collection("files").update({
-        name: req.params.filename
+        name: filename
       }, {
         $set: { status: status }
       }, function(err, result) {
@@ -50,23 +48,35 @@ router.get("/setstatus/:filename/:status", function(req, res, next) {
 
       if (result === 1) {
         statusSocket.broadcast("status-update", {
-          filename: req.params.filename,
+          filename: filename,
           status: status
         });
 
         // update was successful
         // update the cached queries
         queryCache.forEachFile(function(file) {
-          if (file.name === req.params.filename) {
+          if (file.name === filename) {
             file.status = status;
           }
         });
       }
 
-      res.send({ ok: result });
+      if (typeof callback === "function")
+        callback(null, result);
     }
   ], function(err) {
+    if (typeof callback === "function")
+      callback(err);
+  });
+}
+
+router.get("/setstatus/:filename/:status", function(req, res, next) {
+  var status = parseInt(req.params.status);
+  var filename = req.params.filename;
+
+  setStatus(filename, status, function(err, result) {
     if (err) next(err);
+    else res.send({ ok: result });
   });
 });
 
