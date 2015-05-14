@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
-var HistogramTool = require("./histogram");
+var HistogramTool = require("./HistogramTool");
 var queryCache = require("./query-cache");
 
 var connect = function(cb) {
