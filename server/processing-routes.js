@@ -22,7 +22,13 @@ router.get("/start/:filename", function(req, res) {
   diskCache.ensureFileIsLocal(filename, function() {
     process.chdir(pipelinePath);
 
-    exec("sh get_all_metadata_s3.sh " + filename + " " + path, function(err) {
+    var command = "sh get_all_metadata_s3.sh " + filename + " " + path;
+
+    if (process.env.NODE_ENV !== "production") {
+      command += " dev";
+    }
+
+    exec(command, function(err) {
       if (err) {
         console.log("processing error", err);
         setStatus(filename, 0);
