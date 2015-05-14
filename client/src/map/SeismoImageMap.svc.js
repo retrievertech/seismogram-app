@@ -28,6 +28,7 @@ class SeismoImageMap {
     this.$timeout = $timeout;
     this.leafletMap = null;
     this.currentFile = null;
+    this.imageIsLoaded = false;
     this.metadataLayers = [
       {
         name: "Region of Interest",
@@ -140,6 +141,7 @@ class SeismoImageMap {
 
   loadImage(file) {
     this.currentFile = file;
+    this.imageIsLoaded = false;
 
     var s3Prefix;
     if (this.$location.host() === "localhost") {
@@ -163,7 +165,10 @@ class SeismoImageMap {
     this.Loading.start("Loading image...");
 
     this.imageLayer.on("load", () => {
-      this.$timeout(() => this.Loading.stop("Loading image..."));
+      this.$timeout(() => {
+        this.imageIsLoaded = true;
+        this.Loading.stop("Loading image...");
+      });
     });
 
     // remove metadata layers from the map if any

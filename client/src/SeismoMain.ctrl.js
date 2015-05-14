@@ -37,7 +37,7 @@ class SeismoMain {
 
     $scope.canProcess = () => {
       var file = SeismoImageMap.currentFile;
-      return file && SeismoData.isLongPeriod(file) && file.status === 0;
+      return file && SeismoData.isLongPeriod(file) && SeismoImageMap.imageIsLoaded && file.status === 0;
     };
 
     $scope.canEdit = () => {
