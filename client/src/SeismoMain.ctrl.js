@@ -74,7 +74,7 @@ class SeismoMain {
         SeismoData.stationStatuses = res.data.stations;
         SeismoStationMap.updateBounds();
         PieOverlay.renderStatuses();
-        Loading.stop();
+        Loading.stop("Loading results...");
       });
     };
   }

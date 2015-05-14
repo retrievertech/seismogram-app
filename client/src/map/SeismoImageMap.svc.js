@@ -17,7 +17,7 @@ var IntersectionCircle = L.CircleMarker.extend({
 
 class SeismoImageMap {
 
-  constructor($location, $http, $q, SeismoServer, Loading) {
+  constructor($timeout, $location, $http, $q, SeismoServer, Loading) {
     var map = window.imageMap = this;
 
     this.SeismoServer = SeismoServer;
@@ -25,6 +25,7 @@ class SeismoImageMap {
     this.$http = $http;
     this.$location = $location;
     this.$q = $q;
+    this.$timeout = $timeout;
     this.leafletMap = null;
     this.currentFile = null;
     this.metadataLayers = [
@@ -159,6 +160,12 @@ class SeismoImageMap {
       this.imageLayer.setUrl(url);
     }
 
+    this.Loading.start("Loading image...");
+
+    this.imageLayer.on("load", () => {
+      this.$timeout(() => this.Loading.stop("Loading image..."));
+    });
+
     // remove metadata layers from the map if any
     this.metadataLayers.forEach((layer) => {
       if (this.leafletMap.hasLayer(layer.leafletLayer)) {
@@ -191,7 +198,7 @@ class SeismoImageMap {
         }
       });
 
-      this.Loading.stop();
+      this.Loading.stop("Loading metadata...");
     });
   }
 
