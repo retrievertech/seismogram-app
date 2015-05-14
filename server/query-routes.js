@@ -126,7 +126,29 @@ router.get("/files", function(req, res, next) {
     },
     function(db, fileCursor, filteredFiles, numResults, lowDate, highDate, cb) {
       console.time("processing");
+
       var stationMap = {};
+      var histogram = {};
+
+      var setHistogram = function(year, month, day) {
+        var week;
+
+        if (day < 7) week = 0;
+        else if (day >= 7 && day < 14) week = 1;
+        else if (day >= 14 && day < 21) week = 2;
+        else week = 3;
+
+        if (!(year in histogram)) {
+          histogram[year] = {};
+        }
+
+        if (!histogram[year][month]) {
+          histogram[year][month] = [0, 0, 0, 0];
+        }
+
+        histogram[year][month][week]++;
+      };
+
       var getStation = function(id) {
         if (!(id in stationMap)) {
           stationMap[id] = {
@@ -136,25 +158,41 @@ router.get("/files", function(req, res, next) {
         }
         return stationMap[id];
       };
+
       fileCursor.each(function(err, file) {
         if (file === null) {
           console.timeEnd("processing");
+
           var payload = {
             stations: stationMap,
             lowDate: lowDate,
             highDate: highDate,
             numResults: numResults,
+            histogram: histogram,
             files: filteredFiles
           };
+
           queryCache.put(req.query, payload);
           res.send(payload);
           db.close();
           cb(null);
         } else {
           var station = getStation(file.stationId);
-          if (!station) console.error(file.stationId, "does not exist");
+
+          if (!station) {
+            console.error(file.stationId, "does not exist");
+            return;
+          }
+
           station.status[file.status]++;
           station.edited += +file.edited;
+
+          var date = new Date(file.date);
+          var year = date.getUTCFullYear();
+          var month = date.getUTCMonth();
+          var day = date.getUTCDate();
+
+          setHistogram(year, month, day);
         }
       });
 
