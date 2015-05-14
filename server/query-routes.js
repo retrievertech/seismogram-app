@@ -2,11 +2,45 @@ var express = require("express");
 var router = express.Router();
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
+var HistogramTool = require("./histogram");
 var queryCache = require("./query-cache");
 
 var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
+
+var numBins = 2000, histogramTool;
+
+function prepareHistogramTool() {
+  async.waterfall([
+    connect,
+    function(db, cb) {
+      db.collection("files").find()
+        .sort({date: 1})
+        .limit(1)
+        .toArray(function(err, files) {
+          var lowDate = files[0].date;
+          cb(err, db, lowDate);
+        });
+    },
+    function(db, lowDate, cb) {
+      db.collection("files").find()
+        .sort({date: -1})
+        .limit(1)
+        .toArray(function(err, files) {
+          var highDate = files[0].date;
+          cb(err, db, lowDate, highDate);
+        });
+    },
+    function(db, lowDate, highDate, cb) {
+      histogramTool = new HistogramTool(numBins, lowDate, highDate);
+      db.close();
+    }
+  ], function(err) {
+    if (err) console.error(err);
+  });
+}
+prepareHistogramTool();
 
 router.get("/stations", function(req, res, next) {
   async.waterfall([
@@ -128,26 +162,8 @@ router.get("/files", function(req, res, next) {
       console.time("processing");
 
       var stationMap = {};
-      var histogram = {};
-
-      var setHistogram = function(year, month, day) {
-        var week;
-
-        if (day < 7) week = 0;
-        else if (day >= 7 && day < 14) week = 1;
-        else if (day >= 14 && day < 21) week = 2;
-        else week = 3;
-
-        if (!(year in histogram)) {
-          histogram[year] = {};
-        }
-
-        if (!histogram[year][month]) {
-          histogram[year][month] = [0, 0, 0, 0];
-        }
-
-        histogram[year][month][week]++;
-      };
+      var histogram = [];
+      for (var i = 0; i < numBins; i++) { histogram.push(0); }
 
       var getStation = function(id) {
         if (!(id in stationMap)) {
@@ -169,6 +185,7 @@ router.get("/files", function(req, res, next) {
             highDate: highDate,
             numResults: numResults,
             histogram: histogram,
+            binBoundaries: histogramTool.binBoundaries,
             files: filteredFiles
           };
 
@@ -188,11 +205,8 @@ router.get("/files", function(req, res, next) {
           station.edited += +file.edited;
 
           var date = new Date(file.date);
-          var year = date.getUTCFullYear();
-          var month = date.getUTCMonth();
-          var day = date.getUTCDate();
 
-          setHistogram(year, month, day);
+          histogram[histogramTool.getBinIdx(date)]++;
         }
       });
 
