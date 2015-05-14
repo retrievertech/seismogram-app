@@ -7,8 +7,7 @@ class MapLink {
       },
       link: (scope, element, attrs) => {
         scope.mapLink.init(attrs.id);
-        scope.$watch("viewReset", (val) => {
-          console.log(val);
+        scope.$watch("viewReset", () => {
           $timeout(() => scope.mapLink.leafletMap.invalidateSize());
         });
       }
