@@ -1,17 +1,15 @@
 class MapLink {
   constructor($timeout) {
     return {
+      scope: {
+        mapLink: "=", // call this object's init function when the directive links
+        viewReset: "=" // whenever this object changes, invalidate map size
+      },
       link: (scope, element, attrs) => {
-        var mapService = scope[attrs.mapLink];
-        mapService.init(attrs.id);
-
-        if (attrs.mapLink === "SeismoImageMap") {
-          scope.$watch("editing", (val, oldVal) => {
-            if (val !== oldVal) {
-              $timeout(() => mapService.leafletMap.invalidateSize());
-            }
-          });
-        }
+        scope.mapLink.init(attrs.id);
+        scope.$watch("viewReset", () => {
+          $timeout(() => scope.mapLink.leafletMap.invalidateSize());
+        });
       }
     };
   }
