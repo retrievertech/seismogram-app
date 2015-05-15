@@ -162,7 +162,7 @@ router.get("/files", function(req, res, next) {
       console.time("processing");
 
       var stationMap = {};
-      var histogram = [];
+      var histogram = {};
       for (var i = 0; i < numBins; i++) { histogram.push(0); }
 
       var getStation = function(id) {
