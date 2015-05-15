@@ -1,13 +1,16 @@
 var d3 = require("d3");
 
-function HistogramTool(numBins, lowDate, highDate) {
+function HistogramTool(lowDate, highDate) {
   this.lowDate = lowDate;
   this.highDate = highDate;
+}
+
+HistogramTool.prototype.setNumBins = function(numBins) {
   this.numBins = numBins;
   this.binBoundaries = [];
   
   var timeScale = d3.time.scale.utc()
-    .domain([lowDate, highDate])
+    .domain([this.lowDate, this.highDate])
     .range([0, numBins]);
 
   for (var i = 0; i < numBins+1; i++) {
