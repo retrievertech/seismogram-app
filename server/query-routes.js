@@ -166,7 +166,6 @@ router.get("/files", function(req, res, next) {
 
       var stationMap = {};
       var histogram = {};
-      for (var i = 0; i < numBins; i++) { histogram.push(0); }
 
       var getStation = function(id) {
         if (!(id in stationMap)) {
@@ -206,9 +205,14 @@ router.get("/files", function(req, res, next) {
           station.status[file.status]++;
           station.edited += +file.edited;
 
-          var date = new Date(file.date);
+          var date = new Date(file.date),
+              binIdx = histogramTool.getBinIdx(date);
+          
+          if (!(binIdx in histogram)) {
+            histogram[binIdx] = 0;
+          }
 
-          histogram[histogramTool.getBinIdx(date)]++;
+          histogram[binIdx]++;
         }
       });
 
