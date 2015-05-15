@@ -22,7 +22,8 @@ class SeismoQuery {
     //   stationIds: [],
     //   status: [0, 1, 2, 3], // 0: not started; 1: ongoing; 2: needs attention; 3: complete
     //   edited: null, // True if you want only seismograms you've edited
-    //   page: 0 // each page returns 40 results
+    //   page: 0, // each page returns 40 results
+    //   bins: 2000 // number of bins in which to histogram the results
     // }
 
     var stationNames = queryParamModel.stationNames
@@ -59,7 +60,8 @@ class SeismoQuery {
       dateTo: new Date(queryParamModel.dateTo),
       stationIds: stationIds.join(","),
       status: status.join(","),
-      edited: queryParamModel.editedByMe
+      edited: queryParamModel.editedByMe,
+      bins: 2000
     };
 
     return query;
