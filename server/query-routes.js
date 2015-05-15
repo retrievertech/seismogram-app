@@ -9,8 +9,7 @@ var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
 
-var numBins = 2000, histogramTool;
-
+var histogramTool;
 function prepareHistogramTool() {
   async.waterfall([
     connect,
@@ -33,7 +32,7 @@ function prepareHistogramTool() {
         });
     },
     function(db, lowDate, highDate, cb) {
-      histogramTool = new HistogramTool(numBins, lowDate, highDate);
+      histogramTool = new HistogramTool(lowDate, highDate);
       db.close();
     }
   ], function(err) {
@@ -92,6 +91,10 @@ router.get("/files", function(req, res, next) {
       return acc;
     }, []);
   }
+
+  // prepare histogramTool for binning
+  var numBins = parseInt(req.query.bins) || 2000;
+  histogramTool.setNumBins(numBins);
 
   // build the query.
   // queryComponents is a list of clauses that will be $and-ed together
@@ -185,7 +188,6 @@ router.get("/files", function(req, res, next) {
             highDate: highDate,
             numResults: numResults,
             histogram: histogram,
-            binBoundaries: histogramTool.binBoundaries,
             files: filteredFiles
           };
 
