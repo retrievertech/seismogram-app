@@ -1,5 +1,6 @@
 var fs = require("fs");
 var exec = require("child_process").exec;
+var escape = require("./util").escape;
 
 function localPath(filename) {
   return __dirname + "/local-file-cache/" + filename;
@@ -27,10 +28,10 @@ function ensureFileIsLocal(filename, cb) {
       // buffer subsequent requests.
       bufferedRequests[filename] = [];
 
-      var command = "aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + path;
+      var command = "aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + escape(path);
 
       if (process.env.NODE_ENV !== "production") {
-        command = "wget http://s3.amazonaws.com/WWSSN_Scans/" + filename + " -O " + path;
+        command = "wget http://s3.amazonaws.com/WWSSN_Scans/" + filename + " -O " + escape(path);
       }
 
       console.log(command);

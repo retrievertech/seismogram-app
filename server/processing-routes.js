@@ -5,6 +5,7 @@ var exec = require("child_process").exec;
 var diskCache = require("./disk-cache");
 var queryCache = require("./query-cache");
 var statusSocket = require("./status-socket");
+var escape = require("./util").escape;
 
 var pipelinePath = __dirname + "/../../seismogram-pipeline";
 
@@ -22,7 +23,7 @@ router.get("/start/:filename", function(req, res) {
   diskCache.ensureFileIsLocal(filename, function() {
     process.chdir(pipelinePath);
 
-    var command = "sh get_all_metadata_s3.sh " + filename + " " + path;
+    var command = "sh get_all_metadata_s3.sh " + filename + " " + escape(path);
 
     if (process.env.NODE_ENV !== "production") {
       command += " dev";
