@@ -127,7 +127,8 @@ class SeismoMain {
       inProgress: true,
       needsAttention: true,
       complete: true,
-      editedByMe: false
+      editedByMe: false,
+      bins: 200
     };
   }
 

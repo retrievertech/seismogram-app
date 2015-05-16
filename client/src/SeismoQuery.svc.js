@@ -61,7 +61,7 @@ class SeismoQuery {
       stationIds: stationIds.join(","),
       status: status.join(","),
       edited: queryParamModel.editedByMe,
-      bins: 200
+      bins: queryParamModel.bins
     };
 
     return query;
