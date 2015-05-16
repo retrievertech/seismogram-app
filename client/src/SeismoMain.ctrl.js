@@ -1,6 +1,6 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap,
+  constructor($scope, $http, $timeout, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
     SeismoData, SeismoEditor, SeismoHistogram,
     PieOverlay, Loading) {
@@ -18,6 +18,7 @@ class SeismoMain {
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
     $scope.$http = $http;
+    $scope.$timeout = $timeout;
 
     // initialize data models and perform initial query
     this.init($scope, SeismoServer);
@@ -79,12 +80,7 @@ class SeismoMain {
         SeismoStationMap.updateBounds();
         PieOverlay.renderStatuses();
 
-        var lowDate = new Date(res.data.lowDate),
-            highDate = new Date(res.data.highDate),
-            numBins = 200;
-
-        SeismoHistogram.setScale(lowDate, highDate, numBins);
-
+        var numBins = $scope.queryParamModel.bins;
         var histogramObject = res.data.histogram,
             histogramArray = [];
         for (var i = 0; i < numBins; i++) {
@@ -103,6 +99,12 @@ class SeismoMain {
 
   init($scope, SeismoServer) {
     this.initQueryParams($scope);
+
+    var lowDate = $scope.queryParamModel.dateFrom,
+        highDate = $scope.queryParamModel.dateTo,
+        numBins = $scope.queryParamModel.bins;
+    
+    $scope.$timeout(() => $scope.SeismoHistogram.setScale(lowDate, highDate, numBins));
 
     $scope.$http({url: SeismoServer.stationsUrl})
       .then((ret) => {
