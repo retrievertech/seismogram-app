@@ -120,8 +120,8 @@ class SeismoMain {
     // come from the bounds in a query
 
     $scope.queryParamModel = {
-      dateFrom: new Date("1937-10-14T19:26:00Z"),
-      dateTo: new Date("1978-09-16T21:20:00Z"),
+      dateFrom: new Date("1937-10-14T12:26:00.000Z"),
+      dateTo: new Date("1978-09-16T14:20:00.000Z"),
       stationNames: "",
       notStarted: true,
       inProgress: true,
