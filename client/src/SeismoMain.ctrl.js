@@ -2,7 +2,8 @@ class SeismoMain {
 
   constructor($scope, $http, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
-    SeismoData, SeismoEditor, PieOverlay, Loading) {
+    SeismoData, SeismoEditor, SeismoHistogram,
+    PieOverlay, Loading) {
     // debug
     //window.SeismoStationMap = SeismoStationMap;
     //window.SeismoImageMap = SeismoImageMap;
@@ -13,6 +14,7 @@ class SeismoMain {
     $scope.SeismoImageMap = SeismoImageMap;
     $scope.SeismoData = SeismoData;
     $scope.SeismoEditor = SeismoEditor;
+    $scope.SeismoHistogram = SeismoHistogram;
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
     $scope.$http = $http;
@@ -70,10 +72,30 @@ class SeismoMain {
       Loading.start("Loading results...");
       SeismoQuery.queryFiles($scope.queryParamModel).then((res) => {
         console.log("Query complete.", res.data);
+        
         SeismoData.files = res.data.files;
         SeismoData.stationStatuses = res.data.stations;
+        
         SeismoStationMap.updateBounds();
         PieOverlay.renderStatuses();
+
+        var lowDate = new Date(res.data.lowDate),
+            highDate = new Date(res.data.highDate),
+            numBins = 200;
+
+        SeismoHistogram.setScale(lowDate, highDate, numBins);
+
+        var histogramObject = res.data.histogram,
+            histogramArray = [];
+        for (var i = 0; i < numBins; i++) {
+          if (i in histogramObject) {
+            histogramArray[i] = histogramObject[i];
+          } else {
+            histogramArray[i] = 0;
+          }
+        }
+        SeismoHistogram.render(histogramArray);
+        
         Loading.stop();
       });
     };
