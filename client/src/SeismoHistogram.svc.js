@@ -16,6 +16,10 @@ class SeismoHistogram {
     this.xAxis = d3.svg.axis()
       .scale(this.timeToXCoord)
       .orient("top");
+
+    this.xAxisEl = this.svgEl.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + this.height + ")");
   }
 
   resize() {
@@ -54,10 +58,7 @@ class SeismoHistogram {
     barGroups.exit().remove();
 
     // axis
-    this.svgEl.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + this.height + ")")
-      .call(this.xAxis);
+    this.xAxisEl.call(this.xAxis);
   }
 
 }
