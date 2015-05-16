@@ -29,7 +29,9 @@ router.get("/start/:filename", function(req, res) {
       command += " dev";
     }
 
-    exec(command, function(err) {
+    exec(command, function(err, stdout, stderr) {
+      console.log("stdout:", stdout);
+      console.log("stderr:", stderr);
       if (err) {
         console.log("processing error", err);
         setStatus(filename, 0);
