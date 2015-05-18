@@ -17,15 +17,18 @@ var IntersectionCircle = L.CircleMarker.extend({
 
 class SeismoImageMap {
 
-  constructor($http, $q, SeismoServer, Loading) {
+  constructor($timeout, $location, $http, $q, SeismoServer, Loading) {
     var map = window.imageMap = this;
 
     this.SeismoServer = SeismoServer;
     this.Loading = Loading;
-    this.http = $http;
-    this.q = $q;
+    this.$http = $http;
+    this.$location = $location;
+    this.$q = $q;
+    this.$timeout = $timeout;
     this.leafletMap = null;
     this.currentFile = null;
+    this.imageIsLoaded = false;
     this.metadataLayers = [
       {
         name: "Region of Interest",
@@ -138,8 +141,17 @@ class SeismoImageMap {
 
   loadImage(file) {
     this.currentFile = file;
+    this.imageIsLoaded = false;
 
-    var s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/" + file.name + "/";
+    var s3Prefix;
+    if (this.$location.host() === "localhost") {
+      // we are in development
+      s3Prefix = "metadata/" + file.name + "/";
+    } else {
+      // in production
+      s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/" + file.name + "/";
+    }
+
     var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
     // lazy initialization
@@ -149,6 +161,15 @@ class SeismoImageMap {
     } else {
       this.imageLayer.setUrl(url);
     }
+
+    this.Loading.start("Loading image...");
+
+    this.imageLayer.on("load", () => {
+      this.$timeout(() => {
+        this.imageIsLoaded = true;
+        this.Loading.stop("Loading image...");
+      });
+    });
 
     // remove metadata layers from the map if any
     this.metadataLayers.forEach((layer) => {
@@ -166,7 +187,7 @@ class SeismoImageMap {
 
     // load the data and recreate the layers
     var promises = this.metadataLayers.map((layer) => {
-      return this.http({url: s3Prefix + layer.key + ".json"}).then((ret) => {
+      return this.$http({url: s3Prefix + layer.key + ".json"}).then((ret) => {
         console.log(layer.key + ":", ret.data);
         layer.leafletLayer = L.geoJson(ret.data, layer.style);
         layer.leafletLayer.on("dblclick", () => this.leafletMap.zoomIn());
@@ -175,14 +196,14 @@ class SeismoImageMap {
     });
 
     // when all the data is loaded, put it on the map
-    this.q.all(promises).then(() => {
+    this.$q.all(promises).then(() => {
       this.metadataLayers.forEach((layer) => {
         if (layer.on) {
           this.leafletMap.addLayer(layer.leafletLayer);
         }
       });
 
-      this.Loading.stop();
+      this.Loading.stop("Loading metadata...");
     });
   }
 

@@ -9,7 +9,7 @@ router.get("/:filename/:z/:x/:y.png", function(req, res) {
 
   console.log("--- processing /tile ---", req.params);
 
-  var filename = process.env.NODE_ENV === "production" ? req.params.filename : "dummy-seismo.png";
+  var filename = req.params.filename;
 
   diskCache.ensureFileIsLocal(filename, function(err) {
     var z = req.params.z,

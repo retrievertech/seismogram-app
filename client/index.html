@@ -5,6 +5,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF8">
     <link rel="stylesheet" type="text/css" href="bower_components/leaflet/dist/leaflet.css"/>
     <link rel="stylesheet/less" type="text/css" href="style.less"/>
+    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro|Noto+Sans|Arimo|Oxygen|Maven+Pro|Didact+Gothic' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="bower_components/traceur/traceur.js"></script>
     <script type="text/javascript">new traceur.WebPageTranscoder(document.location.href).run();</script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
@@ -19,14 +20,17 @@
   <body ng-controller="SeismoMain" ng-cloak>
     <div id="left-section">
       <div class="maps">
-        <div class="loading-spinner"
-             ng-show="Loading.loading">{{ Loading.message }}</div>
+        <div class="loading-spinner" ng-show="Loading.messages.length > 0">
+          <div ng-repeat="message in Loading.messages">
+            {{ message }}
+          </div>
+        </div>
         <div ng-hide="imageMapVisible">
           <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="imageMapVisible"></div>
         </div>
         <div ng-show="imageMapVisible">
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap" view-reset="[editing, imageMapVisible]"></div>
-          
+
           <div class="image-map-controls" ng-hide="editing">
             <div ng-click="hideImageMap()">Back to map</div>
 

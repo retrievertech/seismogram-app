@@ -1,5 +1,6 @@
 var fs = require("fs");
 var exec = require("child_process").exec;
+var escape = require("./util").escape;
 
 function localPath(filename) {
   return __dirname + "/local-file-cache/" + filename;
@@ -14,7 +15,8 @@ var bufferedRequests = {};
 function ensureFileIsLocal(filename, cb) {
   var path = localPath(filename);
 
-  if (fs.existsSync(path)) {
+  if (fs.existsSync(path) && !(filename in bufferedRequests)) {
+    console.log("file exists", path);
     // file is already local
     cb(null);
   } else {
@@ -26,8 +28,22 @@ function ensureFileIsLocal(filename, cb) {
       // buffer subsequent requests.
       bufferedRequests[filename] = [];
 
-      exec("aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + path, function(err) {
+      var command = "aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + escape(path);
+
+      if (process.env.NODE_ENV !== "production") {
+        command = "wget http://s3.amazonaws.com/WWSSN_Scans/" + filename + " -O " + escape(path);
+      }
+
+      console.log(command);
+
+      exec(command, function(err) {
         console.timeEnd("s3fetch");
+
+        if (err) {
+          console.log("error copying file", err);
+          return;
+        }
+
         console.log("processing", bufferedRequests[filename].length, "buffered requests");
 
         // the file's been copied locally, now process all the buffered requests
