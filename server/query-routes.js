@@ -127,95 +127,99 @@ router.get("/files", function(req, res, next) {
   async.waterfall([
     connect,
     function(db, cb) {
-      console.time("filteredFiles");
-      db.collection("files")
-        .find(query)
-        .skip(pageSize * (page-1))
-        .limit(pageSize)
-        .toArray(function(err, filteredFiles) {
-          console.timeEnd("filteredFiles");
-          cb(err, db, filteredFiles);
-        });
-    },
-    function(db, filteredFiles, cb) {
-      console.time("numResults");
-      var fileCursor = db.collection("files").find(query).batchSize(10000);
-      fileCursor.count(function(err, numResults) {
-        console.timeEnd("numResults");
-        cb(err, db, fileCursor, filteredFiles, numResults);
-      });
-    },
-    function(db, fileCursor, filteredFiles, numResults, cb) {
-      db.collection("files").find(query).sort({date:1}).limit(1).toArray(function(err, files) {
-        var date = files.length > 0 ? files[0].date : null;
-        cb(err, db, fileCursor, filteredFiles, numResults, date);
-      });
-    },
-    function(db, fileCursor, filteredFiles, numResults, lowDate, cb) {
-      db.collection("files")
-        .find(query)
-        .sort({date:-1})
-        .limit(1)
-        .toArray(function(err, files) {
-          var date = files.length > 0 ? files[0].date : null;
-          cb(err, db, fileCursor, filteredFiles, numResults, lowDate, date);
-        });
-    },
-    function(db, fileCursor, filteredFiles, numResults, lowDate, highDate, cb) {
-      console.time("processing");
+      async.parallel({
+        filteredFiles: function(cb) {
+          console.time("filteredFiles");
+          db.collection("files")
+            .find(query)
+            .skip(pageSize * (page-1))
+            .limit(pageSize)
+            .toArray(function(err, filteredFiles) {
+              console.timeEnd("filteredFiles");
+              cb(err, filteredFiles);
+            });
+        },
+        numResults: function(cb) {
+          console.time("numResults");
+          var fileCursor = db.collection("files").find(query).batchSize(10000);
+          fileCursor.count(function(err, numResults) {
+            console.timeEnd("numResults");
+            cb(err, numResults);
+          });
+        },
+        lowDate: function(cb) {
+          db.collection("files").find(query).sort({date:1}).limit(1).toArray(function(err, files) {
+            var date = files.length > 0 ? files[0].date : null;
+            cb(err, date);
+          });
+        },
+        highDate: function(cb) {
+          db.collection("files").find(query).sort({date:-1}).limit(1).toArray(function(err, files) {
+            var date = files.length > 0 ? files[0].date : null;
+            cb(err, date);
+          });
+        },
+        counts: function(cb) {
+          console.time("processing");
 
-      var stationMap = {};
-      var histogram = {};
+          var stationMap = {};
+          var histogram = {};
 
-      var getStation = function(id) {
-        if (!(id in stationMap)) {
-          stationMap[id] = {
-            status: [0,0,0,0],
-            edited: 0
+          var getStation = function(id) {
+            if (!(id in stationMap)) {
+              stationMap[id] = {
+                status: [0,0,0,0],
+                edited: 0
+              };
+            }
+            return stationMap[id];
           };
+
+          db.collection("files").find(query).batchSize(10000).each(function(err, file) {
+            if (file === null) {
+              console.timeEnd("processing");
+              cb(err, { stationMap: stationMap, histogram: histogram });
+            } else {
+              var station = getStation(file.stationId);
+
+              if (!station) {
+                console.error(file.stationId, "does not exist");
+                return;
+              }
+
+              station.status[file.status]++;
+              station.edited += +file.edited;
+
+              var date = new Date(file.date),
+                  binIdx = histogramTool.getBinIdx(date);
+              
+              if (!(binIdx in histogram)) {
+                histogram[binIdx] = 0;
+              }
+
+              histogram[binIdx]++;
+            }
+          });
         }
-        return stationMap[id];
+      },
+      function(err, results) {
+        cb(err, db, results);
+      });
+    },
+    function(db, results, cb) {
+      var payload = {
+        stations: results.counts.stationMap,
+        lowDate: results.lowDate,
+        highDate: results.highDate,
+        numResults: results.numResults,
+        histogram: results.counts.histogram,
+        files: results.filteredFiles
       };
 
-      fileCursor.each(function(err, file) {
-        if (file === null) {
-          console.timeEnd("processing");
-
-          var payload = {
-            stations: stationMap,
-            lowDate: lowDate,
-            highDate: highDate,
-            numResults: numResults,
-            histogram: histogram,
-            files: filteredFiles
-          };
-
-          queryCache.put(req.query, payload);
-          res.send(payload);
-          db.close();
-          cb(null);
-        } else {
-          var station = getStation(file.stationId);
-
-          if (!station) {
-            console.error(file.stationId, "does not exist");
-            return;
-          }
-
-          station.status[file.status]++;
-          station.edited += +file.edited;
-
-          var date = new Date(file.date),
-              binIdx = histogramTool.getBinIdx(date);
-          
-          if (!(binIdx in histogram)) {
-            histogram[binIdx] = 0;
-          }
-
-          histogram[binIdx]++;
-        }
-      });
-
+      queryCache.put(req.query, payload);
+      res.send(payload);
+      db.close();
+      cb(null);
     }
   ], function(err) {
     if (err) next(err);
