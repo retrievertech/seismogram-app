@@ -56,6 +56,14 @@ html {
           z-index: 30;
           text-align: center;
           padding: 5px;
+          div {
+            padding-top: 5px;
+            padding-bottom: 5px;
+            border-top: 1px solid #ccc;
+            &:first-child {
+              border-top: none;
+            }
+          }
         }
 
         .leaflet-map {

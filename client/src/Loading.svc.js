@@ -1,22 +1,21 @@
 class Loading {
 
-  constructor() {
-    this.loading = false;
-    this.defaultMessage = "Loading...";
-    this.message = this.defaultMessage;
+  constructor($timeout) {
+    this.$timeout = $timeout;
+    this.messages = [];
   }
 
   start(message) {
-    if (message) {
-      this.message = message;
+    if (this.messages.indexOf(message) === -1) {
+      this.messages.push(message);
     }
-
-    this.loading = true;
   }
 
-  stop() {
-    this.loading = false;
-    this.message = this.defaultMessage;
+  stop(message) {
+    var idx = this.messages.indexOf(message);
+    if (idx >= 0) {
+      this.messages.splice(idx, 1);
+    }
   }
 }
 
