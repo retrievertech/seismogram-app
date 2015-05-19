@@ -5,6 +5,7 @@ class SeismoEditor {
   constructor(SeismoImageMap) {
     this.SeismoImageMap = SeismoImageMap;
     this.layerBeingEdited = null;
+    this.editing = false;
 
     // catch shift presses, used for editing intersection radii
     document.onkeydown = (e) => {
@@ -14,6 +15,15 @@ class SeismoEditor {
     document.onkeyup = () => {
       shiftPressed = false;
     };
+  }
+
+  startEditing() {
+    this.editing = true;
+  }
+
+  exitEditing() {
+    this.editing = false;
+    this.stopEditing();
   }
 
   saveChanges() {

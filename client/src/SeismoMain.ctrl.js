@@ -50,17 +50,6 @@ class SeismoMain {
                       SeismoStatus.is(file.status, "Edited"));
     };
 
-    $scope.editing = false;
-
-    $scope.startEditing = () => {
-      $scope.editing = true;
-    };
-
-    $scope.exitEditing = () => {
-      SeismoEditor.stopEditing();
-      $scope.editing = false;
-    };
-
     $scope.imageMapVisible = false;
 
     $scope.showImageMap = () => {
