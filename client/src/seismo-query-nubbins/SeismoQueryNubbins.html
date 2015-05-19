@@ -3,6 +3,6 @@
 
   <div ng-repeat="status in seismoStatus.statuses">
     <input id="l{{$index}}" type="checkbox" ng-model="queryParams.status[status.code]"/>
-    <label for="l{{$index}}">{{ status.name }}</div>
+    <label for="l{{$index}}">{{ status.name }}</label>
   </div>
 </div>
