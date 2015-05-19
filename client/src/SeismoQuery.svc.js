@@ -49,12 +49,8 @@ class SeismoQuery {
     if (stationNames[0] !== "" && stationIds.length === 0)
       stationIds.push("xxxx");
 
-    var status = [];
-    if (queryParamModel.notStarted) status.push(0);
-    if (queryParamModel.processing) status.push(1);
-    if (queryParamModel.failed) status.push(2);
-    if (queryParamModel.complete) status.push(3);
-    if (queryParamModel.edited) status.push(4);
+    var statusModel = queryParamModel.status;
+    var status = Object.keys(statusModel).filter((code) => statusModel[code] === true);
 
     var query = {
       dateFrom: new Date(queryParamModel.dateFrom),

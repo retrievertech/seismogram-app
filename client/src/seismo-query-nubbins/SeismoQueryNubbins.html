@@ -1,23 +1,8 @@
 <div>
   <input type="text" placeholder="Station names" ng-model="queryParams.stationNames" />
-  <br/>
 
-  <input type="checkbox" ng-model="queryParams.notStarted" />
-  <div>Not started</div>
-  <br/>
-
-  <input type="checkbox" ng-model="queryParams.processing" />
-  <div>Processing</div>
-  <br/>
-
-  <input type="checkbox" ng-model="queryParams.failed" />
-  <div>Failed</div>
-  <br/>
-
-  <input type="checkbox" ng-model="queryParams.complete" />
-  <div>Complete</div>
-  <br/>
-
-  <input type="checkbox" ng-model="queryParams.edited" />
-  <div>Edited</div>
+  <div ng-repeat="status in seismoStatus.statuses">
+    <input id="l{{$index}}" type="checkbox" ng-model="queryParams.status[status.code]"/>
+    <label for="l{{$index}}">{{ status.name }}</div>
+  </div>
 </div>

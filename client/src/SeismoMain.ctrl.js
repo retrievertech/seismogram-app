@@ -1,8 +1,8 @@
 class SeismoMain {
 
   constructor($scope, $http, SeismoStationMap,
-    SeismoImageMap, SeismoQuery, SeismoServer,
-    SeismoData, SeismoEditor, PieOverlay, Loading) {
+              SeismoImageMap, SeismoQuery, SeismoServer,
+              SeismoData, SeismoEditor, SeismoStatus, PieOverlay, Loading) {
     // debug
     //window.SeismoStationMap = SeismoStationMap;
     //window.SeismoImageMap = SeismoImageMap;
@@ -13,6 +13,7 @@ class SeismoMain {
     $scope.SeismoImageMap = SeismoImageMap;
     $scope.SeismoData = SeismoData;
     $scope.SeismoEditor = SeismoEditor;
+    $scope.SeismoStatus = SeismoStatus;
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
     $scope.$http = $http;
@@ -101,12 +102,12 @@ class SeismoMain {
       dateFrom: new Date("1937-10-14T19:26:00Z"),
       dateTo: new Date("1978-09-16T21:20:00Z"),
       stationNames: "",
-      notStarted: true,
-      processing: true,
-      failed: true,
-      complete: true,
-      edited: true
+      status: {}
     };
+
+    $scope.SeismoStatus.statuses.forEach((status) => {
+      $scope.queryParamModel.status[status.code] = true;
+    });
   }
 
 }

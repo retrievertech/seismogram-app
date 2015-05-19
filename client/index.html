@@ -78,7 +78,8 @@
 
       <div id="query-ui">
         <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
-        <div id="seismo-query-nubbins" query-params="queryParamModel" seismo-query-nubbins></div>
+        <div id="seismo-query-nubbins" seismo-status="SeismoStatus"
+             query-params="queryParamModel" seismo-query-nubbins></div>
         <!-- probably won't need this button eventually -->
         <button id="query-button" ng-click="queryStationStatuses()">Query</button>
       </div>
