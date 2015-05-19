@@ -31,6 +31,15 @@
         <div ng-show="imageMapVisible">
           <div id="image-map" class="leaflet-map" map-link="SeismoImageMap" view-reset="[SeismoEditor.editing, imageMapVisible]"></div>
 
+          <div class="image-log" ng-show="logShowing">
+            <div class="top-bar">
+              <button ng-click="hideLog()">Close</button>
+            </div>
+            <div class="contents">
+              <pre>{{log}}</pre>
+            </div>
+          </div>
+
           <div class="image-map-controls" ng-hide="SeismoEditor.editing">
             <div ng-click="hideImageMap()">Back to map</div>
 
@@ -41,6 +50,10 @@
 
             <div class="disabled-button" ng-show="isProcessing()">
               Processing...
+            </div>
+
+            <div ng-click="showLog()" ng-show="!Loading.active() && hasLog()">
+              Show Log
             </div>
 
             <div ng-click="SeismoEditor.startEditing()"

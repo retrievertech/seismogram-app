@@ -122,6 +122,38 @@ html {
           border: 1px solid #aaa;
         }
 
+        .image-log {
+          position: absolute;
+          width: 800px;
+          left: 50%;
+          margin-left: -400px;
+          top: 5%;
+          height: 90%;
+          z-index: 30;
+          background: white;
+
+          .top-bar {
+            height: 20px;
+            border-bottom: 1px solid #999;
+            padding: 5px;
+            cursor: pointer;
+            button {
+              float: right;
+              cursor: pointer;
+            }
+          }
+
+          .contents {
+            font-family: courier;
+            margin: 10px;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            user-select: text;
+            height: 90%;
+            overflow: scroll;
+          }
+        }
+
         .image-map-controls {
           position: absolute;
           top: 10px;
@@ -139,12 +171,12 @@ html {
 
         .image-map-layers {
           position: absolute;
-          top: 120px;
+          top: 160px;
           right: 10px;
           z-index: 25;
 
           &.while-editing {
-            top: 160px;
+
           }
 
           .button-group {
