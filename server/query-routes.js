@@ -170,7 +170,7 @@ router.get("/files", function(req, res, next) {
       var getStation = function(id) {
         if (!(id in stationMap)) {
           stationMap[id] = {
-            status: [0,0,0,0],
+            status: [0,0,0,0,0],
             edited: 0
           };
         }
@@ -207,7 +207,7 @@ router.get("/files", function(req, res, next) {
 
           var date = new Date(file.date),
               binIdx = histogramTool.getBinIdx(date);
-          
+
           if (!(binIdx in histogram)) {
             histogram[binIdx] = 0;
           }
