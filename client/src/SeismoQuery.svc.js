@@ -4,7 +4,7 @@ class SeismoQuery {
     this.SeismoServer = SeismoServer;
     this.SeismoData = SeismoData;
   }
-  
+
   queryFiles(paramModel) {
     var params = this.createQuery(paramModel);
     return this.http({
@@ -51,16 +51,16 @@ class SeismoQuery {
 
     var status = [];
     if (queryParamModel.notStarted) status.push(0);
-    if (queryParamModel.inProgress) status.push(1);
-    if (queryParamModel.needsAttention) status.push(2);
+    if (queryParamModel.processing) status.push(1);
+    if (queryParamModel.failed) status.push(2);
     if (queryParamModel.complete) status.push(3);
+    if (queryParamModel.edited) status.push(4);
 
     var query = {
       dateFrom: new Date(queryParamModel.dateFrom),
       dateTo: new Date(queryParamModel.dateTo),
       stationIds: stationIds.join(","),
       status: status.join(","),
-      edited: queryParamModel.editedByMe,
       bins: 2000
     };
 

@@ -102,10 +102,10 @@ class SeismoMain {
       dateTo: new Date("1978-09-16T21:20:00Z"),
       stationNames: "",
       notStarted: true,
-      inProgress: true,
-      needsAttention: true,
+      processing: true,
+      failed: true,
       complete: true,
-      editedByMe: false
+      edited: true
     };
   }
 
