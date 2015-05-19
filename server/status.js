@@ -1,9 +1,9 @@
 var status = {
   notStarted: 0,
   processing: 1,
-  edited: 2,
+  failed: 2,
   complete: 3,
-  failed: 4
+  edited: 4
 };
 
 module.exports = status;

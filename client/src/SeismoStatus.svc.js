@@ -8,13 +8,13 @@ class SeismoStatus {
       name: "Processing"
     }, {
       code: 2,
-      name: "Edited"
+      name: "Failed"
     }, {
       code: 3,
       name: "Complete"
     }, {
       code: 4,
-      name: "Failed"
+      name: "Edited"
     }];
   }
 
