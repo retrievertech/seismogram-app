@@ -20,10 +20,15 @@ class SeismoStatus {
 
   getStatus(name) {
     var status = this.statuses.find(function(status) {
-      return status.name === name;
+      return status.name.toLowerCase() === name.toLowerCase();
     });
 
     return status;
+  }
+
+  is(code, name) {
+    var status = this.getStatus(name);
+    return status.code === code;
   }
 }
 

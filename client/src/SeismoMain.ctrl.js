@@ -33,17 +33,21 @@ class SeismoMain {
 
     $scope.isProcessing = () => {
       var file = SeismoImageMap.currentFile;
-      return file && file.status === 1;
+      return file && SeismoStatus.is(file.status, "Processing");
     };
 
     $scope.canProcess = () => {
       var file = SeismoImageMap.currentFile;
-      return file && SeismoData.isLongPeriod(file) && SeismoImageMap.imageIsLoaded && file.status === 0;
+      return file &&
+        SeismoData.isLongPeriod(file) &&
+        SeismoImageMap.imageIsLoaded &&
+        SeismoStatus.is(file.status, "Not Started");
     };
 
     $scope.canEdit = () => {
       var file = SeismoImageMap.currentFile;
-      return file && file.status === 3;
+      return file && (SeismoStatus.is(file.status, "Complete") ||
+                      SeismoStatus.is(file.status, "Edited"));
     };
 
     $scope.editing = false;
