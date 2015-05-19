@@ -4,6 +4,16 @@ class SeismoQuery {
     this.SeismoServer = SeismoServer;
     this.SeismoData = SeismoData;
   }
+
+  initialQuery() {
+    return this.$http({
+      method: "GET",
+      url: this.SeismoServer.filesUrl,
+      params: {
+        status: "0,1,2,3"
+      }
+    });
+  }
   
   queryFiles(paramModel) {
     var params = this.createQuery(paramModel);
@@ -61,7 +71,7 @@ class SeismoQuery {
       stationIds: stationIds.join(","),
       status: status.join(","),
       edited: queryParamModel.editedByMe,
-      bins: queryParamModel.bins
+      bins: queryParamModel.numBins
     };
 
     return query;

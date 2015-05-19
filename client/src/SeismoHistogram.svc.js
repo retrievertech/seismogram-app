@@ -31,16 +31,40 @@ class SeismoHistogram {
       .attr("height", this.height);
   }
 
-  setScale(lowDate, highDate, numBins) {
+  setScale(lowDate, highDate, numBins, data) {
+    this.numBins = numBins;
     this.timeToXCoord.domain([lowDate, highDate]);
-    this.barWidth = Math.floor(this.width / numBins);
     this.idxToXCoord.domain([0, numBins]);
+    this.yScale.domain([0, d3.max(d3.values(data))]);
+    this.barWidth = Math.floor(this.width / numBins);
   }
 
-  render(data) {
-    this.yScale.domain([0, d3.max(data)]);
+  binObjectToBinArray(binObject) {
+    
+    // Turns an object like:
+    // {
+    //   3: count,
+    //   5: otherCount,
+    //   ...
+    // }
+    // into an array like:
+    // [0, 0, 0, count, 0, otherCount, ...]
 
-    var barGroups = this.svgEl.selectAll(".bar").data(data);
+    var binArray = [];
+    for (var i = 0; i < this.numBins; i++) {
+      if (i in binObject) {
+        binArray[i] = binObject[i];
+      } else {
+        binArray[i] = 0;
+      }
+    }
+    return binArray;
+  }
+
+  render(histogramObject) {
+    var binArray = this.binObjectToBinArray(histogramObject);
+
+    var barGroups = this.svgEl.selectAll(".bar").data(binArray);
 
     // enter
     var bars = barGroups.enter().append("g")

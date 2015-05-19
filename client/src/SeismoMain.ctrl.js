@@ -21,7 +21,7 @@ class SeismoMain {
     $scope.$timeout = $timeout;
 
     // initialize data models and perform initial query
-    this.init($scope, SeismoServer);
+    this.init($scope, SeismoServer, SeismoQuery, SeismoHistogram);
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
@@ -71,66 +71,71 @@ class SeismoMain {
 
     $scope.queryStationStatuses = () => {
       Loading.start("Loading results...");
-      SeismoQuery.queryFiles($scope.queryParamModel).then((res) => {
-        console.log("Query complete.", res.data);
-        
-        SeismoData.files = res.data.files;
-        SeismoData.stationStatuses = res.data.stations;
-        
-        SeismoStationMap.updateBounds();
-        PieOverlay.renderStatuses();
-
-        var numBins = $scope.queryParamModel.bins;
-        var histogramObject = res.data.histogram,
-            histogramArray = [];
-        for (var i = 0; i < numBins; i++) {
-          if (i in histogramObject) {
-            histogramArray[i] = histogramObject[i];
-          } else {
-            histogramArray[i] = 0;
-          }
-        }
-        SeismoHistogram.render(histogramArray);
-        
-        Loading.stop("Loading results...");
-      });
+      SeismoQuery.queryFiles($scope.queryParamModel)
+        .then((res) => {
+          console.log("Query complete.", res.data);
+          $scope.update(res.data);
+          Loading.stop("Loading results...");
+        });
     };
+
+    $scope.update = (data) => {
+      // update SeismoData
+      SeismoData.files = data.files;
+      SeismoData.stationStatuses = data.stations;
+
+      // update SeismoStationMap
+      SeismoStationMap.updateBounds();
+
+      // update PieOverlay
+      PieOverlay.renderStatuses();
+
+      // update SeismoHistogram
+      SeismoHistogram.render(data.histogram);
+    }
   }
 
-  init($scope, SeismoServer) {
-    this.initQueryParams($scope);
-
-    var lowDate = $scope.queryParamModel.dateFrom,
-        highDate = $scope.queryParamModel.dateTo,
-        numBins = $scope.queryParamModel.bins;
-    
-    $scope.$timeout(() => $scope.SeismoHistogram.setScale(lowDate, highDate, numBins));
-
+  init($scope, SeismoServer, SeismoQuery, SeismoHistogram) {
     $scope.$http({url: SeismoServer.stationsUrl})
       .then((ret) => {
         // stations are loaded; render them
         $scope.SeismoData.stations = ret.data;
         $scope.PieOverlay.renderStations();
-        // perform initial query
-        $scope.queryStationStatuses();
+        
+        // perform initial files query to fetch low/high date
+        // and histogram info
+        SeismoQuery.initialQuery().then((res) => {
+          console.log("Initial query complete.", res.data);
+
+          this.initQueryParams($scope, res.data);
+
+          var lowDate = new Date(res.data.lowDate),
+              highDate = new Date(res.data.highDate),
+              numBins = res.data.numBins,
+              data = res.data.histogram;
+
+          SeismoHistogram.setScale(lowDate, highDate, numBins, data);
+
+          $scope.update(res.data);
+        });
       });
   }
 
-  initQueryParams($scope) {
+  initQueryParams($scope, query) {
 
     // eventually dateFrom and dateTo should
     // come from the bounds in a query
 
     $scope.queryParamModel = {
-      dateFrom: new Date("1937-10-14T12:26:00.000Z"),
-      dateTo: new Date("1978-09-16T14:20:00.000Z"),
+      dateFrom: new Date(query.lowDate),
+      dateTo: new Date(query.highDate),
       stationNames: "",
       notStarted: true,
       inProgress: true,
       needsAttention: true,
       complete: true,
       editedByMe: false,
-      bins: 200
+      numBins: query.numBins
     };
   }
 
