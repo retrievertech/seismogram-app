@@ -93,7 +93,7 @@ router.get("/files", function(req, res, next) {
   }
 
   // prepare histogramTool for binning
-  var numBins = parseInt(req.query.bins) || 2000;
+  var numBins = parseInt(req.query.bins) || 200;
   histogramTool.setNumBins(numBins);
 
   // build the query.
@@ -185,9 +185,10 @@ router.get("/files", function(req, res, next) {
             stations: stationMap,
             lowDate: lowDate,
             highDate: highDate,
+            files: filteredFiles,
             numResults: numResults,
             histogram: histogram,
-            files: filteredFiles
+            numBins: numBins
           };
 
           queryCache.put(req.query, payload);
