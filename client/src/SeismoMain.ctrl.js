@@ -114,29 +114,29 @@ class SeismoMain {
     }
 
     $scope.init = () => {
-      // initialize data models and perform initial query
-      $http({url: SeismoServer.stationsUrl})
-      .then((ret) => {
+      // perform initial queries to fetch low/high dates,
+      // histogram, and station info
+      SeismoQuery.initialQuery().then((res) => {
+        console.log("Initial query complete.", res);
+
         // stations are loaded; render them
-        $scope.SeismoData.stations = ret.data;
+        var stationsResult = res.stations.data;
+        $scope.SeismoData.stations = stationsResult;
         $scope.PieOverlay.renderStations();
+
+        // files stats are loaded; render histogram background,
+        // save default query parameters
+        var seismoResult = res.seismograms.data,
+            lowDate = new Date(seismoResult.lowDate),
+            highDate = new Date(seismoResult.highDate),
+            numBins = seismoResult.numBins,
+            data = seismoResult.histogram;
+
+        this.initQueryParams($scope, seismoResult);
         
-        // perform initial files query to fetch low/high date
-        // and histogram info
-        SeismoQuery.initialQuery().then((res) => {
-          console.log("Initial query complete.", res.data);
+        SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
 
-          this.initQueryParams($scope, res.data);
-
-          var lowDate = new Date(res.data.lowDate),
-              highDate = new Date(res.data.highDate),
-              numBins = res.data.numBins,
-              data = res.data.histogram;
-
-          SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
-
-          $scope.update(res.data);
-        });
+        $scope.update(seismoResult);
       });
     }
 

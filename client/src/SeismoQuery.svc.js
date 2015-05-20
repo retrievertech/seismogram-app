@@ -1,17 +1,22 @@
 class SeismoQuery {
-  constructor($http, SeismoServer, SeismoData) {
+  constructor($http, $q, SeismoServer, SeismoData) {
     this.$http = $http;
+    this.$q = $q;
     this.SeismoServer = SeismoServer;
     this.SeismoData = SeismoData;
   }
 
   initialQuery() {
-    return this.$http({
-      method: "GET",
-      url: this.SeismoServer.filesUrl,
-      params: {
-        status: "0,1,2,3"
-      }
+    return this.$q.all({
+      seismograms: this.$http({
+        url: this.SeismoServer.filesUrl,
+        params: {
+          status: "0,1,2,3"
+        }
+      }),
+      stations: this.$http({
+        url: this.SeismoServer.stationsUrl
+      })
     });
   }
   
