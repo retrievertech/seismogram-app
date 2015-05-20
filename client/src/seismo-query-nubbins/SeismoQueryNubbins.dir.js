@@ -3,10 +3,11 @@ class SeismoQueryNubbins {
     return {
       templateUrl: "src/seismo-query-nubbins/SeismoQueryNubbins.html",
       scope: {
-        queryParams: "="
+        queryParams: "=",
+        seismoStatus: "="
       },
       link: (scope, element, attrs) => {
-        
+
       }
     };
   }

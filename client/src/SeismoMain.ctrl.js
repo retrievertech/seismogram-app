@@ -3,7 +3,8 @@ class SeismoMain {
   constructor($scope, $http, $timeout, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
     SeismoData, SeismoEditor, SeismoHistogram,
-    PieOverlay, Loading) {
+    SeismoStatus, PieOverlay, Loading) {
+
     // debug
     //window.SeismoStationMap = SeismoStationMap;
     //window.SeismoImageMap = SeismoImageMap;
@@ -12,9 +13,10 @@ class SeismoMain {
     // add maps and services to scope
     $scope.SeismoStationMap = SeismoStationMap;
     $scope.SeismoImageMap = SeismoImageMap;
+    $scope.SeismoHistogram = SeismoHistogram;
     $scope.SeismoData = SeismoData;
     $scope.SeismoEditor = SeismoEditor;
-    $scope.SeismoHistogram = SeismoHistogram;
+    $scope.SeismoStatus = SeismoStatus;
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
     $scope.$http = $http;
@@ -35,28 +37,50 @@ class SeismoMain {
 
     $scope.isProcessing = () => {
       var file = SeismoImageMap.currentFile;
-      return file && file.status === 1;
+      return file && SeismoStatus.is(file.status, "Processing");
     };
 
     $scope.canProcess = () => {
       var file = SeismoImageMap.currentFile;
-      return file && SeismoData.isLongPeriod(file) && SeismoImageMap.imageIsLoaded && file.status === 0;
+      return file &&
+        SeismoData.isLongPeriod(file) &&
+        SeismoImageMap.imageIsLoaded &&
+        SeismoStatus.is(file.status, "Not Started");
     };
 
     $scope.canEdit = () => {
       var file = SeismoImageMap.currentFile;
-      return file && file.status === 3;
+      return file && (SeismoStatus.is(file.status, "Complete") ||
+                      SeismoStatus.is(file.status, "Edited"));
     };
 
-    $scope.editing = false;
+    $scope.logShowing = false;
+    $scope.log = "";
 
-    $scope.startEditing = () => {
-      $scope.editing = true;
+    $scope.hasLog = () => {
+      var file = SeismoImageMap.currentFile;
+      return file && (SeismoStatus.is(file.status, "Complete") ||
+                      SeismoStatus.is(file.status, "Edited") ||
+                      SeismoStatus.is(file.status, "Failed"));
     };
 
-    $scope.exitEditing = () => {
-      SeismoEditor.stopEditing();
-      $scope.editing = false;
+    $scope.showLog = () => {
+      var file = SeismoImageMap.currentFile;
+      var url = "logs/" + file.name + ".txt";
+
+      $scope.log = "";
+
+      $http({url: url}).then((res) => {
+        $scope.log = res.data;
+      }).catch(() => {
+        $scope.log = "A log is not available for this file...";
+      }).then(() => {
+        $scope.logShowing = true;
+      });
+    };
+
+    $scope.hideLog = () => {
+      $scope.logShowing = false;
     };
 
     $scope.imageMapVisible = false;
@@ -129,14 +153,14 @@ class SeismoMain {
     $scope.queryParamModel = {
       dateFrom: new Date(query.lowDate),
       dateTo: new Date(query.highDate),
+      numBins: query.numBins,
       stationNames: "",
-      notStarted: true,
-      inProgress: true,
-      needsAttention: true,
-      complete: true,
-      editedByMe: false,
-      numBins: query.numBins
+      status: {}
     };
+
+    $scope.SeismoStatus.statuses.forEach((status) => {
+      $scope.queryParamModel.status[status.code] = true;
+    });
   }
 
 }

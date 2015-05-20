@@ -20,7 +20,7 @@
   <body ng-controller="SeismoMain" ng-cloak>
     <div id="left-section">
       <div class="maps">
-        <div class="loading-spinner" ng-show="Loading.messages.length > 0">
+        <div class="loading-spinner" ng-show="Loading.active()">
           <div ng-repeat="message in Loading.messages">
             {{ message }}
           </div>
@@ -29,13 +29,22 @@
           <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="imageMapVisible"></div>
         </div>
         <div ng-show="imageMapVisible">
-          <div id="image-map" class="leaflet-map" map-link="SeismoImageMap" view-reset="[editing, imageMapVisible]"></div>
+          <div id="image-map" class="leaflet-map" map-link="SeismoImageMap" view-reset="[SeismoEditor.editing, imageMapVisible]"></div>
 
-          <div class="image-map-controls" ng-hide="editing">
+          <div class="image-log" ng-show="logShowing">
+            <div class="top-bar">
+              <button ng-click="hideLog()">Close</button>
+            </div>
+            <div class="contents">
+              <pre>{{log}}</pre>
+            </div>
+          </div>
+
+          <div class="image-map-controls" ng-hide="SeismoEditor.editing">
             <div ng-click="hideImageMap()">Back to map</div>
 
             <div ng-click="startProcessing()"
-                 ng-show="!Loading.loading && canProcess()">
+                 ng-show="!Loading.active() && canProcess()">
               Start Processing
             </div>
 
@@ -43,21 +52,25 @@
               Processing...
             </div>
 
-            <div ng-click="startEditing()"
-                 ng-show="!Loading.loading && canEdit()">
+            <div ng-click="showLog()" ng-show="!Loading.active() && hasLog()">
+              Show Log
+            </div>
+
+            <div ng-click="SeismoEditor.startEditing()"
+                 ng-show="!Loading.active() && canEdit()">
               Edit this seismogram
             </div>
           </div>
 
-          <div class="image-map-controls" ng-show="editing">
+          <div class="image-map-controls" ng-show="SeismoEditor.editing">
             <div ng-click="SeismoEditor.saveChanges()">Save Changes</div>
             <div ng-click="SeismoEditor.discardChanges()">Discard Changes</div>
-            <div ng-click="exitEditing()">Exit</div>
+            <div ng-click="SeismoEditor.exitEditing()">Exit</div>
           </div>
 
           <div class="image-map-layers"
-               ng-class="{'while-editing': editing}"
-               ng-show="!Loading.loading && canEdit()">
+               ng-class="{'while-editing': SeismoEditor.editing}"
+               ng-show="!Loading.active() && canEdit()">
             <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
               <div class="layer-button"
                    ng-class="{'active': ml.on}"
@@ -65,7 +78,7 @@
                 {{ml.name}}
               </div>
               <div class="edit-button"
-                   ng-show="editing"
+                   ng-show="SeismoEditor.editing"
                    ng-class="{'active': SeismoEditor.layerBeingEdited == ml}"
                    ng-click="SeismoEditor.startEditingLayer(ml)">
                 Edit
@@ -78,7 +91,8 @@
 
       <div id="query-ui">
         <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
-        <div id="seismo-query-nubbins" query-params="queryParamModel" seismo-query-nubbins></div>
+        <div id="seismo-query-nubbins" seismo-status="SeismoStatus"
+             query-params="queryParamModel" seismo-query-nubbins></div>
         <!-- probably won't need this button eventually -->
         <button id="query-button" ng-click="queryStationStatuses()">Query</button>
       </div>
@@ -86,7 +100,7 @@
       <svg id="histogram" map-link="SeismoHistogram"></div>
     </div>
 
-    <div id="right-section" ng-hide="editing">
+    <div id="right-section" ng-hide="SeismoEditor.editing">
       <div class="seismo-list">
         <div class="seismo-list-item"
              ng-repeat="file in SeismoData.files"

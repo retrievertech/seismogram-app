@@ -1,16 +1,33 @@
 var router = require("express").Router();
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
+var fs = require("fs");
 var exec = require("child_process").exec;
 var diskCache = require("./disk-cache");
 var queryCache = require("./query-cache");
 var statusSocket = require("./status-socket");
 var escape = require("./util").escape;
+var status = require("./status");
 
 var pipelinePath = __dirname + "/../../seismogram-pipeline";
+var logPath = __dirname + "/../client/logs";
 
 var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
+};
+
+var writeLog = function(filename, logContents) {
+  if (!fs.existsSync(logPath)) {
+    fs.mkdirSync(logPath);
+  }
+
+  var path = logPath + "/" + filename + ".txt";
+
+  fs.writeFile(path, logContents, function(err) {
+    if (err) {
+      console.log("error writing to log", filename, err);
+    }
+  });
 };
 
 router.get("/start/:filename", function(req, res) {
@@ -30,12 +47,17 @@ router.get("/start/:filename", function(req, res) {
     }
 
     exec(command, function(err, stdout, stderr) {
-      console.log("stdout:", stdout);
-      console.log("stderr:", stderr);
+      var log = "== stdout ==\n";
+      log += stdout;
+      log += "\n== stderr ==\n";
+      log += stderr;
+
       if (err) {
-        console.log("processing error", err);
-        setStatus(filename, 0);
+        setStatus(filename, status.failed);
       }
+
+      console.log(log);
+      writeLog(filename, log);
     });
   });
 });

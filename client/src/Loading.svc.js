@@ -5,6 +5,10 @@ class Loading {
     this.messages = [];
   }
 
+  active() {
+    return this.messages.length > 0;
+  }
+
   start(message) {
     if (this.messages.indexOf(message) === -1) {
       this.messages.push(message);
