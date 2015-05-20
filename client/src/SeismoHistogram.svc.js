@@ -31,7 +31,7 @@ class SeismoHistogram {
       .attr("height", this.height);
   }
 
-  setScale(lowDate, highDate, numBins, data) {
+  initBackground(lowDate, highDate, numBins, data) {
     this.numBins = numBins;
     this.timeToXCoord.domain([lowDate, highDate]);
     this.idxToXCoord.domain([0, numBins]);

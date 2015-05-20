@@ -114,7 +114,7 @@ class SeismoMain {
               numBins = res.data.numBins,
               data = res.data.histogram;
 
-          SeismoHistogram.setScale(lowDate, highDate, numBins, data);
+          SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
 
           $scope.update(res.data);
         });
