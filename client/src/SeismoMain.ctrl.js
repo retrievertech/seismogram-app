@@ -1,6 +1,6 @@
 class SeismoMain {
 
-  constructor($scope, $http, $timeout, SeismoStationMap,
+  constructor($scope, $http, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
     SeismoData, SeismoEditor, SeismoHistogram,
     SeismoStatus, PieOverlay, Loading) {
@@ -20,7 +20,6 @@ class SeismoMain {
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
     $scope.$http = $http;
-    $scope.$timeout = $timeout;
 
     // initialize data models and perform initial query
     this.init($scope, SeismoServer, SeismoQuery, SeismoHistogram);
