@@ -91,7 +91,7 @@ class SeismoMain {
       PieOverlay.renderStatuses();
 
       // update SeismoHistogram
-      SeismoHistogram.render(data.histogram);
+      SeismoHistogram.renderOverlay(data.histogram);
     }
   }
 

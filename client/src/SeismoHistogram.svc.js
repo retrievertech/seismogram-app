@@ -17,6 +17,8 @@ class SeismoHistogram {
       .scale(this.timeToXCoord)
       .orient("top");
 
+    this.barsEl = this.svgEl.append("g");
+
     this.xAxisEl = this.svgEl.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate(0," + this.height + ")");
@@ -37,6 +39,8 @@ class SeismoHistogram {
     this.idxToXCoord.domain([0, numBins]);
     this.yScale.domain([0, d3.max(d3.values(data))]);
     this.barWidth = Math.floor(this.width / numBins);
+
+    this.renderBackground(data);
   }
 
   binObjectToBinArray(binObject) {
@@ -61,14 +65,23 @@ class SeismoHistogram {
     return binArray;
   }
 
-  render(histogramObject) {
+  renderBackground(histogramObject) {
+    this.render("background", histogramObject);
+  }
+
+  renderOverlay(histogramObject) {
+    this.render("overlay", histogramObject);
+  }
+
+  render(className, histogramObject) {
     var binArray = this.binObjectToBinArray(histogramObject);
 
-    var barGroups = this.svgEl.selectAll(".bar").data(binArray);
+    var barGroups = this.barsEl.selectAll(".bar."+className)
+      .data(binArray);
 
     // enter
     var bars = barGroups.enter().append("g")
-      .attr("class", "bar");
+      .attr("class", "bar "+className);
 
     bars.append("rect")
       .attr("x", 1)
