@@ -19,10 +19,6 @@ class SeismoMain {
     $scope.SeismoStatus = SeismoStatus;
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
-    $scope.$http = $http;
-
-    // initialize data models and perform initial query
-    this.init($scope, SeismoServer, SeismoQuery, SeismoHistogram);
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
@@ -116,10 +112,10 @@ class SeismoMain {
       // update SeismoHistogram
       SeismoHistogram.renderOverlay(data.histogram);
     }
-  }
 
-  init($scope, SeismoServer, SeismoQuery, SeismoHistogram) {
-    $scope.$http({url: SeismoServer.stationsUrl})
+    $scope.init = () => {
+      // initialize data models and perform initial query
+      $http({url: SeismoServer.stationsUrl})
       .then((ret) => {
         // stations are loaded; render them
         $scope.SeismoData.stations = ret.data;
@@ -142,6 +138,9 @@ class SeismoMain {
           $scope.update(res.data);
         });
       });
+    }
+
+    $scope.init();
   }
 
   initQueryParams($scope, query) {
