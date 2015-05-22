@@ -1,13 +1,28 @@
 class SeismoQuery {
-  constructor($http, SeismoServer, SeismoData) {
-    this.http = $http;
+  constructor($http, $q, SeismoServer, SeismoData) {
+    this.$http = $http;
+    this.$q = $q;
     this.SeismoServer = SeismoServer;
     this.SeismoData = SeismoData;
   }
 
+  initialQuery() {
+    return this.$q.all({
+      seismograms: this.$http({
+        url: this.SeismoServer.filesUrl,
+        params: {
+          status: "0,1,2,3"
+        }
+      }),
+      stations: this.$http({
+        url: this.SeismoServer.stationsUrl
+      })
+    });
+  }
+  
   queryFiles(paramModel) {
     var params = this.createQuery(paramModel);
-    return this.http({
+    return this.$http({
       method: "GET",
       url: this.SeismoServer.filesUrl,
       params: params
@@ -57,7 +72,7 @@ class SeismoQuery {
       dateTo: new Date(queryParamModel.dateTo),
       stationIds: stationIds.join(","),
       status: status.join(","),
-      bins: 2000
+      bins: queryParamModel.numBins
     };
 
     return query;
