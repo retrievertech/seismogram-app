@@ -133,12 +133,12 @@ class SeismoMain {
             data = seismoResult.histogram;
 
         this.initQueryParams($scope, seismoResult);
-        
+
         SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
 
         $scope.update(seismoResult);
       });
-    }
+    };
 
     $scope.init();
   }
@@ -153,6 +153,7 @@ class SeismoMain {
       dateTo: new Date(query.highDate),
       numBins: query.numBins,
       stationNames: "",
+      fileNames: "",
       status: {}
     };
 
