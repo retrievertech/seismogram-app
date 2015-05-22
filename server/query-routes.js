@@ -89,6 +89,7 @@ router.get("/files", function(req, res, next) {
       } catch (e) {
         console.log("bad file name regexp", e);
       }
+      return acc;
     }, fileNames);
   }
 
