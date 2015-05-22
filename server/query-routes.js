@@ -83,9 +83,13 @@ router.get("/files", function(req, res, next) {
 
   var fileNames = [];
   if (req.query.fileNames) {
-    fileNames = req.query.fileNames.split(",").map(function(fileName) {
-      return new RegExp(fileName.trim());
-    });
+    req.query.fileNames.split(",").reduce(function(acc, fileName) {
+      try {
+        acc.push(new RegExp(fileName.trim()));
+      } catch (e) {
+        console.log("bad file name regexp", e);
+      }
+    }, fileNames);
   }
 
   var status = [];
