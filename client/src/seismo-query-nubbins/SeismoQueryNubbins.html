@@ -1,5 +1,6 @@
 <div>
   <input type="text" placeholder="Station names" ng-model="queryParams.stationNames" />
+  <input type="text" placeholder="File names" ng-model="queryParams.fileNames" />
 
   <div ng-repeat="status in seismoStatus.statuses">
     <input id="l{{$index}}" type="checkbox" ng-model="queryParams.status[status.code]"/>

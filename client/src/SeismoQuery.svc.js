@@ -19,7 +19,7 @@ class SeismoQuery {
       })
     });
   }
-  
+
   queryFiles(paramModel) {
     var params = this.createQuery(paramModel);
     return this.$http({
@@ -72,6 +72,7 @@ class SeismoQuery {
       dateTo: new Date(queryParamModel.dateTo),
       stationIds: stationIds.join(","),
       status: status.join(","),
+      fileNames: queryParamModel.fileNames,
       bins: queryParamModel.numBins
     };
 

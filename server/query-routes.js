@@ -81,6 +81,18 @@ router.get("/files", function(req, res, next) {
     });
   }
 
+  var fileNames = [];
+  if (req.query.fileNames) {
+    req.query.fileNames.split(",").reduce(function(acc, fileName) {
+      try {
+        acc.push(new RegExp(fileName.trim()));
+      } catch (e) {
+        console.log("bad file name regexp", e);
+      }
+      return acc;
+    }, fileNames);
+  }
+
   var status = [];
   if (req.query.status) {
     status = req.query.status.split(",").reduce(function(acc, status) {
@@ -118,6 +130,8 @@ router.get("/files", function(req, res, next) {
   if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
   // statuses
   queryComponents.push({status: {$in: status}});
+
+  if (fileNames.length > 0) queryComponents.push({name: {$in: fileNames}});
 
   // final query
   var query = {};
