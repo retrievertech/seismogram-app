@@ -2,7 +2,9 @@ var shiftPressed = false;
 
 class SeismoEditor {
 
-  constructor(SeismoImageMap) {
+  constructor($http, SeismoServer, SeismoImageMap) {
+    this.$http = $http;
+    this.SeismoServer = SeismoServer;
     this.SeismoImageMap = SeismoImageMap;
     this.layerBeingEdited = null;
     this.editing = false;
@@ -27,12 +29,22 @@ class SeismoEditor {
   }
 
   saveChanges() {
-    this.SeismoImageMap.metadataLayers
-      .filter((layer) => layer.key !== "intersections")
-      .forEach((layer) => {
-        var geoJson = JSON.stringify(layer.leafletLayer.toGeoJSON());
-        console.log("geoJson for", layer.key, geoJson.substring(0, 100));
-      });
+    var layers = this.SeismoImageMap.metadataLayers.map((layer) => {
+      return {
+        name: layer.name,
+        json: layer.leafletLayer.toGeoJSON()
+      };
+    });
+
+    var request = {
+      method: "POST",
+      url: this.SeismoServer.saveUrl + "/" + this.SeismoImageMap.currentFile.name,
+      data: { layers: layers }
+    };
+
+    this.$http(request).success(function() {
+      console.log("success");
+    });
   }
 
   discardChanges() {

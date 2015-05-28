@@ -111,4 +111,10 @@ router.get("/setstatus/:filename/:status", function(req, res, next) {
   });
 });
 
+router.post("/save/:filename", function(req, res, next) {
+  var layers = req.body.layers;
+  console.log("got data", layers.map(function(l) { return l.name; }).concat(", "));
+  res.send({ ok: 1 });
+});
+
 module.exports = router;
