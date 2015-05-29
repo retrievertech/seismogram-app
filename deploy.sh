@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function command() {
-  ssh ubuntu@52.25.254.202 $1
+  ssh ubuntu@52.10.13.12 $1
 }
 
 echo "== kill node" && \
