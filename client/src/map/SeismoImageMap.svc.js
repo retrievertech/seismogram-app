@@ -17,18 +17,21 @@ var IntersectionCircle = L.CircleMarker.extend({
 
 class SeismoImageMap {
 
-  constructor($timeout, $location, $http, $q, SeismoServer, Loading) {
+  constructor($timeout, $location, $http, $q, SeismoServer, SeismoStatus, Loading) {
     var map = window.imageMap = this;
 
-    this.SeismoServer = SeismoServer;
-    this.Loading = Loading;
-    this.$http = $http;
-    this.$location = $location;
-    this.$q = $q;
     this.$timeout = $timeout;
+    this.$location = $location;
+    this.$http = $http;
+    this.$q = $q;
+    this.SeismoServer = SeismoServer;
+    this.SeismoStatus = SeismoStatus;
+    this.Loading = Loading;
+
     this.leafletMap = null;
     this.currentFile = null;
     this.imageIsLoaded = false;
+
     this.metadataLayers = [
       {
         name: "Region of Interest",
@@ -143,14 +146,21 @@ class SeismoImageMap {
     this.currentFile = file;
     this.imageIsLoaded = false;
 
-    var s3Prefix;
+    var path;
+
     if (this.$location.host() === "localhost") {
       // we are in development
-      s3Prefix = "metadata/" + file.name + "/";
+      path = this.SeismoStatus.is(file.status, "Edited") ?
+        "edited-metadata" :
+        "metadata";
     } else {
       // in production
-      s3Prefix = "https://s3.amazonaws.com/wwssn-metadata/" + file.name + "/";
+      path = this.SeismoStatus.is(file.status, "Edited") ?
+        "https://s3.amazonaws.com/wwssn-edited-metadata" :
+        "https://s3.amazonaws.com/wwssn-metadata";
     }
+
+    var s3Prefix = path + "/" + file.name + "/";
 
     var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
@@ -178,7 +188,7 @@ class SeismoImageMap {
       }
     });
 
-    if (file.status !== 3) {
+    if (!this.SeismoStatus.is(file.status, "Complete") && !this.SeismoStatus.is(file.status, "Edited")) {
       // nothing to load
       return;
     }
@@ -187,7 +197,8 @@ class SeismoImageMap {
 
     // load the data and recreate the layers
     var promises = this.metadataLayers.map((layer) => {
-      return this.$http({url: s3Prefix + layer.key + ".json"}).then((ret) => {
+      var token = Math.random();
+      return this.$http({url: s3Prefix + layer.key + ".json?token=" + token}).then((ret) => {
         console.log(layer.key + ":", ret.data);
         layer.leafletLayer = L.geoJson(ret.data, layer.style);
         layer.leafletLayer.on("dblclick", () => this.leafletMap.zoomIn());
