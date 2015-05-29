@@ -123,7 +123,7 @@ router.post("/save/:filename", function(req, res, next) {
     function(path, cb) {
       var functions = layers.map(function(layer) {
         return function(callback) {
-          var filePath = path + "/" + layer.key;
+          var filePath = path + "/" + layer.key + ".json";
           fs.writeFile(filePath, layer.contents, callback);
         };
       });
