@@ -3,6 +3,8 @@ var mongo = require("mongodb").MongoClient;
 var async = require("async");
 var fs = require("fs");
 var exec = require("child_process").exec;
+var mktemp = require("mktemp");
+
 var diskCache = require("./disk-cache");
 var queryCache = require("./query-cache");
 var statusSocket = require("./status-socket");
@@ -112,9 +114,41 @@ router.get("/setstatus/:filename/:status", function(req, res, next) {
 });
 
 router.post("/save/:filename", function(req, res, next) {
+  var filename = req.params.filename;
   var layers = req.body.layers;
-  console.log("got data", layers.map(function(l) { return l.name; }).concat(", "));
-  res.send({ ok: 1 });
+  async.waterfall([
+    function(cb) {
+      mktemp.createDir("/tmp/seismo-save.XXXX", cb);
+    },
+    function(path, cb) {
+      var functions = layers.map(function(layer) {
+        return function(callback) {
+          var filePath = path + "/" + layer.key;
+          fs.writeFile(filePath, layer.contents, callback);
+        };
+      });
+      async.parallel(functions, function(err) {
+        cb(err, path);
+      });
+    },
+    function(path, cb) {
+      process.chdir(pipelinePath);
+      var command = "sh copy_to_s3.sh " + filename + " " + escape(path) + " edited";
+      if (process.env.NODE_ENV !== "production") {
+        command += " dev";
+      }
+      exec(command, cb);
+    },
+    function(stdout, stderr, cb) {
+      if (stdout) console.log(stdout);
+      if (stderr) console.log(stderr);
+      res.send({ ok: 1 });
+      setStatus(filename, status.edited);
+      cb(null);
+    }
+  ], function(err) {
+    if (err) next(err);
+  });
 });
 
 module.exports = router;

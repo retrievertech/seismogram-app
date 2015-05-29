@@ -38,7 +38,8 @@ class SeismoEditor {
     var layers = this.SeismoImageMap.metadataLayers.map((layer) => {
       return {
         name: layer.name,
-        json: layer.leafletLayer.toGeoJSON()
+        key: layer.key,
+        contents: JSON.stringify(layer.leafletLayer.toGeoJSON())
       };
     });
 
