@@ -1,5 +1,3 @@
-import {Gradient} from "../bower_components/redfish-core/lib/Util/Gradient.js";
-
 var angular = window.angular;
 
 import { SeismoMain } from "./SeismoMain.ctrl.js";

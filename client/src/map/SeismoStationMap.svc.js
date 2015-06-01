@@ -1,4 +1,4 @@
-import {Leaflet} from "../../bower_components/redfish-core/lib/Leaflet.js";
+import {Leaflet} from "../../bower_components/redfish-util/lib/Leaflet.js";
 
 var L = window.L;
 
