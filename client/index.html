@@ -20,9 +20,9 @@
   <body ng-controller="SeismoMain" ng-cloak>
     <div id="left-section">
       <div class="maps">
-        <div class="loading-spinner" ng-show="Loading.active()">
-          <div ng-repeat="message in Loading.messages">
-            {{ message }}
+        <div class="loading-spinner" ng-show="Loading.any()">
+          <div ng-repeat="message in Loading.messages" class="{{message.type}}">
+            {{ message.name }}
           </div>
         </div>
         <div ng-hide="imageMapVisible">
@@ -63,7 +63,8 @@
           </div>
 
           <div class="image-map-controls" ng-show="SeismoEditor.editing">
-            <div ng-click="SeismoEditor.saveChanges()">Save Changes</div>
+            <div ng-show="!SeismoEditor.saving" ng-click="SeismoEditor.saveChanges()">Save Changes</div>
+            <div class="disabled-button" ng-show="SeismoEditor.saving">Saving...</div>
             <div ng-click="SeismoEditor.discardChanges()">Discard Changes</div>
             <div ng-click="SeismoEditor.exitEditing()">Exit</div>
           </div>

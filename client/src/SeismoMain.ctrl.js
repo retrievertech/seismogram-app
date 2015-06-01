@@ -111,7 +111,7 @@ class SeismoMain {
 
       // update SeismoHistogram
       SeismoHistogram.renderOverlay(data.histogram);
-    }
+    };
 
     $scope.init = () => {
       // perform initial queries to fetch low/high dates,
