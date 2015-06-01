@@ -1,5 +1,3 @@
-import {Gradient} from "../bower_components/redfish-core/lib/Util/Gradient.js";
-
 var angular = window.angular;
 
 import { SeismoMain } from "./SeismoMain.ctrl.js";
@@ -7,12 +5,14 @@ import { SeismoStationMap } from "./map/SeismoStationMap.svc.js";
 import { SeismoImageMap } from "./map/SeismoImageMap.svc.js";
 import { SeismoQuery } from "./SeismoQuery.svc.js";
 import { SeismoServer } from "./SeismoServer.svc.js";
+import { SeismoStatus } from "./SeismoStatus.svc.js";
 import { PieOverlay } from "./map/PieOverlay.svc.js";
 import { Loading } from "./Loading.svc.js";
 import { SeismoTimeNubbin } from "./seismo-query-nubbins/SeismoTimeNubbin.dir.js";
 import { SeismoQueryNubbins } from "./seismo-query-nubbins/SeismoQueryNubbins.dir.js";
 import { SeismoData } from "./SeismoData.svc.js";
 import { SeismoEditor } from "./SeismoEditor.svc.js";
+import { SeismoHistogram } from "./SeismoHistogram.svc.js";
 import { MapLink } from "./map/MapLink.dir.js";
 
 angular.module("SeismoApp", [])
@@ -21,8 +21,10 @@ angular.module("SeismoApp", [])
   .service("SeismoImageMap", SeismoImageMap)
   .service("SeismoQuery", SeismoQuery)
   .service("SeismoServer", SeismoServer)
+  .service("SeismoStatus", SeismoStatus)
   .service("SeismoData", SeismoData)
   .service("SeismoEditor", SeismoEditor)
+  .service("SeismoHistogram", SeismoHistogram)
   .service("PieOverlay", PieOverlay)
   .service("Loading", Loading)
   .directive("seismoTimeNubbin", SeismoTimeNubbin)

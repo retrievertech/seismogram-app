@@ -2,7 +2,7 @@ var cache = {
   on: true,
   cache: {},
   key: function(query) {
-    return ["dateFrom", "dateTo", "status", "edited", "stationIds", "page"]
+    return ["dateFrom", "dateTo", "status", "edited", "stationIds", "page", "fileNames"]
       .map(function(field) { return query[field]; }).join("_");
   },
   hit: function(query) {

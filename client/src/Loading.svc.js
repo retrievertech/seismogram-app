@@ -5,17 +5,37 @@ class Loading {
     this.messages = [];
   }
 
-  start(message) {
-    if (this.messages.indexOf(message) === -1) {
-      this.messages.push(message);
+  any() {
+    return this.messages.length > 0;
+  }
+
+  active(type = "loading") {
+    var loading = this.messages.filter((msg) => msg.type === type);
+    return loading.length > 0;
+  }
+
+  start(name, type = "loading") {
+    var msg = this.messages.find((msg) => msg.name === name);
+
+    if (!msg) {
+      this.messages.push({
+        type: type,
+        name: name
+      });
     }
   }
 
-  stop(message) {
-    var idx = this.messages.indexOf(message);
-    if (idx >= 0) {
+  stop(name) {
+    var msg = this.messages.find((msg) => msg.name === name);
+    if (msg) {
+      var idx = this.messages.indexOf(msg);
       this.messages.splice(idx, 1);
     }
+  }
+
+  ephemeral(name, type = "loading", time = 1000) {
+    this.start(name, type);
+    this.$timeout(() => this.stop(name), time);
   }
 }
 

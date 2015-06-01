@@ -7,8 +7,10 @@ class MapLink {
       },
       link: (scope, element, attrs) => {
         scope.mapLink.init(attrs.id);
-        scope.$watch("viewReset", () => {
-          $timeout(() => scope.mapLink.leafletMap.invalidateSize());
+        scope.$watch("viewReset", (oldVal, newVal) => {
+          if (typeof newVal !== "undefined") {
+            $timeout(() => scope.mapLink.leafletMap.invalidateSize());
+          }
         });
       }
     };

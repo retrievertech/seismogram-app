@@ -8,6 +8,12 @@ function validDateTime(dateString, timeString) {
     var day = dateString.substr(2, 2);
     // enforce 20th century
     var year = "19" + dateString.substr(4, 2);
+    if (year === "1937") {
+      year = "1977";
+    }
+    if (year === "1954") {
+      year = "1974";
+    }
     var hour = timeString.substr(0, 2);
     var minute = timeString.substr(2, 2);
     var dt = month + "-" + day + "-" + year + " " + hour + ":" + minute + " GMT+0000";
@@ -62,17 +68,6 @@ function validType(type, invalidTypes) {
   }
 }
 
-function generateStatus() {
-  if (Math.random() > 0.95)
-    return 3;
-  else if (Math.random() > 0.85)
-    return 2;
-  else if (Math.random() > 0.6)
-    return 1;
-  else
-    return 0;
-}
-
 module.exports = {
   parse: function(fileName) {
     var text = fs.readFileSync(fileName).toString();
@@ -95,8 +90,7 @@ module.exports = {
           stationId: stationId,
           type: type,
           name: fileName,
-          status: generateStatus(),
-          edited: Math.floor(Math.random() * 2) === 1 ? true : false
+          status: 0
         });
       }
     });
