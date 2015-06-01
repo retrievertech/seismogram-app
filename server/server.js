@@ -1,13 +1,16 @@
 var http = require("http");
 var express = require("express");
+var bodyParser = require("body-parser");
 var cors = require("cors");
 var app = express();
-var statusSocket = require("./status-socket");
 
+var statusSocket = require("./status-socket");
 var queryRoutes = require("./query-routes");
 var tileRoutes = require("./tile-routes");
 var processingRoutes = require("./processing-routes");
 
+app.use(bodyParser.json({ limit: "100mb" }));
+app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(cors());
 app.use("/query", queryRoutes);
 app.use("/tiles", tileRoutes);

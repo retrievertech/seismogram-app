@@ -3,7 +3,7 @@ var io = window.io;
 
 class SeismoData {
 
-  constructor($timeout, SeismoServer, SeismoImageMap) {
+  constructor($timeout, SeismoServer, SeismoStatus, SeismoImageMap, SeismoEditor) {
     this.files = [];
     this.stationStatuses = {};
     this.stations = [];
@@ -13,8 +13,12 @@ class SeismoData {
       this.files.forEach((file) => {
         if (file.name === obj.filename) {
           $timeout(() => {
+            var oldStatus = file.status;
             file.status = obj.status;
-            if (file.status === 3 && file === SeismoImageMap.currentFile) {
+            if ((SeismoStatus.is(file.status, "Complete") || SeismoStatus.is(file.status, "Edited")) &&
+                file === SeismoImageMap.currentFile && oldStatus !== file.status)
+            {
+              SeismoEditor.stopEditing();
               SeismoImageMap.loadImage(file);
             }
           });
