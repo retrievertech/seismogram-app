@@ -227,7 +227,8 @@ router.get("/files", function(req, res, next) {
         highDate: results.highDate,
         numResults: results.numResults,
         histogram: results.counts.histogram,
-        files: results.filteredFiles
+        files: results.filteredFiles,
+        numBins: numBins
       };
 
       queryCache.put(req.query, payload);
