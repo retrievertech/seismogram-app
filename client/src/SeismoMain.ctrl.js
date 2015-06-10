@@ -22,8 +22,15 @@ class SeismoMain {
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
+      $scope.startUpdatingUrlHash();
       SeismoImageMap.loadImage(file);
     };
+
+    $scope.stopViewingSeismogram = () => {
+      $scope.stopUpdatingUrlHash();
+      $scope.hideImageMap();
+      $scope.clearUrlHash();
+    }
 
     $scope.startProcessing = () => {
       var file = SeismoImageMap.currentFile;
@@ -91,7 +98,7 @@ class SeismoMain {
     $scope.queryStationStatuses = () => {
       $scope.updateUrlParams();
       Loading.start("Loading results...");
-      SeismoQuery.queryFiles($scope.queryParamModel)
+      return SeismoQuery.queryFiles($scope.queryParamModel)
         .then((res) => {
           console.log("Query complete.", res.data);
           $scope.update(res.data);
@@ -116,6 +123,30 @@ class SeismoMain {
 
     $scope.updateUrlParams = () => {
       $location.search(escapeQueryParams($scope.queryParamModel));
+    }
+
+    $scope.startUpdatingUrlHash = () => {
+      SeismoImageMap.leafletMap.on("moveend", $scope.updateUrlHash);
+    }
+
+    $scope.stopUpdatingUrlHash = () => {
+      SeismoImageMap.leafletMap.off("moveend", $scope.updateUrlHash);
+    }
+
+    $scope.updateUrlHash = () => {
+      var map = SeismoImageMap.leafletMap,
+          file = SeismoImageMap.currentFile,
+          center = map.getCenter(),
+          zoom = map.getZoom();
+
+      if (file) {
+        // hash format: #<filename>;<lat>,<lng>;<zoom>
+        $location.hash(file.name+";"+center.lat+","+center.lng+";"+zoom);
+      }
+    }
+
+    $scope.clearUrlHash = () => {
+      $location.hash("");
     }
 
     $scope.initQueryModel = (queryModel) => {
@@ -170,6 +201,26 @@ class SeismoMain {
           $scope.initQueryModel(initialQueryParams);
           return $scope.queryStationStatuses();
         })
+        .then(() => {
+          // if a specific seismogram is linked in the url, show the seismo
+          var urlHash = $location.hash();
+          if (urlHash !== "") {
+            // but first wait for the base layer to start loading
+            // otherwise rendering gets weird
+            SeismoStationMap.map.currentBaseLayer.leafletLayer.once("loading", () => {
+              var hashParts = urlHash.split(";"),
+                  fileName = hashParts[0],
+                  latlng = hashParts[1].split(","),
+                  center = [parseInt(latlng[0]), parseInt(latlng[1])],
+                  zoom = parseInt(hashParts[2]);
+
+              var curSeismo = SeismoData.files.find((file) => file.name === fileName);
+              $scope.viewSeismogram(curSeismo);
+              
+              SeismoImageMap.leafletMap.setView(center, zoom);
+            });
+          }
+        });
     };
 
     $scope.init();

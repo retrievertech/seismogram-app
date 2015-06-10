@@ -41,7 +41,7 @@
           </div>
 
           <div class="image-map-controls" ng-hide="SeismoEditor.editing">
-            <div ng-click="hideImageMap()">Back to map</div>
+            <div ng-click="stopViewingSeismogram()">Back to map</div>
 
             <div ng-click="startProcessing()"
                  ng-show="!Loading.active() && canProcess()">
