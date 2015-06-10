@@ -141,13 +141,12 @@ class SeismoMain {
       SeismoQuery.initialQuery().then((res) => {
         console.log("Initial query complete.", res);
 
-        // stations are loaded; render them
+        // stations are loaded; render station backgrounds
         var stationsResult = res.stations.data;
         $scope.SeismoData.stations = stationsResult;
         $scope.PieOverlay.renderStations();
 
-        // files stats are loaded; render histogram background,
-        // save default query parameters
+        // files stats are loaded; render histogram background
         var seismoResult = res.seismograms.data,
             lowDate = new Date(seismoResult.lowDate),
             highDate = new Date(seismoResult.highDate),
