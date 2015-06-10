@@ -89,8 +89,8 @@ class SeismoMain {
     };
 
     $scope.queryStationStatuses = () => {
+      $scope.updateUrlParams();
       Loading.start("Loading results...");
-      $scope.updateUrl();
       SeismoQuery.queryFiles($scope.queryParamModel)
         .then((res) => {
           console.log("Query complete.", res.data);
@@ -114,7 +114,7 @@ class SeismoMain {
       SeismoHistogram.renderOverlay(data.histogram);
     };
 
-    $scope.updateUrl = () => {
+    $scope.updateUrlParams = () => {
       $location.search(escapeQueryParams($scope.queryParamModel));
     }
 
@@ -138,39 +138,38 @@ class SeismoMain {
     $scope.init = () => {
       // perform initial queries to fetch low/high dates,
       // histogram, and station info
-      SeismoQuery.initialQuery().then((res) => {
-        console.log("Initial query complete.", res);
+      SeismoQuery.initialQuery()
+        .then((res) => {
+          console.log("Initial query complete.", res);
 
-        // stations are loaded; render station backgrounds
-        var stationsResult = res.stations.data;
-        $scope.SeismoData.stations = stationsResult;
-        $scope.PieOverlay.renderStations();
+          // stations are loaded; render station backgrounds
+          var stationsResult = res.stations.data;
+          $scope.SeismoData.stations = stationsResult;
+          $scope.PieOverlay.renderStations();
 
-        // files stats are loaded; render histogram background
-        var seismoResult = res.seismograms.data,
-            lowDate = new Date(seismoResult.lowDate),
-            highDate = new Date(seismoResult.highDate),
-            numBins = seismoResult.numBins,
-            data = seismoResult.histogram;
-        SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
+          // files stats are loaded; render histogram background
+          var seismoResult = res.seismograms.data,
+              lowDate = new Date(seismoResult.lowDate),
+              highDate = new Date(seismoResult.highDate),
+              numBins = seismoResult.numBins,
+              data = seismoResult.histogram;
+          SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
 
-        // parse url query params
-        var urlQueryParams = $location.search(),
-            initialQueryParams;
-            
-        if (_.isEmpty(urlQueryParams)) {
-          // no query parameters passed in with the url; use results from files query
-          initialQueryParams = { dateFrom: lowDate, dateTo: highDate, numBins: numBins };
-        } else {
-          // use url query parameters 
-          initialQueryParams = unescapeQueryParams(urlQueryParams);
-        }
+          // parse url query params
+          var urlQueryParams = $location.search(),
+              initialQueryParams;
+              
+          if (_.isEmpty(urlQueryParams)) {
+            // no query parameters passed in with the url; use results from files query
+            initialQueryParams = { dateFrom: lowDate, dateTo: highDate, numBins: numBins };
+          } else {
+            // use url query parameters 
+            initialQueryParams = unescapeQueryParams(urlQueryParams);
+          }
 
-        $scope.initQueryModel(initialQueryParams);
-        $scope.updateUrl();
-        $scope.queryStationStatuses();
-
-      });
+          $scope.initQueryModel(initialQueryParams);
+          return $scope.queryStationStatuses();
+        })
     };
 
     $scope.init();
