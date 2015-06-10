@@ -90,6 +90,7 @@ class SeismoMain {
 
     $scope.queryStationStatuses = () => {
       Loading.start("Loading results...");
+      $scope.updateUrl();
       SeismoQuery.queryFiles($scope.queryParamModel)
         .then((res) => {
           console.log("Query complete.", res.data);
