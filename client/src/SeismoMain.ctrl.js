@@ -1,6 +1,6 @@
 class SeismoMain {
 
-  constructor($scope, $http, SeismoStationMap,
+  constructor($scope, $http, $location, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
     SeismoData, SeismoEditor, SeismoHistogram,
     SeismoStatus, PieOverlay, Loading) {
@@ -113,6 +113,27 @@ class SeismoMain {
       SeismoHistogram.renderOverlay(data.histogram);
     };
 
+    $scope.updateUrl = () => {
+      $location.search(escapeQueryParams($scope.queryParamModel));
+    }
+
+    $scope.initQueryModel = (queryModel) => {
+      var defaultQueryModel = {
+        dateFrom: "",
+        dateTo: "",
+        numBins: 200,
+        stationNames: "",
+        fileNames: "",
+        status: {}
+      };
+
+      $scope.SeismoStatus.statuses.forEach((status) => {
+        defaultQueryModel.status[status.code] = true;
+      });
+
+      $scope.queryParamModel = _.extend(defaultQueryModel, queryModel);
+    }
+
     $scope.init = () => {
       // perform initial queries to fetch low/high dates,
       // histogram, and station info
@@ -131,37 +152,47 @@ class SeismoMain {
             highDate = new Date(seismoResult.highDate),
             numBins = seismoResult.numBins,
             data = seismoResult.histogram;
-
-        this.initQueryParams($scope, seismoResult);
-
         SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
 
-        $scope.update(seismoResult);
+        // parse url query params
+        var urlQueryParams = $location.search(),
+            initialQueryParams;
+            
+        if (_.isEmpty(urlQueryParams)) {
+          // no query parameters passed in with the url; use results from files query
+          initialQueryParams = { dateFrom: lowDate, dateTo: highDate, numBins: numBins };
+        } else {
+          // use url query parameters 
+          initialQueryParams = unescapeQueryParams(urlQueryParams);
+        }
+
+        $scope.initQueryModel(initialQueryParams);
+        $scope.updateUrl();
+        $scope.queryStationStatuses();
+
       });
     };
 
     $scope.init();
   }
 
-  initQueryParams($scope, query) {
+}
 
-    // eventually dateFrom and dateTo should
-    // come from the bounds in a query
+function escapeQueryParams(queryParams) {
+  return _.extend(_.clone(queryParams), {
+    dateFrom: new Date(queryParams.dateFrom).toJSON(),
+    dateTo: new Date(queryParams.dateTo).toJSON(),
+    status: Object.keys(queryParams.status)
+      .filter((key) => queryParams.status[key] === true).join(",")
+  });
+}
 
-    $scope.queryParamModel = {
-      dateFrom: new Date(query.lowDate),
-      dateTo: new Date(query.highDate),
-      numBins: query.numBins,
-      stationNames: "",
-      fileNames: "",
-      status: {}
-    };
-
-    $scope.SeismoStatus.statuses.forEach((status) => {
-      $scope.queryParamModel.status[status.code] = true;
-    });
-  }
-
+function unescapeQueryParams(queryParams) {
+  return _.extend(_.clone(queryParams), {
+    dateFrom: new Date(queryParams.dateFrom).toString(),
+    dateTo: new Date(queryParams.dateTo).toString(),
+    status: _.object(_.map(queryParams.status.split(","), (val) => [val, true]))
+  });
 }
 
 export { SeismoMain };
