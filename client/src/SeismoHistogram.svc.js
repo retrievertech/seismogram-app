@@ -89,7 +89,7 @@ class SeismoHistogram {
 
     // update
     barGroups.attr("transform", (d,i) => "translate(" + this.idxToXCoord(i) + "," + this.yScale(d) + ")");
-    barGroups.selectAll("rect").attr("height", (d) => this.height - this.yScale(d));
+    barGroups.select("rect").attr("height", (d) => this.height - this.yScale(d));
 
     // exit
     barGroups.exit().remove();
