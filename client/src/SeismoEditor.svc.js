@@ -93,14 +93,16 @@ class SeismoEditor {
 
         // we register mousedown events for moving and radius-sizing
         circle.on("mousedown", (e) => {
+          var zoom = map.getZoom();
           prevMousePosition = e.latlng.lng;
 
           // once the mouse has been pressed, we catch mousemove events on the map
           map.on("mousemove", (e) => {
             // if shift is pressed while the mouse is down and being moved, we resize
-            // the circle's radius, but only at at maximum zoom.
-
-            if (shiftPressed && map.getZoom() === 7) {
+            // the circle's radius, but only at zooms for which the actual radius is rendered
+            // (see IntersectionCircle.getRadius())
+            
+            if (shiftPressed && zoom > 5) {
               var distance = Math.abs(e.latlng.lng - prevMousePosition);
               var radius = circle.feature.properties.radius;
               var newRadius = radius + distance;
@@ -118,7 +120,7 @@ class SeismoEditor {
 
               // modify the underlying geoJson, too.
               circle.feature.properties.radius = newRadius;
-              circle.setRadius(newRadius);
+              circle.updateRadius(zoom);
 
               prevMousePosition = e.latlng.lng;
             } else {
