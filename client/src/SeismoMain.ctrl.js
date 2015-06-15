@@ -47,7 +47,8 @@ class SeismoMain {
       return file &&
         SeismoData.isLongPeriod(file) &&
         SeismoImageMap.imageIsLoaded &&
-        SeismoStatus.is(file.status, "Not Started");
+        (SeismoStatus.is(file.status, "Not Started") ||
+        SeismoStatus.is(file.status, "Failed"));
     };
 
     $scope.canEdit = () => {
