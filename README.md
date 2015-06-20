@@ -37,3 +37,7 @@ An angular frontend.
 bower install
 ```
 Serve the client directory using a web server and load it in the browser, assuming the above steps are done.
+
+EC2
+---
+On our EC2 instance, the mongodb config file is located at `/etc/mongod.conf`.
