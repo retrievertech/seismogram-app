@@ -125,6 +125,31 @@ class SeismoMain {
       $location.search(escapeQueryParams($scope.queryParamModel));
     }
 
+    $scope.getQueryParamsFromUrl = () => {
+      var queryParamKeys = {
+        dateFrom: "",
+        dateTo: "",
+        numBins: "",
+        stationNames: "",
+        fileNames: "",
+        status: ""
+      };
+
+      var searchObj = $location.search();
+      
+      if (_.isEmpty(searchObj)) {
+        return null;
+      }
+
+      var queryParams = {};
+      for (var key in searchObj) {
+        if (key in queryParamKeys) {
+          queryParams[key] = searchObj[key];
+        }
+      }
+      return unescapeQueryParams(queryParams);
+    }
+
     $scope.startUpdatingUrlHash = () => {
       SeismoImageMap.leafletMap.on("moveend", $scope.updateUrlHash);
     }
@@ -187,15 +212,11 @@ class SeismoMain {
           SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
 
           // parse url query params
-          var urlQueryParams = $location.search(),
-              initialQueryParams;
+          var initialQueryParams = $scope.getQueryParamsFromUrl();
               
-          if (_.isEmpty(urlQueryParams)) {
+          if (!initialQueryParams) {
             // no query parameters passed in with the url; use results from files query
             initialQueryParams = { dateFrom: lowDate, dateTo: highDate, numBins: numBins };
-          } else {
-            // use url query parameters 
-            initialQueryParams = unescapeQueryParams(urlQueryParams);
           }
 
           $scope.initQueryModel(initialQueryParams);
