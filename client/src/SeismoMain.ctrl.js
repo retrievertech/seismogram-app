@@ -29,7 +29,7 @@ class SeismoMain {
     $scope.stopViewingSeismogram = () => {
       $scope.stopUpdatingUrl();
       $scope.hideImageMap();
-      $scope.clearUrlHash();
+      $scope.updateUrlParams();
     }
 
     $scope.startProcessing = () => {
@@ -128,7 +128,7 @@ class SeismoMain {
           zoom = map.getZoom();
 
       var imageParams = {};
-      if (file) {
+      if (file && $scope.imageMapVisible) {
         imageParams = {
           name: file.name,
           lat: center.lat,
@@ -184,10 +184,6 @@ class SeismoMain {
 
     $scope.stopUpdatingUrl = () => {
       SeismoImageMap.leafletMap.off("moveend", $scope.updateUrlParams);
-    }
-
-    $scope.clearUrlHash = () => {
-      $location.hash("");
     }
 
     $scope.initQueryModel = (queryModel) => {
