@@ -22,12 +22,12 @@ class SeismoMain {
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
-      $scope.startUpdatingUrlHash();
+      $scope.startUpdatingUrl();
       SeismoImageMap.loadImage(file);
     };
 
     $scope.stopViewingSeismogram = () => {
-      $scope.stopUpdatingUrlHash();
+      $scope.stopUpdatingUrl();
       $scope.hideImageMap();
       $scope.clearUrlHash();
     }
@@ -178,11 +178,11 @@ class SeismoMain {
       return unescapeQueryParams(queryParams);
     }
 
-    $scope.startUpdatingUrlHash = () => {
+    $scope.startUpdatingUrl = () => {
       SeismoImageMap.leafletMap.on("moveend", $scope.updateUrlParams);
     }
 
-    $scope.stopUpdatingUrlHash = () => {
+    $scope.stopUpdatingUrl = () => {
       SeismoImageMap.leafletMap.off("moveend", $scope.updateUrlParams);
     }
 
