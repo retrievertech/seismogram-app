@@ -134,19 +134,13 @@ class SeismoMain {
         fileNames: "",
         status: ""
       };
-
-      var searchObj = $location.search();
       
-      if (_.isEmpty(searchObj)) {
+      var queryParams = filterObject($location.search(), queryParamKeys);
+      
+      if (_.isEmpty(queryParams)) {
         return null;
       }
 
-      var queryParams = {};
-      for (var key in searchObj) {
-        if (key in queryParamKeys) {
-          queryParams[key] = searchObj[key];
-        }
-      }
       return unescapeQueryParams(queryParams);
     }
 
@@ -247,6 +241,16 @@ class SeismoMain {
     $scope.init();
   }
 
+}
+
+function filterObject(object, template) {
+  var filteredObj = {};
+  for (var key in object) {
+    if (key in template) {
+      filteredObj[key] = object[key];
+    }
+  }
+  return filteredObj;
 }
 
 function escapeQueryParams(queryParams) {
