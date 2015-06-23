@@ -23,4 +23,9 @@ app.use(function(err, req, res, next) {
 
 var server = http.createServer(app);
 statusSocket.run(server);
-server.listen(3000);
+server.listen(3000, function() {
+  var host = server.address().address;
+  var port = server.address().port;
+  var mode = process.env.NODE_ENV || "dev";
+  console.log('Seismo app listening in %s mode at http://%s:%s', mode, host, port);
+});
