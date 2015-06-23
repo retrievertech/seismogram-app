@@ -47,7 +47,8 @@ class SeismoMain {
       return file &&
         SeismoData.isLongPeriod(file) &&
         SeismoImageMap.imageIsLoaded &&
-        SeismoStatus.is(file.status, "Not Started");
+        (SeismoStatus.is(file.status, "Not Started") ||
+        SeismoStatus.is(file.status, "Failed"));
     };
 
     $scope.canEdit = () => {
@@ -68,7 +69,8 @@ class SeismoMain {
 
     $scope.showLog = () => {
       var file = SeismoImageMap.currentFile;
-      var url = "logs/" + file.name + ".txt";
+      var token = Math.random();
+      var url = "logs/" + file.name + ".txt?token="+token;
 
       $scope.log = "";
 
