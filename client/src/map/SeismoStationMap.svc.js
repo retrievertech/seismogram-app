@@ -11,6 +11,8 @@ class SeismoStationMap {
     this.map = null;
     this.leafletMap = null;
     this.pies = [];
+    this.isReady = false;
+    this.readyCallbacks = [];
   }
 
   init(id) {
@@ -36,10 +38,31 @@ class SeismoStationMap {
     });
 
     this.PieOverlay.init(this.leafletMap);
+
+    map.currentBaseLayer.leafletLayer.once("loading", () => {
+      this.isReady = true;
+      this.fireReadyCallbacks();
+    });
   }
 
   updateBounds() {
     this.leafletMap.fitBounds(this.SeismoData.resultsBBox());
+  }
+
+  whenReady(callback) {
+    if (typeof callback !== "function") {
+      return;
+    }
+
+    if (this.isReady) {
+      callback();
+    } else {
+      this.readyCallbacks.push(callback);
+    }
+  }
+
+  fireReadyCallbacks() {
+    this.readyCallbacks.forEach((callback) => callback());
   }
 }
 
