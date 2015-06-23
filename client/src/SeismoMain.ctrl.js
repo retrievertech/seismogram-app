@@ -22,14 +22,14 @@ class SeismoMain {
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
-      $scope.startUpdatingUrlHash();
+      $scope.startUpdatingUrl();
       SeismoImageMap.loadImage(file);
     };
 
     $scope.stopViewingSeismogram = () => {
-      $scope.stopUpdatingUrlHash();
+      $scope.stopUpdatingUrl();
       $scope.hideImageMap();
-      $scope.clearUrlHash();
+      $scope.updateUrlParams();
     }
 
     $scope.startProcessing = () => {
@@ -124,31 +124,68 @@ class SeismoMain {
     };
 
     $scope.updateUrlParams = () => {
-      $location.search(escapeQueryParams($scope.queryParamModel));
-    }
-
-    $scope.startUpdatingUrlHash = () => {
-      SeismoImageMap.leafletMap.on("moveend", $scope.updateUrlHash);
-    }
-
-    $scope.stopUpdatingUrlHash = () => {
-      SeismoImageMap.leafletMap.off("moveend", $scope.updateUrlHash);
-    }
-
-    $scope.updateUrlHash = () => {
       var map = SeismoImageMap.leafletMap,
           file = SeismoImageMap.currentFile,
           center = map.getCenter(),
           zoom = map.getZoom();
 
-      if (file) {
-        // hash format: #<filename>;<lat>,<lng>;<zoom>
-        $location.hash(file.name+";"+center.lat+","+center.lng+";"+zoom);
+      var imageParams = {};
+      if (file && $scope.imageMapVisible) {
+        imageParams = {
+          name: file.name,
+          lat: center.lat,
+          lng: center.lng,
+          zoom: zoom
+        };
       }
+
+      var queryParams = escapeQueryParams($scope.queryParamModel);
+
+      $location.search(_.extend(queryParams, imageParams));
     }
 
-    $scope.clearUrlHash = () => {
-      $location.hash("");
+    $scope.getImageParamsFromUrl = () => {
+      var imageParamKeys = {
+        name: "",
+        lat: "",
+        lng: "",
+        zoom: ""
+      };
+
+      var imageParams = filterObject($location.search(), imageParamKeys);
+
+      if (_.isEmpty(imageParams)) {
+        return null;
+      }
+      
+      return imageParams;
+    }
+
+    $scope.getQueryParamsFromUrl = () => {
+      var queryParamKeys = {
+        dateFrom: "",
+        dateTo: "",
+        numBins: "",
+        stationNames: "",
+        fileNames: "",
+        status: ""
+      };
+      
+      var queryParams = filterObject($location.search(), queryParamKeys);
+      
+      if (_.isEmpty(queryParams)) {
+        return null;
+      }
+
+      return unescapeQueryParams(queryParams);
+    }
+
+    $scope.startUpdatingUrl = () => {
+      SeismoImageMap.leafletMap.on("moveend", $scope.updateUrlParams);
+    }
+
+    $scope.stopUpdatingUrl = () => {
+      SeismoImageMap.leafletMap.off("moveend", $scope.updateUrlParams);
     }
 
     $scope.initQueryModel = (queryModel) => {
@@ -169,6 +206,10 @@ class SeismoMain {
     }
 
     $scope.init = () => {
+      // parse url search string
+      var initialQueryParams = $scope.getQueryParamsFromUrl(),
+          imageParams = $scope.getImageParamsFromUrl();
+
       // perform initial queries to fetch low/high dates,
       // histogram, and station info
       SeismoQuery.initialQuery()
@@ -187,17 +228,10 @@ class SeismoMain {
               numBins = seismoResult.numBins,
               data = seismoResult.histogram;
           SeismoHistogram.initBackground(lowDate, highDate, numBins, data);
-
-          // parse url query params
-          var urlQueryParams = $location.search(),
-              initialQueryParams;
               
-          if (_.isEmpty(urlQueryParams)) {
+          if (!initialQueryParams) {
             // no query parameters passed in with the url; use results from files query
             initialQueryParams = { dateFrom: lowDate, dateTo: highDate, numBins: numBins };
-          } else {
-            // use url query parameters 
-            initialQueryParams = unescapeQueryParams(urlQueryParams);
           }
 
           $scope.initQueryModel(initialQueryParams);
@@ -205,18 +239,14 @@ class SeismoMain {
         })
         .then(() => {
           // if a specific seismogram is linked in the url, show the seismo
-          var urlHash = $location.hash();
-          if (urlHash !== "") {
+          if (imageParams) {
             // but first wait for the base layer to start loading
             // otherwise rendering gets weird
             SeismoStationMap.map.currentBaseLayer.leafletLayer.once("loading", () => {
-              var hashParts = urlHash.split(";"),
-                  fileName = hashParts[0],
-                  latlng = hashParts[1].split(","),
-                  center = [parseInt(latlng[0]), parseInt(latlng[1])],
-                  zoom = parseInt(hashParts[2]);
+              var center = [parseInt(imageParams.lat), parseInt(imageParams.lng)],
+                  zoom = imageParams.zoom;
 
-              var curSeismo = SeismoData.files.find((file) => file.name === fileName);
+              var curSeismo = SeismoData.files.find((file) => file.name === imageParams.name);
               $scope.viewSeismogram(curSeismo);
               
               SeismoImageMap.leafletMap.setView(center, zoom);
@@ -228,6 +258,16 @@ class SeismoMain {
     $scope.init();
   }
 
+}
+
+function filterObject(object, template) {
+  var filteredObj = {};
+  for (var key in object) {
+    if (key in template) {
+      filteredObj[key] = object[key];
+    }
+  }
+  return filteredObj;
 }
 
 function escapeQueryParams(queryParams) {
