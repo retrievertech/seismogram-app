@@ -1,10 +1,12 @@
 import {Leaflet} from "../../bower_components/redfish-util/lib/Leaflet.js";
+import {Evented} from "../../bower_components/redfish-util/lib/Evented.js";
 
 var L = window.L;
 
-class SeismoStationMap {
+class SeismoStationMap extends Evented {
 
   constructor(SeismoData, PieOverlay) {
+    super();
     this.SeismoData = SeismoData;
     this.PieOverlay = PieOverlay;
 
@@ -12,7 +14,6 @@ class SeismoStationMap {
     this.leafletMap = null;
     this.pies = [];
     this.isReady = false;
-    this.readyCallbacks = [];
   }
 
   init(id) {
@@ -41,7 +42,7 @@ class SeismoStationMap {
 
     map.currentBaseLayer.leafletLayer.once("loading", () => {
       this.isReady = true;
-      this.fireReadyCallbacks();
+      this.fire("ready");
     });
   }
 
@@ -50,20 +51,15 @@ class SeismoStationMap {
   }
 
   whenReady(callback) {
-    if (typeof callback !== "function") {
-      return;
-    }
+    if (typeof callback !== "function") return;
 
     if (this.isReady) {
       callback();
     } else {
-      this.readyCallbacks.push(callback);
+      this.on("ready", callback);
     }
   }
 
-  fireReadyCallbacks() {
-    this.readyCallbacks.forEach((callback) => callback());
-  }
 }
 
 export { SeismoStationMap };
