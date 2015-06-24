@@ -1,16 +1,19 @@
 import {Leaflet} from "../../bower_components/redfish-util/lib/Leaflet.js";
+import {Evented} from "../../bower_components/redfish-util/lib/Evented.js";
 
 var L = window.L;
 
-class SeismoStationMap {
+class SeismoStationMap extends Evented {
 
   constructor(SeismoData, PieOverlay) {
+    super();
     this.SeismoData = SeismoData;
     this.PieOverlay = PieOverlay;
 
     this.map = null;
     this.leafletMap = null;
     this.pies = [];
+    this.isReady = false;
   }
 
   init(id) {
@@ -36,11 +39,27 @@ class SeismoStationMap {
     });
 
     this.PieOverlay.init(this.leafletMap);
+
+    map.currentBaseLayer.leafletLayer.once("loading", () => {
+      this.isReady = true;
+      this.fire("ready");
+    });
   }
 
   updateBounds() {
     this.leafletMap.fitBounds(this.SeismoData.resultsBBox());
   }
+
+  whenReady(callback) {
+    if (typeof callback !== "function") return;
+
+    if (this.isReady) {
+      callback();
+    } else {
+      this.on("ready", callback);
+    }
+  }
+
 }
 
 export { SeismoStationMap };

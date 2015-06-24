@@ -242,7 +242,7 @@ class SeismoMain {
           if (imageParams) {
             // but first wait for the base layer to start loading
             // otherwise rendering gets weird
-            SeismoStationMap.map.currentBaseLayer.leafletLayer.once("loading", () => {
+            SeismoStationMap.whenReady(() => {
               var center = [parseInt(imageParams.lat), parseInt(imageParams.lng)],
                   zoom = imageParams.zoom;
 
