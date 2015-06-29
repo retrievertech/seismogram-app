@@ -30,6 +30,7 @@ Tiler.prototype.createTile = function(image, z, x, y) {
 
   var tileRect = this.tileRect(x, y, z);
 
+  ctx.patternQuality = "fast";
   ctx.drawImage(image, tileRect[0], tileRect[1], tileRect[2], tileRect[3],
                 0, 0, canvas.width, canvas.height);
 
