@@ -81,9 +81,15 @@ class SeismoImageMap {
         zIndex: 13,
         leafletLayer: null,
         style: {
-          color: "red",
-          weight: 1,
-          opacity: 0.9
+          style: () => {
+            var randomChannel = () => Math.floor(Math.random() * 256);
+            var randomColor = () => "rgb(" + [0,0,0].map(randomChannel).join(",") + ")";
+            return {
+              color: randomColor(),
+              weight: 3,
+              opacity: 0.9
+            };
+          }
         }
       }
     ];
