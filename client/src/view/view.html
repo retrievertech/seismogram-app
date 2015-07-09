@@ -1,1 +1,34 @@
-view 
+<div id="view-container">
+  <div id="image-map" map-link="SeismoImageMap"></div>
+
+  <div class="image-log" ng-show="logShowing">
+    <div class="top-bar">
+      <button ng-click="hideLog()">Close</button>
+    </div>
+    <div class="contents">
+      <pre>{{log}}</pre>
+    </div>
+  </div>
+
+  <div class="image-map-controls" ng-hide="SeismoEditor.editing">
+    <div ng-click="showLog()" ng-show="!Loading.active() && hasLog()">
+      Show Log
+    </div>
+
+    <div ng-click="SeismoEditor.startEditing()"
+         ng-show="!Loading.active() && canEdit()">
+      Edit this seismogram
+    </div>
+  </div>
+
+  <div class="image-map-layers"
+       ng-show="!Loading.active() && canEdit()">
+    <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
+      <div class="layer-button"
+           ng-class="{'active': ml.on}"
+           ng-click="SeismoImageMap.toggleLayer(ml)">
+        {{ml.name}}
+      </div>
+    </div>
+  </div>
+</div>

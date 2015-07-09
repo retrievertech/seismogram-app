@@ -24,7 +24,7 @@ class SeismoBrowse {
 
     $scope.viewSeismogram = (file) => {
       $scope.showImageMap();
-      $scope.startUpdatingUrl();
+      //$scope.startUpdatingUrl();
       SeismoImageMap.loadImage(file);
     };
 
@@ -92,10 +92,12 @@ class SeismoBrowse {
     $scope.imageMapVisible = false;
 
     $scope.showImageMap = () => {
+      console.log("show image");
       $scope.imageMapVisible = true;
     };
 
     $scope.hideImageMap = () => {
+      console.log("hide image");
       $scope.imageMapVisible = false;
     };
 

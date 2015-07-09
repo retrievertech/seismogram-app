@@ -7,10 +7,10 @@ import { Loading } from "./Loading.svc.js";
 import { SeismoData } from "./SeismoData.svc.js";
 import { SeismoEditor } from "./SeismoEditor.svc.js";
 import { SeismoHistogram } from "./SeismoHistogram.svc.js";
+import { SeismoImageMap } from "./SeismoImageMap.svc.js";
+import { MapLink } from "./MapLink.dir.js";
 
 import { SeismoStationMap } from "./browse/map/SeismoStationMap.svc.js";
-import { SeismoImageMap } from "./browse/map/SeismoImageMap.svc.js";
-import { MapLink } from "./browse/map/MapLink.dir.js";
 import { PieOverlay } from "./browse/map/PieOverlay.svc.js";
 import { SeismoTimeNubbin } from "./browse/seismo-query-nubbins/SeismoTimeNubbin.dir.js";
 import { SeismoQueryNubbins } from "./browse/seismo-query-nubbins/SeismoQueryNubbins.dir.js";

@@ -1,6 +1,6 @@
 class SeismoEdit {
-  constructor() {
-    console.log("SeismoEdit");
+  constructor($scope, SeismoImageMap) {
+    $scope.SeismoImageMap = SeismoImageMap;
   }
 }
 
