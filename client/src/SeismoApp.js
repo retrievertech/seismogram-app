@@ -1,26 +1,26 @@
 var angular = window.angular;
 
-import { SeismoMain } from "./SeismoMain.ctrl.js";
-import { SeismoStationMap } from "./map/SeismoStationMap.svc.js";
-import { SeismoImageMap } from "./map/SeismoImageMap.svc.js";
 import { SeismoQuery } from "./SeismoQuery.svc.js";
 import { SeismoServer } from "./SeismoServer.svc.js";
 import { SeismoStatus } from "./SeismoStatus.svc.js";
-import { PieOverlay } from "./map/PieOverlay.svc.js";
 import { Loading } from "./Loading.svc.js";
-import { SeismoTimeNubbin } from "./seismo-query-nubbins/SeismoTimeNubbin.dir.js";
-import { SeismoQueryNubbins } from "./seismo-query-nubbins/SeismoQueryNubbins.dir.js";
 import { SeismoData } from "./SeismoData.svc.js";
 import { SeismoEditor } from "./SeismoEditor.svc.js";
 import { SeismoHistogram } from "./SeismoHistogram.svc.js";
-import { MapLink } from "./map/MapLink.dir.js";
 
-import { SeismoBrowse } from "./SeismoBrowse.ctrl.js";
-import { SeismoView } from "./SeismoView.ctrl.js";
-import { SeismoEdit } from "./SeismoEdit.ctrl.js";
+import { SeismoStationMap } from "./browse/map/SeismoStationMap.svc.js";
+import { SeismoImageMap } from "./browse/map/SeismoImageMap.svc.js";
+import { MapLink } from "./browse/map/MapLink.dir.js";
+import { PieOverlay } from "./browse/map/PieOverlay.svc.js";
+import { SeismoTimeNubbin } from "./browse/seismo-query-nubbins/SeismoTimeNubbin.dir.js";
+import { SeismoQueryNubbins } from "./browse/seismo-query-nubbins/SeismoQueryNubbins.dir.js";
+import { SeismoBrowse } from "./browse/SeismoBrowse.ctrl.js";
+
+import { SeismoView } from "./view/SeismoView.ctrl.js";
+import { SeismoEdit } from "./edit/SeismoEdit.ctrl.js";
+import { SeismoMain } from "./main/SeismoMain.ctrl.js";
 
 angular.module("SeismoApp", [])
-  .controller("SeismoMain", SeismoMain)
   .service("SeismoStationMap", SeismoStationMap)
   .service("SeismoImageMap", SeismoImageMap)
   .service("SeismoQuery", SeismoQuery)
@@ -36,19 +36,19 @@ angular.module("SeismoApp", [])
   .directive("mapLink", MapLink)
   .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/", {
-      templateUrl: "views/main.html",
+      templateUrl: "src/main/main.html",
       controller: SeismoMain
     });
     $routeProvider.when("/browse", {
-      templateUrl: "views/browse.html",
+      templateUrl: "src/browse/browse.html",
       controller: SeismoBrowse
     });
     $routeProvider.when("/view", {
-      templateUrl: "views/view.html",
+      templateUrl: "src/view/view.html",
       controller: SeismoView
     });
     $routeProvider.when("/edit", {
-      templateUrl: "views/edit.html",
+      templateUrl: "src/edit/edit.html",
       controller: SeismoEdit
     });
   }])

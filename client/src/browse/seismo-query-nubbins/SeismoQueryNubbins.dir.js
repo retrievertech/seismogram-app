@@ -1,7 +1,7 @@
 class SeismoQueryNubbins {
   constructor() {
     return {
-      templateUrl: "src/seismo-query-nubbins/SeismoQueryNubbins.html",
+      templateUrl: "src/browse/seismo-query-nubbins/SeismoQueryNubbins.html",
       scope: {
         queryParams: "=",
         seismoStatus: "="

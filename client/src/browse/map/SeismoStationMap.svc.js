@@ -1,5 +1,5 @@
-import {Leaflet} from "../../bower_components/redfish-util/lib/Leaflet.js";
-import {Evented} from "../../bower_components/redfish-util/lib/Evented.js";
+import {Leaflet} from "bower_components/redfish-util/lib/Leaflet.js";
+import {Evented} from "bower_components/redfish-util/lib/Evented.js";
 
 var L = window.L;
 
