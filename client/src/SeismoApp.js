@@ -15,6 +15,10 @@ import { SeismoEditor } from "./SeismoEditor.svc.js";
 import { SeismoHistogram } from "./SeismoHistogram.svc.js";
 import { MapLink } from "./map/MapLink.dir.js";
 
+import { SeismoBrowse } from "./SeismoBrowse.ctrl.js";
+import { SeismoView } from "./SeismoView.ctrl.js";
+import { SeismoEdit } from "./SeismoEdit.ctrl.js";
+
 angular.module("SeismoApp", [])
   .controller("SeismoMain", SeismoMain)
   .service("SeismoStationMap", SeismoStationMap)
@@ -30,10 +34,28 @@ angular.module("SeismoApp", [])
   .directive("seismoTimeNubbin", SeismoTimeNubbin)
   .directive("seismoQueryNubbins", SeismoQueryNubbins)
   .directive("mapLink", MapLink)
+  .config(["$routeProvider", function($routeProvider) {
+    $routeProvider.when("/", {
+      templateUrl: "views/main.html",
+      controller: SeismoMain
+    });
+    $routeProvider.when("/browse", {
+      templateUrl: "views/browse.html",
+      controller: SeismoBrowse
+    });
+    $routeProvider.when("/view", {
+      templateUrl: "views/view.html",
+      controller: SeismoView
+    });
+    $routeProvider.when("/edit", {
+      templateUrl: "views/edit.html",
+      controller: SeismoEdit
+    });
+  }])
   .run([function() {
     console.log("Seismo is running.");
   }]);
 
 angular.element(document).ready(function() {
-  angular.bootstrap(document, ["SeismoApp"]);
+  angular.bootstrap(document, ["ngRoute", "SeismoApp"]);
 });

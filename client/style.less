@@ -33,248 +33,253 @@ html {
     // filters are fixed-height and the map is
     // space-filling
 
-    #left-section {
-      display: flex;
-      flex-direction: column;
+    .main-container {
       width: 100%;
       height: 100%;
 
-      .maps {
-        position: relative;
-        top: 0px;
-        left: 0px;
-        width: 100%;
+      #left-section {
+        display: flex;
+        flex-direction: column;
+
         height: 100%;
 
-        .loading-spinner {
-          position: absolute;
-          width: 200px;
-          top: 0;
-          left: 50%;
-          margin-left: -100px;
-          background: white;
-          z-index: 30;
-          text-align: center;
-          padding: 5px;
-          div {
-            padding-top: 5px;
-            padding-bottom: 5px;
-            border-top: 1px solid #ccc;
-            &:first-child {
-              border-top: none;
-            }
-            &.error {
-              background: #ffff66;
-            }
-          }
-        }
-
-        .leaflet-map {
-          position: absolute;
+        .maps {
+          position: relative;
           top: 0px;
           left: 0px;
           width: 100%;
           height: 100%;
 
-          &#stations-map {
-            z-index: 10;
+          .loading-spinner {
+            position: absolute;
+            width: 200px;
+            top: 0;
+            left: 50%;
+            margin-left: -100px;
+            background: white;
+            z-index: 30;
+            text-align: center;
+            padding: 5px;
+            div {
+              padding-top: 5px;
+              padding-bottom: 5px;
+              border-top: 1px solid #ccc;
+              &:first-child {
+                border-top: none;
+              }
+              &.error {
+                background: #ffff66;
+              }
+            }
+          }
 
-            /* pies svg */
+          .leaflet-map {
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
 
-            .inner-segments path {
-              fill-opacity: 0.9;
+            &#stations-map {
+              z-index: 10;
+
+              /* pies svg */
+
+              .inner-segments path {
+                fill-opacity: 0.9;
+              }
+
+              circle.outer-circle {
+                fill: #044;
+                opacity: 0.25;
+              }
+
+              /* color scheme: http://paletton.com/#uid=50D0B0kGZr3qxC9DOA-KQlZPLgn */
+
+              path.not-started {
+                fill: #FF372C;
+              }
+
+              path.ongoing {
+                fill: #FF8900;
+              }
+
+              path.needs-attention {
+                fill: #AF0900;
+              }
+
+              path.complete {
+                fill: #820600;
+              }
             }
 
-            circle.outer-circle {
+            &#image-map { z-index: 20; }
+
+            .leaflet-control-scale {
+              display: none;
+            }
+          }
+
+          .button {
+            padding: 10px;
+            cursor: pointer;
+            background: white;
+            text-align: center;
+            margin: 5px;
+            border: 1px solid #aaa;
+          }
+
+          .image-log {
+            position: absolute;
+            width: 800px;
+            left: 50%;
+            margin-left: -400px;
+            top: 5%;
+            height: 90%;
+            z-index: 30;
+            background: white;
+
+            .top-bar {
+              height: 20px;
+              border-bottom: 1px solid #999;
+              padding: 5px;
+              cursor: pointer;
+              button {
+                float: right;
+                cursor: pointer;
+              }
+            }
+
+            .contents {
+              font-family: courier;
+              margin: 10px;
+              -webkit-user-select: text;
+              -moz-user-select: text;
+              user-select: text;
+              height: 90%;
+              overflow: scroll;
+            }
+          }
+
+          .image-map-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 25;
+            div {
+              .button;
+              &.disabled-button {
+                background-color: #eee;
+                font-style: italic;
+                cursor: wait;
+              }
+            }
+          }
+
+          .image-map-layers {
+            position: absolute;
+            top: 160px;
+            right: 10px;
+            z-index: 25;
+
+            &.while-editing {
+
+            }
+
+            .button-group {
+              .layer-button {
+                .button;
+                width: 120px;
+                display: inline-block;
+              }
+              .edit-button {
+                display: inline-block;
+                .button;
+              }
+              .layer-button, .edit-button {
+                &.active {
+                  background: #ADD6FF;
+                }
+              }
+            }
+          }
+
+          .image-map-controls div, .image-map-layers div {
+          }
+        }
+
+        #query-ui {
+          position: absolute;
+          bottom: 30px;
+          left: 20px;
+          width: 400px;
+          background: rgba(255,255,255,0.7);
+          padding: 10px;
+          z-index: 15;
+
+          #seismo-time-nubbin {
+            div {
+              display: inline-block;
+              margin: auto 0;
+            }
+          }
+
+          #seismo-query-nubbins {}
+
+            #query-button {
+              height: 40px;
+            }
+          }
+
+          #histogram {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            z-index: 10;
+
+            .bar.background rect {
               fill: #044;
               opacity: 0.25;
             }
 
-            /* color scheme: http://paletton.com/#uid=50D0B0kGZr3qxC9DOA-KQlZPLgn */
-
-            path.not-started {
+            .bar.overlay rect {
               fill: #FF372C;
+              opacity: 0.7;
             }
 
-            path.ongoing {
-              fill: #FF8900;
-            }
-
-            path.needs-attention {
-              fill: #AF0900;
-            }
-
-            path.complete {
-              fill: #820600;
-            }
-          }
-
-          &#image-map { z-index: 20; }
-
-          .leaflet-control-scale {
-            display: none;
-          }
-        }
-
-        .button {
-          padding: 10px;
-          cursor: pointer;
-          background: white;
-          text-align: center;
-          margin: 5px;
-          border: 1px solid #aaa;
-        }
-
-        .image-log {
-          position: absolute;
-          width: 800px;
-          left: 50%;
-          margin-left: -400px;
-          top: 5%;
-          height: 90%;
-          z-index: 30;
-          background: white;
-
-          .top-bar {
-            height: 20px;
-            border-bottom: 1px solid #999;
-            padding: 5px;
-            cursor: pointer;
-            button {
-              float: right;
-              cursor: pointer;
-            }
-          }
-
-          .contents {
-            font-family: courier;
-            margin: 10px;
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            user-select: text;
-            height: 90%;
-            overflow: scroll;
-          }
-        }
-
-        .image-map-controls {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          z-index: 25;
-          div {
-            .button;
-            &.disabled-button {
-              background-color: #eee;
-              font-style: italic;
-              cursor: wait;
-            }
-          }
-        }
-
-        .image-map-layers {
-          position: absolute;
-          top: 160px;
-          right: 10px;
-          z-index: 25;
-
-          &.while-editing {
-
-          }
-
-          .button-group {
-            .layer-button {
-              .button;
-              width: 120px;
-              display: inline-block;
-            }
-            .edit-button {
-              display: inline-block;
-              .button;
-            }
-            .layer-button, .edit-button {
-              &.active {
-                background: #ADD6FF;
+            .x.axis {
+              path {
+                opacity: 0;
               }
             }
           }
         }
 
-        .image-map-controls div, .image-map-layers div {
-        }
-      }
+        #right-section {
+          display: inline-block;
+          width: 250px;
+          height: 100%;
 
-      #query-ui {
-        position: absolute;
-        bottom: 30px;
-        left: 20px;
-        width: 400px;
-        background: rgba(255,255,255,0.7);
-        padding: 10px;
-        z-index: 15;
+          .seismo-list {
+            height: 100%;
+            overflow: scroll;
 
-        #seismo-time-nubbin {
-          div {
-            display: inline-block;
-            margin: auto 0;
-          }
-        }
-
-        #seismo-query-nubbins {}
-
-        #query-button {
-          height: 40px;
-        }
-      }
-
-      #histogram {
-        position: absolute;
-        bottom: 0px;
-        left: 0px;
-        z-index: 10;
-
-        .bar.background rect {
-          fill: #044;
-          opacity: 0.25;
-        }
-
-        .bar.overlay rect {
-          fill: #FF372C;
-          opacity: 0.7;
-        }
-
-        .x.axis {
-          path {
-            opacity: 0;
-          }
-        }
-      }
-    }
-
-    #right-section {
-      display: inline-block;
-      width: 250px;
-      height: 100%;
-
-      .seismo-list {
-        height: 100%;
-        overflow: scroll;
-
-        .seismo-list-item {
-          cursor: pointer;
-          text-align: center;
-          padding: 15px;
-          border-bottom: 1px solid #eee;
-          .filename {
-            font-size: 10px;
-            margin-top: 10px;
-            color: #888;
-          }
-          &.active {
-            background: #add6ff;
+            .seismo-list-item {
+              cursor: pointer;
+              text-align: center;
+              padding: 15px;
+              border-bottom: 1px solid #eee;
+              .filename {
+                font-size: 10px;
+                margin-top: 10px;
+                color: #888;
+              }
+              &.active {
+                background: #add6ff;
+              }
+            }
           }
         }
       }
     }
   }
-}
