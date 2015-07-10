@@ -5,10 +5,10 @@ var L = window.L;
 
 class SeismoStationMap extends Evented {
 
-  constructor(SeismoData, PieOverlay) {
+  constructor(SeismoData) {
     super();
     this.SeismoData = SeismoData;
-    this.PieOverlay = PieOverlay;
+    //this.PieOverlay = PieOverlay;
 
     this.map = null;
     this.leafletMap = null;
@@ -17,6 +17,8 @@ class SeismoStationMap extends Evented {
   }
 
   init(id) {
+    console.log("init", id);
+
     var map = this.map = new Leaflet(id, null, {
       minZoom: 2,
       maxBounds: [[-90, -180], [90, 180]]
@@ -38,7 +40,7 @@ class SeismoStationMap extends Evented {
       })
     });
 
-    this.PieOverlay.init(this.leafletMap);
+    //this.PieOverlay.init(this.leafletMap);
 
     map.currentBaseLayer.leafletLayer.once("loading", () => {
       this.isReady = true;

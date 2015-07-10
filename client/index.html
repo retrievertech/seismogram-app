@@ -19,6 +19,11 @@
     <script type="module">import "src/SeismoApp.js"</script>
   </head>
   <body ng-cloak>
+    <div class="loading-spinner" ng-show="Loading.any()">
+      <div ng-repeat="message in Loading.messages" class="{{message.type}}">
+        {{ message.name }}
+      </div>
+    </div>
     <div class="app-container" ng-view></div>
   </body>
 </html>
