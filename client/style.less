@@ -24,6 +24,10 @@ html {
     -moz-user-select: none;
     user-select: none;
 
+    a {
+      cursor: pointer;
+    }
+
     .app-container {
       .main-container {
         font-size: 64px;
@@ -36,20 +40,32 @@ html {
 
         .seismo-list {
           height: 100%;
-          overflow: scroll;
+          overflow: auto;
+          text-align: center;
+          background: #eee;
+
+          .top-padding {
+            height: 35px;
+            width: 100%;
+          }
 
           .seismo-list-item {
             cursor: pointer;
             text-align: center;
-            padding: 15px;
-            border-bottom: 1px solid #eee;
-            .filename {
-              font-size: 10px;
-              margin-top: 10px;
-              color: #888;
-            }
-            &.active {
-              background: #add6ff;
+            width: 50%;
+            float: left;
+            .item-content {
+              background: white;
+              margin: 10px;
+              box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
+              .filename {
+                font-size: 10px;
+                margin-top: 10px;
+                color: #888;
+              }
+              &.active {
+                background: #add6ff;
+              }
             }
           }
         }
@@ -57,30 +73,37 @@ html {
         .header {
           position: absolute;
           top: 0; left: 0;
-          background: rgba(255,255,255,0.7);
+          color: #444;
+          background: rgba(255,255,255,0.8);
           padding: 5px 0 5px 0;
           font-size: 16px;
           width: 100%;
-          z-index: 20;
           text-align: center;
+          z-index: 20;
+          box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
+
+          .active {
+            text-decoration: underline;
+          }
+
           .filter {
             float: right;
             margin-right: 10px;
           }
-          box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
         }
 
         .seismo-station-map {
           position: absolute;
           top: 0; left: 0;
           height: 100%; width: 100%;
+
           #stations-map {
-            z-index: 10;
             .leaflet-control-zoom {
               margin-top: 40px;
             }
             width: 100%;
             height: 100%;
+            z-index: 10;
           }
         }
 

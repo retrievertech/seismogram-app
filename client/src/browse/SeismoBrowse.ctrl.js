@@ -17,6 +17,8 @@ class SeismoBrowse {
     $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
 
+    $scope.listVisible = true;
+
     $scope.viewSeismogram = (file) => {
       // TODO go to /view
     };
