@@ -12,7 +12,6 @@ class SeismoStationMap extends Evented {
 
     this.map = null;
     this.leafletMap = null;
-    this.pies = [];
     this.isReady = false;
   }
 
@@ -66,6 +65,17 @@ class SeismoStationMap extends Evented {
     }
   }
 
+  renderStations() {
+    this.SeismoData.stations.forEach((station) => {
+      new L.Marker(new L.LatLng(station.lat, station.lon), {
+        opacity: 0.6
+      }).addTo(this.map.leafletMap);
+    });
+  }
+
+  renderQueryData() {
+
+  }
 }
 
 export { SeismoStationMap };

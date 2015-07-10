@@ -5,7 +5,7 @@ class SeismoBrowse {
   constructor($scope, $http, $location, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
     SeismoData, SeismoEditor, SeismoHistogram,
-    SeismoStatus, PieOverlay, Loading) {
+    SeismoStatus, Loading) {
 
     // add maps and services to scope
     $scope.SeismoStationMap = SeismoStationMap;
@@ -14,7 +14,6 @@ class SeismoBrowse {
     $scope.SeismoData = SeismoData;
     $scope.SeismoEditor = SeismoEditor;
     $scope.SeismoStatus = SeismoStatus;
-    $scope.PieOverlay = PieOverlay;
     $scope.Loading = Loading;
 
     $scope.listVisible = true;
@@ -77,7 +76,7 @@ class SeismoBrowse {
           // stations are loaded; render station backgrounds
           var stationsResult = res.stations.data;
           $scope.SeismoData.stations = stationsResult;
-          //$scope.PieOverlay.renderStations();
+          $scope.SeismoStationMap.renderStations();
 
           // files stats are loaded; render histogram background
           var seismoResult = res.seismograms.data,
