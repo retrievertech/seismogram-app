@@ -32,11 +32,12 @@ class SeismoStationMap extends Evented {
 
     map.setBaseLayer({
       name: "Seismogram",
-      leafletLayer: new L.TileLayer("http://api.tiles.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVubmxpY2giLCJhIjoieUxHOHQyNCJ9.VLDDBTTdzeHKJvR5ABYaLA", {
+      leafletLayer: new L.TileLayer("http://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVubmxpY2giLCJhIjoieUxHOHQyNCJ9.VLDDBTTdzeHKJvR5ABYaLA", {
         minZoom: 2,
         maxZoom: 18,
         zIndex: 1,
-        zoomAnimation: false
+        zoomAnimation: false,
+        opacity: 0.4
       })
     });
 
