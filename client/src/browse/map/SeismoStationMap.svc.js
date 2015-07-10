@@ -68,7 +68,11 @@ class SeismoStationMap extends Evented {
   renderStations() {
     this.SeismoData.stations.forEach((station) => {
       new L.Marker(new L.LatLng(station.lat, station.lon), {
-        opacity: 0.6
+        icon: L.divIcon({
+          className: "station-marker",
+          iconSize: null,
+          html: "<div class=marker></div><div class=station-location>" + station.location + "</div>"
+        })
       }).addTo(this.map.leafletMap);
     });
   }
