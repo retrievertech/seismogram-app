@@ -18,6 +18,7 @@ class SeismoBrowse {
     $scope.Loading = Loading;
 
     $scope.listVisible = true;
+    $scope.filterVisible = false;
 
     $scope.viewSeismogram = (file) => {
       // TODO go to /view
@@ -29,6 +30,7 @@ class SeismoBrowse {
         .then((res) => {
           console.log("Query complete.", res.data);
           $scope.update(res.data);
+          $scope.filterVisible = false;
           Loading.stop("Loading results...");
         });
     };

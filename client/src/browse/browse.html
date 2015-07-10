@@ -1,4 +1,15 @@
 <div class="browse-container">
+  <div class="header">
+    <a ng-class="{'active': listVisible}" ng-click="listVisible=true">List View</a>
+    &nbsp; | &nbsp;
+    <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">Map View</a>
+    <span class="filter"><a ng-click="filterVisible=true">Filter</a></span>
+  </div>
+
+  <div class="seismo-station-map" ng-show="!listVisible">
+    <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="listVisible"></div>
+  </div>
+
   <div class="seismo-list" ng-show="listVisible">
     <div class="top-padding"></div>
     <div class="seismo-list-item"
@@ -10,29 +21,19 @@
         {{ SeismoData.stationLocation(file) }}<br/>
         {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}
         <div class="filename">{{ file.name }}</div>
-        <img src="https://s3.amazonaws.com/wwssn-thumbnails/{{file.name}}.jpg" width="100%"/>
+        <img src="https://s3.amazonaws.com/wwssn-thumbnails/{{file.name}}.jpg"
+             onError="this.src='img/nopreview.jpg'" width="100%"/>
       </div>
     </div>
   </div>
 
-  <div class="header">
-    <a ng-class="{'active': listVisible}" ng-click="listVisible=true">List View</a>&nbsp;
-    | &nbsp; <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">Map View</a>
-    <span class="filter">Filter</span>
-  </div>
-
-  <div class="seismo-station-map" ng-show="!listVisible">
-    <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="listVisible"></div>
-  </div>
-
-
-  <!--div class="query-ui">
+  <div class="query-ui" ng-show="filterVisible">
     <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
     <div id="seismo-query-nubbins" seismo-status="SeismoStatus"
          query-params="queryParamModel" seismo-query-nubbins></div>
     <!-- probably wont need this button eventually -->
-    <!--button id="query-button" ng-click="queryStationStatuses()">Query</button>
-  </div-->
+    <button id="query-button" ng-click="queryStationStatuses()">Query</button>
+  </div>
 
   <!--div id="left-section">
     <div class="maps">
