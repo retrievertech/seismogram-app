@@ -19,17 +19,18 @@ class SeismoStationMap extends Evented {
   init(id) {
     console.log("init", id);
 
-    var map = this.map = new Leaflet(id, null, {
+    var map = window.stationmap = this.map = new Leaflet(id, null, {
       minZoom: 2,
       maxBounds: [[-90, -180], [90, 180]]
     });
     this.leafletMap = map.leafletMap;
     map.leafletMap.setView(new L.LatLng(0,0), 3);
     map.addLayers();
-    // map.setBaseLayer(map.baseLayers[3]);
+    map.setBaseLayer(map.baseLayers[3]);
 
     // see https://www.mapbox.com/developers/api/maps/ for other tile styles
     // e.g. try replacing mapbox.outdoors with mapbox.light to test a different style
+
     map.setBaseLayer({
       name: "Seismogram",
       leafletLayer: new L.TileLayer("http://api.tiles.mapbox.com/v4/mapbox.outdoors/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVubmxpY2giLCJhIjoieUxHOHQyNCJ9.VLDDBTTdzeHKJvR5ABYaLA", {
@@ -39,6 +40,9 @@ class SeismoStationMap extends Evented {
         zoomAnimation: false
       })
     });
+
+
+    console.log(map.currentBaseLayer);
 
     //this.PieOverlay.init(this.leafletMap);
 
