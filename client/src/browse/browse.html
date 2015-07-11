@@ -1,37 +1,68 @@
 <div class="browse-container">
+
+  <!-- The top header -->
+
   <div class="header">
+    <!-- the skate "logo" in the top-left -->
     <div class="title" ng-click="go('/')">Skate</div>
+
+    <!-- the links in the top-center -->
     <div class="links">
-    <a ng-class="{'active': listVisible}" ng-click="listVisible=true">List View</a>
-    &nbsp; &bullet; &nbsp;
-    <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">Map View</a>
-      </div>
+      <a ng-class="{'active': listVisible}" ng-click="listVisible=true">List View</a>
+      &nbsp; &bullet; &nbsp;
+      <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">Map View</a>
+    </div>
+
+    <!-- the filter button in the top-right -->
     <span class="filter"><a ng-click="filterVisible=true">Filter</a></span>
   </div>
+
+
+  <!-- The map. The "listVisibe" variable makes the map and the list mutually-exclusive. -->
+  <!-- Note that the map contains dynamic HTML not visible here, namely the pins on the map -->
+  <!-- are dynamic HTML. See how the pins are added in browse/SeismoStationMap and how they -->
+  <!-- are styled in styles.less. -->
 
   <div class="seismo-station-map" ng-show="!listVisible">
     <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="listVisible"></div>
   </div>
 
+
+  <!-- The seismo thumbnail list -->
+
   <div class="seismo-list" ng-show="listVisible">
+    <!-- The padding at the top pushes the list down so it's not obscured by the header -->
     <div class="top-padding"></div>
+
+    <!-- The text in the top-center -->
     {{numResults}} seismograms.
+
+    <!-- The list of seismograms. A group is one row of seismograms. -->
     <div class="group" ng-repeat="group in SeismoData.groups">
+
+      <!-- An individual seismogram box. The seismo-list-item is purely a container. -->
       <div class="seismo-list-item"
            ng-repeat="file in group"
-           ng-class="{'active' : file == SeismoImageMap.currentFile }"
            ng-click="viewSeismogram(file)">
+
+        <!-- The actual seismo box -->
         <div class="item-content">
           {{ SeismoData.formatDate(file) }}<br/>
           {{ SeismoData.stationLocation(file) }}<br/>
           {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}
           <div class="filename">{{ file.name }}</div>
+
+          <!-- The thumbnail. Note that it has an inline error handler that replaces the -->
+          <!-- thumb with a fallback thumb in case the thumb doesn't exist -->
           <img src="https://s3.amazonaws.com/wwssn-thumbnails/{{file.name}}.jpg"
                onError="this.src='img/nopreview.jpg'" width="100%"/>
         </div>
       </div>
     </div>
   </div>
+
+
+  <!-- The filter/query UI that appears when you click Filter -->
 
   <div class="query-ui" ng-show="filterVisible">
     <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
