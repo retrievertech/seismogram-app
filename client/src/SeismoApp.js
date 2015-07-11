@@ -39,7 +39,7 @@ angular.module("SeismoApp", [])
       templateUrl: "src/browse/browse.html",
       controller: SeismoBrowse
     });
-    $routeProvider.when("/view", {
+    $routeProvider.when("/view/:filename", {
       templateUrl: "src/view/view.html",
       controller: SeismoView
     });
