@@ -11,7 +11,7 @@ class SeismoQuery {
       seismograms: this.$http({
         url: this.SeismoServer.filesUrl,
         params: {
-          status: "0,1,2,3"
+          status: "0,1,2,3,4"
         }
       }),
       stations: this.$http({
@@ -44,7 +44,7 @@ class SeismoQuery {
     var stationNames = queryParamModel.stationNames
       .split(",").map((stationName) => stationName.trim());
 
-    var stationIds = this.SeismoData.stations
+    var stationIds = this.SeismoData.stationQueryData
       .filter((station) => stationNames.find((stationName) =>
         station.location.toLowerCase().indexOf(stationName.toLowerCase()) !== -1 ||
         station.code.toLowerCase().indexOf(stationName.toLowerCase()) !== -1

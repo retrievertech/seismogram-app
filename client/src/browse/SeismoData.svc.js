@@ -4,10 +4,10 @@ var io = window.io;
 class SeismoData {
 
   constructor($timeout, SeismoServer, SeismoStatus, SeismoImageMap, SeismoEditor) {
-    this.files = [];
-    this.stationStatuses = {};
-    this.stations = [];
+    this.stationQueryData = [];
+    this.filesQueryData = {};
     this.groups = [];
+    this.gotDataAlready = false;
 
     io(SeismoServer.url).on("status-update", (obj) => {
       console.log("status-update", obj);
@@ -37,8 +37,7 @@ class SeismoData {
   // TODO: Is there an underscore function that does this?
   // TODO: Could this be done with a filter?
 
-  setFiles(files) {
-    this.files = files;
+  setGroups(files) {
     this.groups = [];
 
     var group = [];
@@ -60,8 +59,20 @@ class SeismoData {
     console.log(this.groups);
   }
 
+  // holds on to the station data as returned by the server
+  setStationQueryData(data) {
+    this.stationQueryData = data;
+  }
+
+  // holds on to the files query data as returned by the server
+  setFilesQueryData(data) {
+    this.filesQueryData = data;
+    this.setGroups(data.files);
+    this.gotDataAlready = true;
+  }
+
   resultsBBox() {
-    var stationIds = Object.keys(this.stationStatuses);
+    var stationIds = Object.keys(this.filesQueryData.stations);
 
     // return max bounds if there are no results
     if (stationIds.length === 0) {
@@ -70,7 +81,7 @@ class SeismoData {
 
     // get the station points in the result set
     var points = stationIds.map((stationId) => {
-      var station = this.stations.find((station) => station.stationId === stationId);
+      var station = this.stationQueryData.find((station) => station.stationId === stationId);
       return L.latLng(station.lat, station.lon);
     });
 
@@ -102,7 +113,7 @@ class SeismoData {
   }
 
   getStation(id) {
-    return this.stations.find((station) => station.stationId === id);
+    return this.stationQueryData.find((station) => station.stationId === id);
   }
 
   isLongPeriod(file) {
@@ -134,7 +145,6 @@ class SeismoData {
       return "east-west";
     }
   }
-
 }
 
 export { SeismoData };

@@ -47,8 +47,8 @@ class SeismoStationMap {
     this.stationMarkers.forEach((marker) => this.map.leafletMap.removeLayer(marker));
     this.stationMarkers = [];
 
-    window._.keys(this.SeismoData.stationStatuses).forEach((stationId) => {
-      var stationStatus = this.SeismoData.stationStatuses[stationId];
+    window._.keys(this.SeismoData.filesQueryData.stations).forEach((stationId) => {
+      var stationStatus = this.SeismoData.filesQueryData.stations[stationId];
       // Sum up all the seismos (TODO: I noticed these counts are buggy.)
       var total = stationStatus.status.reduce((x,y) => x+y, 0);
       var station = this.SeismoData.getStation(stationId);
@@ -69,6 +69,13 @@ class SeismoStationMap {
       // Add it to the map
       marker.addTo(this.map.leafletMap);
     });
+  }
+
+  update() {
+    // zoom the map to the extent of the result set
+    this.updateBounds();
+    // drop result pins on the map
+    this.renderQueryData();
   }
 }
 

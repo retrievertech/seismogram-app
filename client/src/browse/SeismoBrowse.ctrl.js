@@ -5,7 +5,7 @@ class SeismoBrowse {
   constructor($scope, $http, $location, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
     SeismoData, SeismoEditor,
-    SeismoStatus, Loading) {
+    SeismoStatus, Loading, $timeout) {
 
     // add maps and services to scope
     $scope.SeismoStationMap = SeismoStationMap;
@@ -17,7 +17,6 @@ class SeismoBrowse {
 
     $scope.listVisible = true;
     $scope.filterVisible = false;
-    $scope.numRestults = 0;
 
     $scope.viewSeismogram = (file) => {
       $scope.go("/view/" + file.name);
@@ -35,22 +34,15 @@ class SeismoBrowse {
     };
 
     $scope.update = (data) => {
-      // update SeismoData
-      SeismoData.setFiles(data.files);
-      SeismoData.stationStatuses = data.stations;
-      $scope.numResults = data.numResults;
-
-      // update SeismoStationMap
-      SeismoStationMap.updateBounds();
-
-      SeismoStationMap.renderQueryData();
+      SeismoData.setFilesQueryData(data);
+      SeismoStationMap.update();
     };
 
     $scope.initQueryModel = (queryModel) => {
       var defaultQueryModel = {
-        dateFrom: "",
-        dateTo: "",
-        numBins: 200,
+        dateFrom: new Date(SeismoData.filesQueryData.lowDate),
+        dateTo: new Date(SeismoData.filesQueryData.highDate),
+        numBins: SeismoData.filesQueryData.numBins,
         stationNames: "",
         fileNames: "",
         status: {}
@@ -64,27 +56,31 @@ class SeismoBrowse {
     };
 
     $scope.init = () => {
-      // perform initial queries to fetch low/high dates,
-      // histogram, and station info
+      if (SeismoData.gotDataAlready) {
+        $timeout(() => {
+          $scope.initQueryModel({
+            dateFrom: new Date(SeismoData.filesQueryData.lowDate),
+            dateTo: new Date(SeismoData.filesQueryData.highDate),
+            numBins: SeismoData.filesQueryData.numBins
+          });
+          SeismoStationMap.update();
+        });
+        return;
+      }
       SeismoQuery.initialQuery()
         .then((res) => {
           console.log("Initial query complete.", res);
 
-          // stations are loaded; render station backgrounds
-          var stationsResult = res.stations.data;
-          $scope.SeismoData.stations = stationsResult;
-          //$scope.SeismoStationMap.renderStations();
-
-          // files stats are loaded; render histogram background
-          var seismoResult = res.seismograms.data,
-              lowDate = new Date(seismoResult.lowDate),
-              highDate = new Date(seismoResult.highDate),
-              numBins = seismoResult.numBins;
-
-          var initialQueryParams = { dateFrom: lowDate, dateTo: highDate, numBins: numBins };
-
-          $scope.initQueryModel(initialQueryParams);
-          return $scope.queryStationStatuses();
+          // populate station data
+          $scope.SeismoData.setStationQueryData(res.stations.data);
+          // update UI with histogram data
+          $scope.update(res.seismograms.data);
+          // populate the model (for the filter/query form) with bounds data
+          $scope.initQueryModel({
+            dateFrom: new Date(res.seismograms.data.lowDate),
+            dateTo: new Date(res.seismograms.data.highDate),
+            numBins: res.seismograms.data.numBins
+          });
         });
     };
 
