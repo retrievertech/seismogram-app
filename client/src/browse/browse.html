@@ -22,7 +22,7 @@
         {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}
         <div class="filename">{{ file.name }}</div>
         <img src="https://s3.amazonaws.com/wwssn-thumbnails/{{file.name}}.jpg"
-             onError="this.src='img/nopreview.jpg'" width="100%"/>
+             onError="this.src='img/nopreview.jpg'" onLoad="this.height=this.width/2.6" width="100%"/>
       </div>
     </div>
   </div>
