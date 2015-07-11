@@ -8,7 +8,6 @@ class SeismoStationMap extends Evented {
   constructor(SeismoData) {
     super();
     this.SeismoData = SeismoData;
-    //this.PieOverlay = PieOverlay;
 
     this.map = null;
     this.leafletMap = null;
@@ -44,8 +43,6 @@ class SeismoStationMap extends Evented {
 
 
     console.log(map.currentBaseLayer);
-
-    //this.PieOverlay.init(this.leafletMap);
 
     map.currentBaseLayer.leafletLayer.once("loading", () => {
       this.isReady = true;

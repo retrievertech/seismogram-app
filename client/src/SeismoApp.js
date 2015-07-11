@@ -6,12 +6,10 @@ import { SeismoStatus } from "./SeismoStatus.svc.js";
 import { Loading } from "./Loading.svc.js";
 import { SeismoData } from "./SeismoData.svc.js";
 import { SeismoEditor } from "./SeismoEditor.svc.js";
-import { SeismoHistogram } from "./SeismoHistogram.svc.js";
 import { SeismoImageMap } from "./SeismoImageMap.svc.js";
 import { MapLink } from "./MapLink.dir.js";
 
 import { SeismoStationMap } from "./browse/map/SeismoStationMap.svc.js";
-import { PieOverlay } from "./browse/map/PieOverlay.svc.js";
 import { SeismoTimeNubbin } from "./browse/seismo-query-nubbins/SeismoTimeNubbin.dir.js";
 import { SeismoQueryNubbins } from "./browse/seismo-query-nubbins/SeismoQueryNubbins.dir.js";
 import { SeismoBrowse } from "./browse/SeismoBrowse.ctrl.js";
@@ -28,8 +26,6 @@ angular.module("SeismoApp", [])
   .service("SeismoStatus", SeismoStatus)
   .service("SeismoData", SeismoData)
   .service("SeismoEditor", SeismoEditor)
-  .service("SeismoHistogram", SeismoHistogram)
-  .service("PieOverlay", PieOverlay)
   .service("Loading", Loading)
   .directive("seismoTimeNubbin", SeismoTimeNubbin)
   .directive("seismoQueryNubbins", SeismoQueryNubbins)

@@ -4,13 +4,12 @@ class SeismoBrowse {
 
   constructor($scope, $http, $location, SeismoStationMap,
     SeismoImageMap, SeismoQuery, SeismoServer,
-    SeismoData, SeismoEditor, SeismoHistogram,
+    SeismoData, SeismoEditor,
     SeismoStatus, Loading) {
 
     // add maps and services to scope
     $scope.SeismoStationMap = SeismoStationMap;
     $scope.SeismoImageMap = SeismoImageMap;
-    $scope.SeismoHistogram = SeismoHistogram;
     $scope.SeismoData = SeismoData;
     $scope.SeismoEditor = SeismoEditor;
     $scope.SeismoStatus = SeismoStatus;
@@ -48,12 +47,7 @@ class SeismoBrowse {
       // update SeismoStationMap
       SeismoStationMap.updateBounds();
 
-      // update PieOverlay
-      // PieOverlay.renderStatuses();
       SeismoStationMap.renderQueryData();
-
-      // update SeismoHistogram
-      //SeismoHistogram.renderOverlay(data.histogram);
     };
 
     $scope.initQueryModel = (queryModel) => {
