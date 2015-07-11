@@ -18,6 +18,7 @@ class SeismoBrowse {
 
     $scope.listVisible = true;
     $scope.filterVisible = false;
+    $scope.numRestults = 0;
 
     $scope.viewSeismogram = (file) => {
       // TODO go to /view
@@ -38,6 +39,7 @@ class SeismoBrowse {
       // update SeismoData
       SeismoData.setFiles(data.files);
       SeismoData.stationStatuses = data.stations;
+      $scope.numResults = data.numResults;
 
       // update SeismoStationMap
       SeismoStationMap.updateBounds();

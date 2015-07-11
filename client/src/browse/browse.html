@@ -1,8 +1,10 @@
 <div class="browse-container">
   <div class="header">
+    <div class="links">
     <a ng-class="{'active': listVisible}" ng-click="listVisible=true">List View</a>
-    &nbsp; | &nbsp;
+    &nbsp; &bullet; &nbsp;
     <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">Map View</a>
+      </div>
     <span class="filter"><a ng-click="filterVisible=true">Filter</a></span>
   </div>
 
@@ -12,6 +14,7 @@
 
   <div class="seismo-list" ng-show="listVisible">
     <div class="top-padding"></div>
+    {{numResults}} seismograms.
     <div class="group" ng-repeat="group in SeismoData.groups">
       <div class="seismo-list-item"
            ng-repeat="file in group"
