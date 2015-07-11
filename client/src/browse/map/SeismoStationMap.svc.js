@@ -13,6 +13,7 @@ class SeismoStationMap extends Evented {
     this.map = null;
     this.leafletMap = null;
     this.isReady = false;
+    this.stationMarkers = [];
   }
 
   init(id) {
@@ -66,20 +67,27 @@ class SeismoStationMap extends Evented {
     }
   }
 
-  renderStations() {
-    this.SeismoData.stations.forEach((station) => {
-      new L.Marker(new L.LatLng(station.lat, station.lon), {
+  renderQueryData() {
+    this.stationMarkers.forEach((marker) => this.map.leafletMap.removeLayer(marker));
+    this.stationMarkers = [];
+
+    window._.keys(this.SeismoData.stationStatuses).forEach((stationId) => {
+      var stationStatus = this.SeismoData.stationStatuses[stationId];
+      var total = stationStatus.status.reduce((x,y) => x+y, 0);
+      var station = this.SeismoData.getStation(stationId);
+
+      var marker = new L.Marker(new L.LatLng(station.lat, station.lon), {
         icon: L.divIcon({
           className: "station-marker",
           iconSize: null,
-          html: "<div class=marker></div><div class=station-location>" + station.location + "</div>"
+          html: "<div class=marker>" + total + "</div><div class=station-location>" + station.location + "</div>"
         })
-      }).addTo(this.map.leafletMap);
+      });
+
+      marker.on("dblclick", () => this.map.leafletMap.zoomIn());
+      this.stationMarkers.push(marker);
+      marker.addTo(this.map.leafletMap);
     });
-  }
-
-  renderQueryData() {
-
   }
 }
 

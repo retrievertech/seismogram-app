@@ -27,6 +27,29 @@ class SeismoData {
     });
   }
 
+  setFiles(files) {
+    this.files = files;
+    this.groups = [];
+
+    var group = [];
+
+    files.forEach((file) => {
+      if (group.length < 2) {
+        group.push(file);
+      }
+      if (group.length === 2) {
+        this.groups.push(group);
+        group = [];
+      }
+    });
+
+    if (group.length > 0) {
+      this.groups.push(group);
+    }
+
+    console.log(this.groups);
+  }
+
   resultsBBox() {
     var stationIds = Object.keys(this.stationStatuses);
 
@@ -65,8 +88,11 @@ class SeismoData {
   }
 
   stationLocation(file) {
-    var station = this.stations.find((station) => station.stationId === file.stationId);
-    return station.location;
+    return this.getStation(file.stationId).location;
+  }
+
+  getStation(id) {
+    return this.stations.find((station) => station.stationId === id);
   }
 
   isLongPeriod(file) {

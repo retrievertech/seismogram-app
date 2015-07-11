@@ -49,22 +49,25 @@ html {
             width: 100%;
           }
 
-          .seismo-list-item {
-            cursor: pointer;
-            text-align: center;
-            width: 50%;
-            float: left;
-            .item-content {
-              background: white;
-              margin: 10px;
-              box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
-              .filename {
-                font-size: 10px;
-                margin-top: 10px;
-                color: #888;
-              }
-              &.active {
-                background: #add6ff;
+          .group {
+            .seismo-list-item {
+              cursor: pointer;
+              text-align: center;
+              width: 50%;
+              display: inline-block;
+              vertical-align: top;
+              .item-content {
+                background: white;
+                margin: 10px;
+                box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
+                .filename {
+                  font-size: 10px;
+                  margin-top: 10px;
+                  color: #888;
+                }
+                &.active {
+                  background: #add6ff;
+                }
               }
             }
           }
@@ -104,15 +107,16 @@ html {
             }
             .station-marker {
               .marker {
-                width: 10px;
-                height: 10px;
+                text-align: center;
                 border-radius: 10px;
                 background: rgb(159, 45, 104);
+                color: white;
+                width: 60px;
                 box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
               }
               .station-location {
                 width: 200px;
-                margin-left: -100px;
+                margin-left: -70px;
                 color: #333;
                 font-size: 12px;
                 text-align: center;

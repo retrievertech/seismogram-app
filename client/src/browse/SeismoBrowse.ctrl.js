@@ -36,7 +36,7 @@ class SeismoBrowse {
 
     $scope.update = (data) => {
       // update SeismoData
-      SeismoData.files = data.files;
+      SeismoData.setFiles(data.files);
       SeismoData.stationStatuses = data.stations;
 
       // update SeismoStationMap
@@ -44,6 +44,7 @@ class SeismoBrowse {
 
       // update PieOverlay
       // PieOverlay.renderStatuses();
+      SeismoStationMap.renderQueryData();
 
       // update SeismoHistogram
       //SeismoHistogram.renderOverlay(data.histogram);
@@ -76,7 +77,7 @@ class SeismoBrowse {
           // stations are loaded; render station backgrounds
           var stationsResult = res.stations.data;
           $scope.SeismoData.stations = stationsResult;
-          $scope.SeismoStationMap.renderStations();
+          //$scope.SeismoStationMap.renderStations();
 
           // files stats are loaded; render histogram background
           var seismoResult = res.seismograms.data,
