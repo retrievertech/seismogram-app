@@ -1,28 +1,24 @@
 import {Leaflet} from "bower_components/redfish-util/lib/Leaflet.js";
-import {Evented} from "bower_components/redfish-util/lib/Evented.js";
 
 var L = window.L;
 
-class SeismoStationMap extends Evented {
+class SeismoStationMap {
 
   constructor(SeismoData) {
-    super();
     this.SeismoData = SeismoData;
-
     this.map = null;
     this.leafletMap = null;
-    this.isReady = false;
     this.stationMarkers = [];
   }
 
   init(id) {
-    console.log("init", id);
-
     var map = window.stationmap = this.map = new Leaflet(id, null, {
       minZoom: 2,
       maxBounds: [[-90, -180], [90, 180]]
     });
+
     this.leafletMap = map.leafletMap;
+
     map.leafletMap.setView(new L.LatLng(0,0), 3);
     map.addLayers();
     map.setBaseLayer(map.baseLayers[3]);
@@ -40,39 +36,24 @@ class SeismoStationMap extends Evented {
         opacity: 0.4
       })
     });
-
-
-    console.log(map.currentBaseLayer);
-
-    map.currentBaseLayer.leafletLayer.once("loading", () => {
-      this.isReady = true;
-      this.fire("ready");
-    });
   }
 
   updateBounds() {
     this.leafletMap.fitBounds(this.SeismoData.resultsBBox());
   }
 
-  whenReady(callback) {
-    if (typeof callback !== "function") return;
-
-    if (this.isReady) {
-      callback();
-    } else {
-      this.on("ready", callback);
-    }
-  }
-
   renderQueryData() {
+    // First, erase all existing markers
     this.stationMarkers.forEach((marker) => this.map.leafletMap.removeLayer(marker));
     this.stationMarkers = [];
 
     window._.keys(this.SeismoData.stationStatuses).forEach((stationId) => {
       var stationStatus = this.SeismoData.stationStatuses[stationId];
+      // Sum up all the seismos (TODO: I noticed these counts are buggy.)
       var total = stationStatus.status.reduce((x,y) => x+y, 0);
       var station = this.SeismoData.getStation(stationId);
 
+      // Make marker. Note: This HTML is styled in styles.less
       var marker = new L.Marker(new L.LatLng(station.lat, station.lon), {
         icon: L.divIcon({
           className: "station-marker",
@@ -81,8 +62,11 @@ class SeismoStationMap extends Evented {
         })
       });
 
+      // Make sure you don't clobber double-click for zooming
       marker.on("dblclick", () => this.map.leafletMap.zoomIn());
+      // Save the marker so we can get rid of it on the next search
       this.stationMarkers.push(marker);
+      // Add it to the map
       marker.addTo(this.map.leafletMap);
     });
   }

@@ -7,6 +7,7 @@ class SeismoData {
     this.files = [];
     this.stationStatuses = {};
     this.stations = [];
+    this.groups = [];
 
     io(SeismoServer.url).on("status-update", (obj) => {
       console.log("status-update", obj);
@@ -26,6 +27,15 @@ class SeismoData {
       });
     });
   }
+
+  // Note that this method sets the "files" prop and also populates the "groups" prop.
+  // Groups is the same as files except instead of an array, it is an array of arrays,
+  // currently each sub-array being of size 2. For example,
+  //   files == [a,b,c,d,e,f,g];
+  //   groups == [[a,b], [c,d], [e,f], [g]]
+  // This is used by the UI to display the seismograms list in rows of 2.
+  // TODO: Is there an underscore function that does this?
+  // TODO: Could this be done with a filter?
 
   setFiles(files) {
     this.files = files;
