@@ -20,6 +20,10 @@ class SeismoBrowse {
     $scope.filterVisible = false;
     $scope.numRestults = 0;
 
+    $scope.go = (path) => {
+      $location.path(path);
+    };
+
     $scope.viewSeismogram = (file) => {
       // TODO go to /view
     };
