@@ -48,9 +48,13 @@ angular.module("SeismoApp", [])
       controller: SeismoEdit
     });
   }])
-  .run([function() {
-    console.log("Seismo is running.");
-  }]);
+  .run(function($rootScope, $location, Loading) {
+    $rootScope.Loading = Loading;
+    $rootScope.go = (path) => {
+      $location.path(path);
+    };
+    console.log("Seismo app is running");
+  });
 
 angular.element(document).ready(function() {
   angular.bootstrap(document, ["ngRoute", "SeismoApp"]);

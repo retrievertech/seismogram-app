@@ -23,8 +23,37 @@ html {
     -moz-user-select: none;
     user-select: none;
 
+    //
+    // The following declarations (down to .app-container) are global and apply to
+    // the entire app.
+    //
+
     a {
       cursor: pointer;
+    }
+
+    // The global loading spinner. Its HTML is declared in index.html.
+    .loading-spinner {
+      position: absolute;
+      width: 200px;
+      top: 300px;
+      left: 50%;
+      margin-left: -100px;
+      background: white;
+      z-index: 30;
+      text-align: center;
+      padding: 5px;
+      div {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-top: 1px solid #ccc;
+        &:first-child {
+          border-top: none;
+        }
+        &.error {
+          background: #ffff66;
+        }
+      }
     }
 
     //
