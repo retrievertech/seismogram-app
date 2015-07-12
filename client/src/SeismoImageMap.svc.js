@@ -1,4 +1,5 @@
 import { SeismoImageMapCRS } from "./SeismoImageMapCRS.js";
+
 var L = window.L;
 
 var IntersectionCircle = L.CircleMarker.extend({
@@ -124,7 +125,7 @@ class SeismoImageMap {
       circles.forEach((circle) => circle.updateRadius(zoom));
     });
 
-    leafletMap.setView(new L.LatLng(2000, 7000), 2);
+    leafletMap.setView(new L.LatLng(3000, 8000), 3);
   }
 
   toggleLayer(layer) {
@@ -169,13 +170,11 @@ class SeismoImageMap {
 
     var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
-    // lazy initialization
-    if (!this.imageLayer) {
-      this.imageLayer = L.tileLayer(url, this.imageLayerOpts)
-        .addTo(this.leafletMap);
-    } else {
-      this.imageLayer.setUrl(url);
+    if (this.imageLayer) {
+      this.leafletMap.removeLayer(this.imageLayer);
     }
+
+    this.imageLayer = L.tileLayer(url, this.imageLayerOpts).addTo(this.leafletMap);
 
     this.Loading.start("Loading image...");
 

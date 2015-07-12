@@ -3,7 +3,7 @@
     <div class="title">Skate</div>
   </div>
 
-  <div id="image-map" map-link="SeismoImageMap"></div>
+  <div id="image-map" map-link="SeismoImageMap" view-reset="mapReset"></div>
 
   <div class="image-log" ng-show="logShowing">
     <div class="top-bar">
@@ -14,14 +14,14 @@
     </div>
   </div>
 
-  <div class="image-map-controls" ng-hide="SeismoEditor.editing">
+  <div class="image-map-controls">
     <div ng-click="showLog()" ng-show="!Loading.active() && hasLog()">
       Show Log
     </div>
 
     <div ng-click="SeismoEditor.startEditing()"
          ng-show="!Loading.active() && canEdit()">
-      Edit this seismogram
+      Edit
     </div>
   </div>
 

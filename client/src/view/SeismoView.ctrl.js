@@ -1,29 +1,12 @@
 class SeismoView {
-  constructor($scope, $routeParams, SeismoEditor, SeismoImageMap, Loading, SeismoStatus, SeismoServer, SeismoData, $timeout, $http) {
-    $scope.SeismoEditor = SeismoEditor;
+  constructor($scope, $routeParams, $timeout, $http, SeismoEditor, SeismoImageMap,
+              Loading, SeismoStatus, SeismoServer, SeismoData) {
+
+    window.viewScope = $scope;
+
+    Loading.reset();
+
     $scope.SeismoImageMap = SeismoImageMap;
-    $scope.Loading = Loading;
-
-    console.log($routeParams.filename);
-
-    $scope.startProcessing = () => {
-      var file = SeismoImageMap.currentFile;
-      $http({ url: SeismoServer.processingUrl + "/" + file.name });
-    };
-
-    $scope.isProcessing = () => {
-      var file = SeismoImageMap.currentFile;
-      return file && SeismoStatus.is(file.status, "Processing");
-    };
-
-    $scope.canProcess = () => {
-      var file = SeismoImageMap.currentFile;
-      return file &&
-        SeismoData.isLongPeriod(file) &&
-        SeismoImageMap.imageIsLoaded &&
-        (SeismoStatus.is(file.status, "Not Started") ||
-        SeismoStatus.is(file.status, "Failed"));
-    };
 
     $scope.canEdit = () => {
       var file = SeismoImageMap.currentFile;
@@ -61,13 +44,23 @@ class SeismoView {
       $scope.logShowing = false;
     };
 
+    var main = () => {
+      var filename = $routeParams.filename;
 
-    $timeout(() => {
-      SeismoImageMap.loadImage({
-        name: "010175_0000_0026_04.png",
-        status: 3
-      });
-    });
+      if (SeismoData.gotDataAlready) {
+        var files = SeismoData.filesQueryData.files;
+        var fileObject = files.find((file) => file.name === filename);
+        $timeout(() => SeismoImageMap.loadImage(fileObject));
+      } else {
+        $http({url: SeismoServer.fileUrl + "/" + filename}).then((res) => {
+          SeismoImageMap.loadImage(res.data);
+        }).catch(() => {
+          Loading.start("Seismogram not found.")
+        });
+      }
+    };
+
+    main();
   }
 }
 

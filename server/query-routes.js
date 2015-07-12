@@ -57,6 +57,31 @@ router.get("/stations", function(req, res, next) {
   });
 });
 
+router.get("/file/:filename", function(req, res, next) {
+  var filename = req.params.filename;
+
+  async.waterfall([
+    connect,
+    function(db, cb) {
+      var files = db.collection("files");
+      files.find({name: filename}).toArray(function(err, files) {
+        cb(err, db, files);
+      });
+    },
+    function(db, files, cb) {
+      if (files.length > 0) {
+        res.status(200).send(files[0]);
+      } else {
+        res.status(404).send("Not Found");
+      }
+      db.close();
+      cb(null);
+    }
+  ], function(err) {
+    if (err) next(err);
+  });
+});
+
 router.get("/files", function(req, res, next) {
   console.log("--- processing files query ---", req.query);
   var hit = queryCache.hit(req.query);
@@ -206,7 +231,7 @@ router.get("/files", function(req, res, next) {
 
               var date = new Date(file.date),
                   binIdx = histogramTool.getBinIdx(date);
-              
+
               if (!(binIdx in histogram)) {
                 histogram[binIdx] = 0;
               }

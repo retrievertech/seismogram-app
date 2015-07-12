@@ -6,6 +6,8 @@ class SeismoBrowse {
     // for debugging
     window.scope = $scope;
 
+    Loading.reset();
+
     // Referred to in browse.html
     $scope.SeismoData = SeismoData;
     $scope.SeismoStatus = SeismoStatus;
@@ -42,7 +44,7 @@ class SeismoBrowse {
       });
     };
 
-    var init = () => {
+    var main = () => {
       // If we come here from a different route (e.g. by clicking the back button from
       // another view), we see if the SeismoData service had alrady been populated with
       // data, and load that data instead.
@@ -72,7 +74,7 @@ class SeismoBrowse {
       });
     };
 
-    init();
+    main();
   }
 }
 
