@@ -7,6 +7,7 @@ class SeismoView {
     Loading.reset();
 
     $scope.SeismoImageMap = SeismoImageMap;
+    $scope.Loading = Loading;
 
     $scope.canEdit = () => {
       var file = SeismoImageMap.currentFile;

@@ -1,6 +1,11 @@
 <div class="view-container">
   <div class="header">
-    <div class="title">Skate</div>
+    <div class="title">
+      <span class="title-text">Skate</span>
+      <span class="title-subtext">Viewer</span>
+      &nbsp;&bullet;&nbsp;
+      <span class="title-subtext" ng-click="go('/browse')">Go to Browser</span>
+    </div>
   </div>
 
   <div id="image-map" map-link="SeismoImageMap" view-reset="mapReset"></div>
@@ -14,24 +19,28 @@
     </div>
   </div>
 
-  <div class="image-map-controls">
-    <div ng-click="showLog()" ng-show="!Loading.active() && hasLog()">
-      Show Log
+  <div class="controls">
+    <div class="actions data-layers" ng-show="!Loading.active() && canEdit()">
+      <div class="title">Seismogram Data</div>
+      <div class="action" ng-repeat="ml in SeismoImageMap.metadataLayers">
+        <div class="action-name"
+             ng-class="{'active': ml.on}"
+             ng-click="SeismoImageMap.toggleLayer(ml)">
+          {{ml.name}}
+        </div>
+      </div>
     </div>
 
-    <div ng-click="SeismoEditor.startEditing()"
-         ng-show="!Loading.active() && canEdit()">
-      Edit
-    </div>
-  </div>
-
-  <div class="image-map-layers"
-       ng-show="!Loading.active() && canEdit()">
-    <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
-      <div class="layer-button"
-           ng-class="{'active': ml.on}"
-           ng-click="SeismoImageMap.toggleLayer(ml)">
-        {{ml.name}}
+    <div class="actions file-actions">
+      <div class="title">Seismogram Actions</div>
+      <div class="action">
+        <div class="action-name" ng-click="showDetails()">Show Details</div>
+      </div>
+      <div class="action" ng-show="!Loading.active() && hasLog()">
+        <div class="action-name" ng-click="showLog()">Show Processing Log</div>
+      </div>
+      <div class="action" ng-show="!Loading.active() && canEdit()">
+        <div class="action-name" ng-click="gotoEditor()">Open in Editor</div>
       </div>
     </div>
   </div>

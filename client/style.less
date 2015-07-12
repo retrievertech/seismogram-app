@@ -149,13 +149,18 @@ html {
           // The "Skate" part
           .title {
             font-weight: bold;
-            font-size: 20px;
             position: absolute;
             left: 0;
             top: 0;
             padding-top: 2px;
             margin-left: 10px;
             cursor: pointer;
+            .title-text {
+              font-size: 20px;
+            }
+            .title-subtext {
+              font-size: 16px;
+            }
           }
 
           // For the "List" vs "Map" view. When one of them is clicked, it becomes
@@ -296,25 +301,133 @@ html {
           // The "Skate" part
           .title {
             font-weight: bold;
-            font-size: 20px;
             position: absolute;
             left: 0;
             top: 0;
             padding-top: 2px;
             margin-left: 10px;
             cursor: pointer;
+            .title-text {
+              font-size: 20px;
+            }
+            .title-subtext {
+              font-size: 16px;
+            }
           }
         }
+
+        //
+        // The map showing the tiled seismogram.
+        //
 
         #image-map {
           background: #eee;
           width: 100%;
           height: 100%;
           z-index: 10;
+
           .leaflet-control-zoom {
             margin-top: 40px;
           }
         }
+
+        //
+        // The actions/layers panel in the top-right
+        //
+
+        .controls {
+          position: absolute;
+          top: 30px;
+          right: 15px;
+          z-index: 30;
+
+          //
+          // The layers panel
+          //
+          .actions {
+            opacity: 0.9;
+            color: #333;
+            background: white;
+            margin-top: 20px;
+            box-shadow: 0px 1px 2px #a7a7a7;
+            border-radius: 5px;
+
+            // The title of the layers panel
+            .title {
+              font-size: 16px;
+              font-weight: bold;
+              padding: 10px;
+              text-align: center;
+              border-radius: 5px 5px 0 0;
+            }
+
+            &.data-layers {
+              .title {
+                background: rgb(200, 250, 255);
+                border-bottom: 1px solid darken(rgb(200, 250, 255), 30%);
+              }
+            }
+            &.file-actions {
+              .title {
+                background: rgb(255, 206, 161);
+                border-bottom: 1px solid darken(rgb(255, 206, 161), 30%);
+              }
+            }
+
+            // Each layer
+            .action {
+              cursor: pointer;
+              // I want even padding between layer names and to the right and left of
+              // each layer name. So we put 0 bottom padding for each element,
+              .action-name {
+                font-size: 16px;
+                padding: 10px;
+                padding-bottom: 0px;
+                &.active {
+                  text-decoration: underline;
+                }
+              }
+            }
+            padding-bottom: 10px;
+          }
+        }
+
+        //
+        // The top-right controls
+        //
+
+        .image-log {
+          position: absolute;
+          width: 800px;
+          left: 50%;
+          margin-left: -400px;
+          top: 5%;
+          height: 90%;
+          z-index: 30;
+          background: white;
+
+          .top-bar {
+            height: 20px;
+            border-bottom: 1px solid #999;
+            padding: 5px;
+            cursor: pointer;
+            button {
+              float: right;
+              cursor: pointer;
+            }
+          }
+
+          .contents {
+            font-family: courier;
+            margin: 10px;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            user-select: text;
+            height: 90%;
+            overflow: scroll;
+          }
+        }
+
       }
 
       //
