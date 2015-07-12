@@ -1,90 +1,78 @@
-var _ = window._;
-
 class SeismoBrowse {
 
-  constructor($scope, $http, $location, SeismoStationMap,
-    SeismoImageMap, SeismoQuery, SeismoServer,
-    SeismoData, SeismoEditor,
-    SeismoStatus, Loading, $timeout) {
+  constructor($scope, $location, $timeout, SeismoStationMap, SeismoQuery,
+              SeismoData, SeismoStatus, Loading) {
 
-    // add maps and services to scope
-    $scope.SeismoStationMap = SeismoStationMap;
-    $scope.SeismoImageMap = SeismoImageMap;
+    // for debugging
+    window.scope = $scope;
+
+    // Referred to in browse.html
     $scope.SeismoData = SeismoData;
-    $scope.SeismoEditor = SeismoEditor;
     $scope.SeismoStatus = SeismoStatus;
-    $scope.Loading = Loading;
+    $scope.SeismoStationMap = SeismoStationMap;
 
+    // Whether the list is visible. When it's false, the map is visible.
     $scope.listVisible = true;
+    // Whether the filter/query UI is visible
     $scope.filterVisible = false;
+
+    // The query model is a member of the SeismoQuery service so that it persists across
+    // view changes.
+    $scope.queryModel = SeismoQuery.model;
 
     $scope.viewSeismogram = (file) => {
       $scope.go("/view/" + file.name);
     };
 
-    $scope.queryStationStatuses = () => {
+    $scope.queryFiles = () => {
+      // make the filter UI disappear
+      $scope.filterVisible = false;
+
       Loading.start("Loading results...");
-      return SeismoQuery.queryFiles($scope.queryParamModel)
-        .then((res) => {
-          console.log("Query complete.", res.data);
-          $scope.update(res.data);
-          $scope.filterVisible = false;
-          Loading.stop("Loading results...");
-        });
-    };
 
-    $scope.update = (data) => {
-      SeismoData.setFilesQueryData(data);
-      SeismoStationMap.update();
-    };
+      return SeismoQuery.queryFiles().then((res) => {
+        console.log("Query complete.", res.data);
 
-    $scope.initQueryModel = (queryModel) => {
-      var defaultQueryModel = {
-        dateFrom: new Date(SeismoData.filesQueryData.lowDate),
-        dateTo: new Date(SeismoData.filesQueryData.highDate),
-        numBins: SeismoData.filesQueryData.numBins,
-        stationNames: "",
-        fileNames: "",
-        status: {}
-      };
+        // update the SeismoData files data
+        SeismoData.setFilesQueryData(res.data);
+        // update the map
+        SeismoStationMap.update();
 
-      $scope.SeismoStatus.statuses.forEach((status) => {
-        defaultQueryModel.status[status.code] = true;
+        Loading.stop("Loading results...");
       });
-
-      $scope.queryParamModel = _.extend(defaultQueryModel, queryModel);
     };
 
-    $scope.init = () => {
+    var init = () => {
+      // If we come here from a different route (e.g. by clicking the back button from
+      // another view), we see if the SeismoData service had alrady been populated with
+      // data, and load that data instead.
       if (SeismoData.gotDataAlready) {
-        $timeout(() => {
-          $scope.initQueryModel({
-            dateFrom: new Date(SeismoData.filesQueryData.lowDate),
-            dateTo: new Date(SeismoData.filesQueryData.highDate),
-            numBins: SeismoData.filesQueryData.numBins
-          });
-          SeismoStationMap.update();
-        });
+        $timeout(() => SeismoStationMap.update());
         return;
       }
-      SeismoQuery.initialQuery()
-        .then((res) => {
-          console.log("Initial query complete.", res);
 
-          // populate station data
-          $scope.SeismoData.setStationQueryData(res.stations.data);
-          // update UI with histogram data
-          $scope.update(res.seismograms.data);
-          // populate the model (for the filter/query form) with bounds data
-          $scope.initQueryModel({
-            dateFrom: new Date(res.seismograms.data.lowDate),
-            dateTo: new Date(res.seismograms.data.highDate),
-            numBins: res.seismograms.data.numBins
-          });
-        });
+      // If we didn't come here from a different route, do the initial query --
+      // This queries both the /stations and /files endpoints.
+
+      Loading.start("Loading seismograms...");
+
+      SeismoQuery.initialQuery().then((res) => {
+        console.log("Initial query complete.", res);
+
+        // populate station data
+        SeismoData.setStationQueryData(res.stations.data);
+        // populate station data
+        SeismoData.setFilesQueryData(res.seismograms.data);
+        // drop pins on the map
+        SeismoStationMap.update();
+        // populate the model (for the filter/query form)
+        SeismoQuery.initModel();
+
+        Loading.stop("Loading seismograms...");
+      });
     };
 
-    $scope.init();
+    init();
   }
 }
 

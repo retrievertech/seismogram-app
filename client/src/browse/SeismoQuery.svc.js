@@ -1,9 +1,29 @@
 class SeismoQuery {
-  constructor($http, $q, SeismoServer, SeismoData) {
+  constructor($http, $q, SeismoServer, SeismoData, SeismoStatus) {
     this.$http = $http;
     this.$q = $q;
     this.SeismoServer = SeismoServer;
     this.SeismoData = SeismoData;
+    this.SeismoStatus = SeismoStatus;
+
+    // This is the model for the query form.
+    // To be initialized later when initModel() is called
+    this.model = {};
+
+    window.SeismoQuery = this;
+  }
+
+  initModel() {
+    this.model.dateFrom = new Date(this.SeismoData.filesQueryData.lowDate);
+    this.model.dateTo = new Date(this.SeismoData.filesQueryData.highDate);
+    this.model.numBins = this.SeismoData.filesQueryData.numBins;
+    this.model.stationNames = "";
+    this.model.fileNames = "";
+    this.model.status = {};
+
+    this.SeismoStatus.statuses.forEach((status) => {
+      this.model.status[status.code] = true;
+    });
   }
 
   initialQuery() {
@@ -29,7 +49,7 @@ class SeismoQuery {
     });
   }
 
-  createQuery(queryParamModel) {
+  createQuery() {
     // The server expects something that looks like:
     // {
     //   dateFrom: "",
@@ -40,6 +60,8 @@ class SeismoQuery {
     //   page: 0, // each page returns 40 results
     //   bins: 2000 // number of bins in which to histogram the results
     // }
+
+    var queryParamModel = this.model;
 
     var stationNames = queryParamModel.stationNames
       .split(",").map((stationName) => stationName.trim());

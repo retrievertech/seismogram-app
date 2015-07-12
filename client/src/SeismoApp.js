@@ -6,8 +6,6 @@ import { SeismoImageMap } from "./SeismoImageMap.svc.js";
 import { MapLink } from "./MapLink.dir.js";
 
 import { SeismoStationMap } from "./browse/SeismoStationMap.svc.js";
-import { SeismoTimeNubbin } from "./browse/seismo-query-nubbins/SeismoTimeNubbin.dir.js";
-import { SeismoQueryNubbins } from "./browse/seismo-query-nubbins/SeismoQueryNubbins.dir.js";
 import { SeismoBrowse } from "./browse/SeismoBrowse.ctrl.js";
 import { SeismoQuery } from "./browse/SeismoQuery.svc.js";
 import { SeismoServer } from "./browse/SeismoServer.svc.js";
@@ -27,8 +25,6 @@ angular.module("SeismoApp", [])
   .service("SeismoData", SeismoData)
   .service("SeismoEditor", SeismoEditor)
   .service("Loading", Loading)
-  .directive("seismoTimeNubbin", SeismoTimeNubbin)
-  .directive("seismoQueryNubbins", SeismoQueryNubbins)
   .directive("mapLink", MapLink)
   .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/", {

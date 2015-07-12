@@ -19,8 +19,8 @@
 
 
   <!-- The map. The "listVisibe" variable makes the map and the list mutually-exclusive. -->
-  <!-- Note that the map contains dynamic HTML not visible here, namely the pins on the map -->
-  <!-- are dynamic HTML. See how the pins are added in browse/SeismoStationMap and how they -->
+  <!-- Note that the map contains dynamic HTML not visible here, namely the pins on the map. -->
+  <!-- See how the pins are added in browse/SeismoStationMap and how they -->
   <!-- are styled in styles.less. -->
 
   <div class="seismo-station-map" ng-show="!listVisible">
@@ -65,11 +65,24 @@
   <!-- The filter/query UI that appears when you click Filter -->
 
   <div class="query-ui" ng-show="filterVisible">
-    <div id="seismo-time-nubbin" query-params="queryParamModel" seismo-time-nubbin></div>
-    <div id="seismo-query-nubbins" seismo-status="SeismoStatus"
-         query-params="queryParamModel" seismo-query-nubbins></div>
-    <!-- probably wont need this button eventually -->
-    <button id="query-button" ng-click="queryStationStatuses()">Query</button>
+    <div>
+      <div>Date From</div>
+      <input type="text" placeholder="Start date" ng-model="queryModel.dateFrom"></input>
+      <div>Date To</div>
+      <input type="text" placeholder="End date" ng-model="queryModel.dateTo"></input>
+    </div>
+
+    <div>
+      <input type="text" placeholder="Station names" ng-model="queryModel.stationNames" />
+      <input type="text" placeholder="File names" ng-model="queryModel.fileNames" />
+
+      <div ng-repeat="status in SeismoStatus.statuses">
+        <input id="l{{$index}}" type="checkbox" ng-model="queryModel.status[status.code]"/>
+        <label for="l{{$index}}">{{ status.name }}</label>
+      </div>
+    </div>
+
+    <button id="query-button" ng-click="queryFiles()">Query</button>
   </div>
 
   <!--div id="left-section">

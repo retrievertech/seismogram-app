@@ -28,7 +28,7 @@ class SeismoData {
     });
   }
 
-  // Note that this method sets the "files" prop and also populates the "groups" prop.
+  // This method populates the "groups" prop.
   // Groups is the same as files except instead of an array, it is an array of arrays,
   // currently each sub-array being of size 2. For example,
   //   files == [a,b,c,d,e,f,g];
@@ -55,8 +55,6 @@ class SeismoData {
     if (group.length > 0) {
       this.groups.push(group);
     }
-
-    console.log(this.groups);
   }
 
   // holds on to the station data as returned by the server
