@@ -1,3 +1,8 @@
+//
+// This service loads a file into the image map. It grabs the file data from the server
+// unless the file data is already present in SeismoData.filesQueryData.
+// It is used by the viewer and editor to initially load the image.
+//
 class ImageMapLoader {
   constructor($timeout, $http, $q, Loading, SeismoImageMap, SeismoServer, SeismoData) {
     this.$timeout = $timeout;

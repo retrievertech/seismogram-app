@@ -12,4 +12,44 @@
   </div>
 
   <div id="edit-map" map-link="SeismoImageMap"></div>
+
+  <!-- the controls container on the right -->
+  <div class="controls">
+
+    <!-- the list of map layers -->
+    <div class="actions data-layers" ng-show="!Loading.active() && canEdit()">
+      <div class="title">Seismogram Data</div>
+      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
+        <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
+          <span ng-show="ml.on" class="icon-checkbox-checked">&nbsp;</span>
+          <span ng-show="!ml.on" class="icon-checkbox-unchecked">&nbsp;</span>
+          {{ml.name}}
+        </div>
+      </div>
+    </div>
+
+    <div class="actions editor-actions">
+      <div class="title"><span class="icon-pencil">&nbsp;</span> Editing Tools</div>
+      <div class="action">
+        <div class="action-name" ng-click="detailsShowing=true">
+          <span class="icon-git-commit">&nbsp;</span>
+          Adjust Mean Lines
+        </div>
+      </div>
+
+      <div class="action" ng-show="!Loading.active() && canEdit()">
+        <div class="action-name" ng-click="gotoEditor()">
+          <span class="icon-ungroup">&nbsp;</span>
+          Erase Segments
+        </div>
+      </div>
+
+      <div class="action" ng-show="!Loading.active() && canEdit()">
+        <div class="action-name" ng-click="gotoEditor()">
+          <span class="icon-tab">&nbsp;</span>
+          Segment Assignment
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

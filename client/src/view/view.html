@@ -19,7 +19,7 @@
   <div class="controls">
 
     <!-- the list of map layers -->
-    <div class="actions data-layers" ng-show="!Loading.active() && canEdit()">
+    <div class="actions" ng-show="!Loading.active() && canEdit()">
       <div class="title">Seismogram Data</div>
       <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
         <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
@@ -31,7 +31,7 @@
     </div>
 
     <!-- the list of "actions" below the layers -->
-    <div class="actions file-actions">
+    <div class="actions">
       <div class="title">Seismogram Actions</div>
       <div class="action">
         <div class="action-name" ng-click="detailsShowing=true">

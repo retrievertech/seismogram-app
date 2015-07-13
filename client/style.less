@@ -94,6 +94,51 @@ html {
       }
     }
 
+    .controls-mixin {
+      position: absolute;
+      top: 30px;
+      right: 15px;
+      z-index: 30;
+
+      .actions {
+        opacity: 0.9;
+        color: #333;
+        background: white;
+        margin-top: 20px;
+        box-shadow: 0px 1px 2px #a7a7a7;
+        border-radius: 3px;
+
+        // The title of the layers panel
+        .title {
+          font-size: 16px;
+          font-weight: bold;
+          padding: 10px;
+          text-align: center;
+          border-radius: 3px 3px 0 0;
+          background: rgb(200, 250, 255);
+          border-bottom: 1px solid darken(rgb(200, 250, 255), 50%);
+        }
+
+        // Each layer
+        .action {
+          border-bottom: 1px solid #eee;
+          cursor: pointer;
+          // I want even padding between layer names and to the right and left of
+          // each layer name. So we put 0 bottom padding for each element,
+          .action-name {
+            font-size: 16px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 10px;
+            padding-right: 10px;
+          }
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+
     //
     // The container that wraps all the views in the app, declared in index.html
     //
