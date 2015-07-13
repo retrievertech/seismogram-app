@@ -96,7 +96,7 @@ router.get("/files", function(req, res, next) {
 
   // result paging
   var page = parseInt(req.query.page) || 1;
-  var pageSize = 40;
+  var pageSize = 20;
 
   // station ids to match. If no ids are provided, all ids are matched
   var stationIds = [];
