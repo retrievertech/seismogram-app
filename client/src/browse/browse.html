@@ -11,9 +11,13 @@
 
     <!-- the links in the top-center -->
     <div class="links">
-      <a ng-class="{'active': listVisible}" ng-click="listVisible=true">List View</a>
-      &nbsp; &bullet; &nbsp;
-      <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">Map View</a>
+      <a ng-class="{'active': listVisible}" ng-click="listVisible=true">
+        <span class="icon-list"></span> List
+      </a>
+      &nbsp; &nbsp; &nbsp;
+      <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">
+        <span class="icon-location2"></span> Map
+      </a>
     </div>
 
     <!-- the filter button in the top-right -->
