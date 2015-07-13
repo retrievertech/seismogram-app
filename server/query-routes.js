@@ -2,45 +2,11 @@ var express = require("express");
 var router = express.Router();
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
-var HistogramTool = require("./histogram-tool");
 var queryCache = require("./query-cache");
 
 var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
-
-var histogramTool;
-function prepareHistogramTool() {
-  async.waterfall([
-    connect,
-    function(db, cb) {
-      db.collection("files").find()
-        .sort({date: 1})
-        .limit(1)
-        .toArray(function(err, files) {
-          var lowDate = files[0].date;
-          cb(err, db, lowDate);
-        });
-    },
-    function(db, lowDate, cb) {
-      db.collection("files").find()
-        .sort({date: -1})
-        .limit(1)
-        .toArray(function(err, files) {
-          var highDate = files[0].date;
-          cb(err, db, lowDate, highDate);
-        });
-    },
-    function(db, lowDate, highDate, cb) {
-      histogramTool = new HistogramTool(lowDate, highDate);
-      db.close();
-      cb(null);
-    }
-  ], function(err) {
-    if (err) console.error(err);
-  });
-}
-prepareHistogramTool();
 
 router.get("/stations", function(req, res, next) {
   async.waterfall([
@@ -130,10 +96,6 @@ router.get("/files", function(req, res, next) {
     }, []);
   }
 
-  // prepare histogramTool for binning
-  var numBins = parseInt(req.query.bins) || 200;
-  histogramTool.setNumBins(numBins);
-
   // build the query.
   // queryComponents is a list of clauses that will be $and-ed together
   var queryComponents = [];
@@ -203,7 +165,6 @@ router.get("/files", function(req, res, next) {
           console.time("processing");
 
           var stationMap = {};
-          var histogram = {};
 
           var getStation = function(id) {
             if (!(id in stationMap)) {
@@ -218,7 +179,7 @@ router.get("/files", function(req, res, next) {
           db.collection("files").find(query).batchSize(10000).each(function(err, file) {
             if (file === null) {
               console.timeEnd("processing");
-              cb(err, { stationMap: stationMap, histogram: histogram });
+              cb(err, { stationMap: stationMap });
             } else {
               var station = getStation(file.stationId);
 
@@ -229,15 +190,6 @@ router.get("/files", function(req, res, next) {
 
               station.status[file.status]++;
               station.edited += +file.edited;
-
-              var date = new Date(file.date),
-                  binIdx = histogramTool.getBinIdx(date);
-
-              if (!(binIdx in histogram)) {
-                histogram[binIdx] = 0;
-              }
-
-              histogram[binIdx]++;
             }
           });
         }
@@ -252,9 +204,7 @@ router.get("/files", function(req, res, next) {
         lowDate: results.lowDate,
         highDate: results.highDate,
         numResults: results.numResults,
-        histogram: results.counts.histogram,
-        files: results.filteredFiles,
-        numBins: numBins
+        files: results.filteredFiles
       };
 
       queryCache.put(req.query, payload);
