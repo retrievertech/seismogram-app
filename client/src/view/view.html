@@ -22,10 +22,10 @@
   <div class="controls">
     <div class="actions data-layers" ng-show="!Loading.active() && canEdit()">
       <div class="title">Seismogram Data</div>
-      <div class="action" ng-repeat="ml in SeismoImageMap.metadataLayers">
-        <div class="action-name"
-             ng-class="{'active': ml.on}"
-             ng-click="SeismoImageMap.toggleLayer(ml)">
+      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
+        <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
+          <span ng-show="ml.on" class="icon-checkbox-checked">&nbsp;</span>
+          <span ng-show="!ml.on" class="icon-checkbox-unchecked">&nbsp;</span>
           {{ml.name}}
         </div>
       </div>
@@ -34,13 +34,22 @@
     <div class="actions file-actions">
       <div class="title">Seismogram Actions</div>
       <div class="action">
-        <div class="action-name" ng-click="showDetails()">Show Details</div>
+        <div class="action-name" ng-click="showDetails()">
+          <span class="icon-info">&nbsp;</span>
+          Show Details
+        </div>
       </div>
       <div class="action" ng-show="!Loading.active() && hasLog()">
-        <div class="action-name" ng-click="showLog()">Show Processing Log</div>
+        <div class="action-name" ng-click="showLog()">
+          <span class="icon-file-text">&nbsp;</span>
+          Show Processing Log
+        </div>
       </div>
       <div class="action" ng-show="!Loading.active() && canEdit()">
-        <div class="action-name" ng-click="gotoEditor()">Open in Editor</div>
+        <div class="action-name" ng-click="gotoEditor()">
+          <span class="icon-pencil">&nbsp;</span>
+          Open in Editor
+        </div>
       </div>
     </div>
   </div>
