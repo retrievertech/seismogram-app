@@ -1,0 +1,207 @@
+//
+// The browse container wraps the browse/search functionality of Skate and
+// is declared in src/browse/browse.html
+//
+.browse-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+
+  // The seismo list is the two-column view of seismograms you get when you click
+  // "List View" in the browser.
+  .seismo-list {
+    height: 100%;
+    overflow: auto;
+    text-align: center;
+    background: #eee;
+
+    // The top padding makes sure that the list is pushed down enough so it's not
+    // obscured by the header when scrolled all the way up. This is because the
+    // header floats on top of the list.
+    .top-padding {
+      height: 35px;
+      width: 100%;
+    }
+
+    // A group is a div that wraps two (or optionally more) seismograms. It is
+    // basically a row in the seismo list. I found the group concept necessary
+    // because the seismogram thumbnails are variable-height, so e.g. a
+    // float:left would cause occasional gaps in the list. The group is as tall
+    // as the tallest seismo in the group and the rows/groups align correctly.
+    .group {
+      // An individual seismo "box" container. The container has no margins or
+      // padding, and allows the background to be visible through the margins of
+      // the actual content boxes (below)
+      .seismo-list-item {
+        cursor: pointer;
+        text-align: center;
+        width: 50%;
+        display: inline-block;
+        vertical-align: top;
+
+        // The actual white box for an individual seismogram. Note the 10px margin
+        // which allows the background to be visible between seismo boxes.
+        .item-content {
+          background: white;
+          margin: 10px;
+          box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
+          .filename {
+            font-size: 10px;
+            margin-top: 10px;
+            color: #888;
+          }
+          &.active {
+            background: #add6ff;
+          }
+        }
+      }
+    }
+  }
+
+  // The browser header. I chose to make it absolute and float on top of the
+  // full-screen list and map views. Note that the title and links (the contents
+  // of the header) are also absolute wrt the window, they are not relative to the
+  // header box.
+  .header {
+    position: absolute;
+    // note: If this isn't set, the header height collapses down. This is because
+    // its contents are also absolute.
+    height: 30px;
+    top: 0; left: 0;
+    color: #d7d7d7;
+    background: rgba(0, 7, 56, 0.8);
+    font-size: 16px;
+    width: 100%;
+    z-index: 20;
+    box-shadow: 0px 1px 3px #111;
+
+    // The "Skate" part
+    .title {
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+      top: 0;
+      padding-top: 2px;
+      margin-left: 10px;
+      cursor: pointer;
+      .title-text {
+        font-size: 20px;
+      }
+      .title-subtext {
+        font-size: 16px;
+      }
+    }
+
+    // For the "List" vs "Map" view. When one of them is clicked, it becomes
+    // underlined.
+    .active {
+      text-decoration: underline;
+    }
+
+    // The "List" and "Map" links container.
+    .links {
+      padding: 5px 0px;
+      position: absolute;
+      text-align: center;
+      // Enough width to contain the text.
+      width: 200px;
+      // This places the left edge of the container at half the window width.
+      // E.g., too far to the right.
+      left: 50%;
+      // This moves it left by half its own width, therefore centering it.
+      // (This is a standard trick for centering an absolute div.)
+      // This value is always "-(width/2)".
+      margin-left: -100px;
+    }
+
+    // The filter link on the top-right.
+    .filter {
+      position: absolute;
+      text-align: right;
+      padding: 5px 0px;
+      right: 0px;
+      width: 50px;
+      margin-right: 25px;
+    }
+  }
+
+  // The main "map view" div in which the leaflet map is rendered. This view
+  // and the list view are mutually exclusive, only one is on the screen at any
+  // one time. Also, they do not overlap visually. One of them is always hidden.
+  .seismo-station-map {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%; width: 100%;
+
+    // This is the div that is passed to Leaflet, and populated by
+    // Leaflet with the actual map and layers.
+    #stations-map {
+      // The background of the map is white instad of the standard gray. I chose
+      // this, in combination with reducing the opacity on the base layer, to
+      // create a faded effect on the map, increasing the contrast between the
+      // map and the pins.
+      background: white;
+      // Push the zoom controls down a bit so they do not overlap with the header.
+      .leaflet-control-zoom {
+        margin-top: 40px;
+      }
+      // The custom station markers. The markers are fully CSS-based.
+      .station-marker {
+        // The div that contains the seismogram counts for each station.
+        .marker {
+          text-align: center;
+          border-radius: 10px;
+          background: rgb(159, 45, 104);
+          color: white;
+          width: 60px;
+          box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
+        }
+        // The div that containst he name/location of the station below the pin
+        // that contains the counts.
+        .station-location {
+          // The next two lines are my attempt to center the station name relative
+          // to the pin. I didn't fully understand how the two are position next
+          // to each other and I hacked it visually until it looked OK. TODO.
+          width: 200px;
+          margin-left: -70px;
+
+          color: #333;
+          font-size: 12px;
+          text-align: center;
+          // This text-shadow is a trick to add a white outline to the station
+          // name. This helps a great deal visually when station names overlap.
+          text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+        }
+      }
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
+  }
+
+  //
+  // The "Filter" div that appears at the top of the window when clicking "Filter"
+  //
+  .query-ui {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    background: white;
+    z-index: 30;
+    box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
+
+    #seismo-time-nubbin {
+      div {
+        display: inline-block;
+        margin: auto 0;
+      }
+    }
+
+    #seismo-query-nubbins {}
+
+    #query-button {
+      height: 40px;
+    }
+  }
+}

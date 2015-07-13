@@ -34,6 +34,7 @@ function prepareHistogramTool() {
     function(db, lowDate, highDate, cb) {
       histogramTool = new HistogramTool(lowDate, highDate);
       db.close();
+      cb(null);
     }
   ], function(err) {
     if (err) console.error(err);

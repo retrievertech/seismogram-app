@@ -56,7 +56,7 @@ class SeismoView {
         $http({url: SeismoServer.fileUrl + "/" + filename}).then((res) => {
           SeismoImageMap.loadImage(res.data);
         }).catch(() => {
-          Loading.start("Seismogram not found.")
+          Loading.start("Seismogram not found.");
         });
       }
     };
