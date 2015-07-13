@@ -2,25 +2,9 @@ import { SeismoImageMapCRS } from "./SeismoImageMapCRS.js";
 
 var L = window.L;
 
-var IntersectionCircle = L.CircleMarker.extend({
-  getRadius: function(zoom, feature) {
-    if (zoom > 5) {
-      return feature.properties.radius / Math.pow(2, 7 - zoom);
-    } else {
-      return 3;
-    }
-  },
-  updateRadius: function(zoom, feature) {
-    feature = feature || this.feature;
-    this.setRadius(this.getRadius(zoom, feature));
-  }
-});
-
 class SeismoImageMap {
 
   constructor($timeout, $location, $http, $q, SeismoServer, SeismoStatus, Loading) {
-    var map = window.imageMap = this;
-
     this.$timeout = $timeout;
     this.$location = $location;
     this.$http = $http;
@@ -35,17 +19,6 @@ class SeismoImageMap {
 
     this.metadataLayers = [
       {
-        name: "Region of Interest",
-        key: "roi",
-        on: false,
-        zIndex: 10,
-        leafletLayer: null,
-        style: {
-          color: "blue",
-          weight: 1,
-          opacity: 0.9
-        }
-      }, {
         name: "Mean Lines",
         key: "meanlines",
         on: false,
@@ -53,27 +26,8 @@ class SeismoImageMap {
         leafletLayer: null,
         style: {
           color: "yellow",
-          weight: 1,
+          weight: 3,
           opacity: 0.9
-        }
-      }, {
-        name: "Intersections",
-        key: "intersections",
-        on: false,
-        zIndex: 12,
-        leafletLayer: null,
-        style: {
-          pointToLayer: function(feature, latlng) {
-            var marker = new IntersectionCircle(latlng, {
-              fillColor: "yellow",
-              color: "red",
-              weight: 1,
-              opacity: 1,
-              fillOpacity: 0.9
-            });
-            marker.updateRadius(map.leafletMap.getZoom(), feature);
-            return marker;
-          }
         }
       }, {
         name: "Segments",
@@ -114,18 +68,11 @@ class SeismoImageMap {
       }
     });
 
-    // Zoom-sensitive sizing of circle radii.
-    leafletMap.on("zoomend", () => {
-      var intersections = this.metadataLayers.find((layer) => layer.key === "intersections");
-
-      if (!intersections.leafletLayer) return;
-
-      var circles = intersections.leafletLayer.getLayers();
-      var zoom = leafletMap.getZoom();
-      circles.forEach((circle) => circle.updateRadius(zoom));
-    });
-
     leafletMap.setView(new L.LatLng(3000, 8000), 3);
+  }
+
+  getLayer(key) {
+    return this.metadataLayers.find((layer) => layer.key === key);
   }
 
   toggleLayer(layer) {

@@ -14,10 +14,10 @@
   <div id="edit-map" map-link="SeismoImageMap"></div>
 
   <!-- the controls container on the right -->
-  <div class="controls">
+  <div class="controls" ng-show="!Loading.active() && hasData()">
 
     <!-- the list of map layers -->
-    <div class="actions data-layers" ng-show="!Loading.active() && canEdit()">
+    <div class="actions data-layers">
       <div class="title">Seismogram Data</div>
       <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
         <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
@@ -30,24 +30,54 @@
 
     <div class="actions editor-actions">
       <div class="title"><span class="icon-pencil">&nbsp;</span> Editing Tools</div>
-      <div class="action">
-        <div class="action-name" ng-click="detailsShowing=true">
+      <div class="action" ng-class="{'active-action': meanLinesEditing}">
+        <div class="action-name" ng-click="meanLinesEdit()">
           <span class="icon-git-commit">&nbsp;</span>
-          Adjust Mean Lines
+          Edit Mean Lines
         </div>
       </div>
 
-      <div class="action" ng-show="!Loading.active() && canEdit()">
-        <div class="action-name" ng-click="gotoEditor()">
-          <span class="icon-ungroup">&nbsp;</span>
+      <div class="subaction-group" ng-show="meanLinesEditing">
+        <div class="action sub-action">
+          <div class="action-name" ng-click="meanLinesAdd()">
+            <span class="icon-plus">&nbsp;</span>
+            Add Mean Line
+          </div>
+        </div>
+      </div>
+
+      <div class="action">
+        <div class="action-name" ng-click="segmentsErase()">
+          <span class="icon-scissors">&nbsp;</span>
           Erase Segments
         </div>
       </div>
 
-      <div class="action" ng-show="!Loading.active() && canEdit()">
-        <div class="action-name" ng-click="gotoEditor()">
+      <div class="action">
+        <div class="action-name" ng-click="segmentsAssign()">
           <span class="icon-tab">&nbsp;</span>
           Segment Assignment
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="action">
+        <div class="action-name" ng-click="discardChanges()">
+          <span class="icon-spinner11">&nbsp;</span>
+          Discard Changes
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-name" ng-click="saveChanges()">
+          <span class="icon-cloud-upload">&nbsp;</span>
+          Save Changes
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-name" ng-click="download()">
+          <span class="icon-download3">&nbsp;</span>
+          Download Data
         </div>
       </div>
     </div>

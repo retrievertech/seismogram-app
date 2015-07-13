@@ -82,72 +82,14 @@ class SeismoEditor {
     this.layerBeingEdited = layer;
 
     var map = this.SeismoImageMap.leafletMap;
-
-    if (layer.key === "intersections") {
-      // we have to do a bunch of custom stuff here to get intersection editing to work.
-
-      layer.leafletLayer.getLayers().forEach((circle) => {
-        // prevMousePosition holds the previous x-coord of the mouse cursor
-        // so we can determine if the mouse is moved to the left or to the right.
-        var prevMousePosition = 0;
-
-        // we register mousedown events for moving and radius-sizing
-        circle.on("mousedown", (e) => {
-          var zoom = map.getZoom();
-          prevMousePosition = e.latlng.lng;
-
-          // once the mouse has been pressed, we catch mousemove events on the map
-          map.on("mousemove", (e) => {
-            // if shift is pressed while the mouse is down and being moved, we resize
-            // the circle's radius, but only at zooms for which the actual radius is rendered
-            // (see IntersectionCircle.getRadius())
-            
-            if (shiftPressed && zoom > 5) {
-              var distance = Math.abs(e.latlng.lng - prevMousePosition);
-              var radius = circle.feature.properties.radius;
-              var newRadius = radius + distance;
-
-              // if the mouse is moved to the right, we increase the radius.
-              // if it's moved to the left, we decrease it.
-              if (e.latlng.lng < prevMousePosition) {
-                newRadius = radius - distance;
-
-                // we never make the radius less than 3px
-                if (radius - distance < 3) {
-                  newRadius = 3;
-                }
-              }
-
-              // modify the underlying geoJson, too.
-              circle.feature.properties.radius = newRadius;
-              circle.updateRadius(zoom);
-
-              prevMousePosition = e.latlng.lng;
-            } else {
-              // if shift is not pressed, we move the marker.
-              circle.setLatLng(e.latlng);
-            }
-          });
-        });
-
-        // on mouse up, we disable the mousemove event we just installed
-        map.on("mouseup", () => map.removeEventListener("mousemove"));
-      });
-    } else {
-      layer.leafletLayer.getLayers().forEach((object) => object.enableEdit());
-    }
+    layer.leafletLayer.getLayers().forEach((object) => object.enableEdit());
   }
 
   stopEditing() {
     var layer = this.layerBeingEdited;
 
     if (layer !== null) {
-      if (layer.key === "intersections") {
-        // for intersections, remove the circle mousedown events
-        layer.leafletLayer.getLayers().forEach((circle) => circle.off("mousedown"));
-      } else {
-        layer.leafletLayer.getLayers().forEach((object) => object.disableEdit());
-      }
+      layer.leafletLayer.getLayers().forEach((object) => object.disableEdit());
     }
 
     this.layerBeingEdited = null;

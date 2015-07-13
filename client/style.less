@@ -1,3 +1,14 @@
+//
+// This file declares:
+//  * styling for the top-level HTML in index.html. This includes the top-level body/html
+//    as well as, e.g., the loading-spinner which lives in index.html
+//
+//  * mixins shared by the CSS in all the views. Mixins are explicitly suffixed with "-mixin".
+//
+//  * `import`s of the CSS for all the views, which live in their respective module
+//    directories.
+//
+
 html {
   width: 100%;
   height: 100%;
@@ -94,12 +105,19 @@ html {
       }
     }
 
+    //
+    // This mixin is shared by the view and edit views and it's used to render
+    // the map layers control, the viewer actions, and the editor actions.
+    //
+
+    // This is the top-level container for all the action boxes on the right
     .controls-mixin {
       position: absolute;
       top: 30px;
       right: 15px;
       z-index: 30;
 
+      // This is an individual actions box with a title and a list of actions below
       .actions {
         opacity: 0.9;
         color: #333;
@@ -116,15 +134,22 @@ html {
           text-align: center;
           border-radius: 3px 3px 0 0;
           background: rgb(200, 250, 255);
-          border-bottom: 1px solid darken(rgb(200, 250, 255), 50%);
+          border-bottom: 1px solid rgb(124, 156, 159);
+        }
+
+        // To delimit a group of .action.sub-action rows
+        .subaction-group {
+          // A darker at the top gives an recessed look
+          border-top: 1px solid #aaa;
+          border-bottom: 1px solid #ddd;
         }
 
         // Each layer
         .action {
+
           border-bottom: 1px solid #eee;
           cursor: pointer;
-          // I want even padding between layer names and to the right and left of
-          // each layer name. So we put 0 bottom padding for each element,
+          // The contents of the action
           .action-name {
             font-size: 16px;
             padding-top: 5px;
@@ -135,12 +160,24 @@ html {
           &:last-child {
             border-bottom: none;
           }
+          &.active-action {
+            background: #eee;
+          }
+          // A sub-action has a darker background and is indented.
+          &.sub-action {
+            background: #ccc;
+            .action-name {
+              margin-left: 20px;
+            }
+          }
         }
       }
     }
 
     //
-    // The container that wraps all the views in the app, declared in index.html
+    // The container that wraps all the views in the app, and its HTML is in index.html.
+    // The CSS for each view lives in its own file in its respective module directory,
+    // near its corresponding HTML
     //
 
     .app-container {
