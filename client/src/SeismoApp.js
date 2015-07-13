@@ -1,7 +1,6 @@
 var angular = window.angular;
 
 import { Loading } from "./Loading.svc.js";
-import { SeismoEditor } from "./SeismoEditor.svc.js";
 import { SeismoImageMap } from "./SeismoImageMap.svc.js";
 import { MapLink } from "./MapLink.dir.js";
 
@@ -12,8 +11,10 @@ import { SeismoServer } from "./browse/SeismoServer.svc.js";
 import { SeismoStatus } from "./browse/SeismoStatus.svc.js";
 import { SeismoData } from "./browse/SeismoData.svc.js";
 
-import { SeismoView } from "./view/SeismoView.ctrl.js";
 import { SeismoEdit } from "./edit/SeismoEdit.ctrl.js";
+import { SeismoEditor } from "./edit/SeismoEditor.svc.js";
+
+import { SeismoView } from "./view/SeismoView.ctrl.js";
 import { SeismoMain } from "./main/SeismoMain.ctrl.js";
 
 angular.module("SeismoApp", [])
@@ -39,7 +40,7 @@ angular.module("SeismoApp", [])
       templateUrl: "src/view/view.html",
       controller: SeismoView
     });
-    $routeProvider.when("/edit", {
+    $routeProvider.when("/edit/:filename", {
       templateUrl: "src/edit/edit.html",
       controller: SeismoEdit
     });

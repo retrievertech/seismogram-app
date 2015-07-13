@@ -19,7 +19,7 @@
     // obscured by the header when scrolled all the way up. This is because the
     // header floats on top of the list.
     .top-padding {
-      height: 35px;
+      height: 40px;
       width: 100%;
     }
 
@@ -58,39 +58,12 @@
     }
   }
 
-  // The browser header. I chose to make it absolute and float on top of the
-  // full-screen list and map views. Note that the title and links (the contents
-  // of the header) are also absolute wrt the window, they are not relative to the
-  // header box.
+  // The browser header.
   .header {
-    position: absolute;
-    // note: If this isn't set, the header height collapses down. This is because
-    // its contents are also absolute.
-    height: 30px;
-    top: 0; left: 0;
+    .header-mixin;
     color: #d7d7d7;
     background: rgba(0, 7, 56, 0.8);
-    font-size: 16px;
-    width: 100%;
-    z-index: 20;
     box-shadow: 0px 1px 3px #111;
-
-    // The "Skate" part
-    .title {
-      font-weight: bold;
-      position: absolute;
-      left: 0;
-      top: 0;
-      padding-top: 2px;
-      margin-left: 10px;
-      cursor: pointer;
-      .title-text {
-        font-size: 20px;
-      }
-      .title-subtext {
-        font-size: 16px;
-      }
-    }
 
     // For the "List" vs "Map" view. When one of them is clicked, it becomes
     // underlined.
@@ -100,7 +73,7 @@
 
     // The "List" and "Map" links container.
     .links {
-      padding: 5px 0px;
+      padding: 8px 0px;
       position: absolute;
       text-align: center;
       // Enough width to contain the text.
@@ -118,7 +91,7 @@
     .filter {
       position: absolute;
       text-align: right;
-      padding: 5px 0px;
+      padding: 8px 0px;
       right: 0px;
       width: 100px;
       margin-right: 25px;
@@ -143,7 +116,7 @@
       background: white;
       // Push the zoom controls down a bit so they do not overlap with the header.
       .leaflet-control-zoom {
-        margin-top: 40px;
+        margin-top: 45px;
       }
       // The custom station markers. The markers are fully CSS-based.
       .station-marker {

@@ -59,6 +59,41 @@ html {
       }
     }
 
+    // The header for all the sections. I chose to make it absolute and float on top of the
+    // full-screen list and map views. Note that the title and links (the contents
+    // of the header) are also absolute wrt the window, they are not relative to the
+    // header box.
+    .header-mixin {
+      // inheriters should override:
+      // box-shadow, color, background
+      font-family: "Oxygen", sans-serif;
+      position: absolute;
+      // note: If this isn't set, the header height collapses down. This is because
+      // its contents are also absolute.
+      height: 32px;
+      top: 0; left: 0;
+      font-size: 16px;
+      width: 100%;
+      z-index: 20;
+
+      // The "Skate" part
+      .title {
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding-top: 2px;
+        margin-left: 10px;
+        cursor: pointer;
+        .title-text {
+          font-size: 20px;
+        }
+        .title-subtext {
+          font-size: 16px;
+        }
+      }
+    }
+
     //
     // The container that wraps all the views in the app, declared in index.html
     //

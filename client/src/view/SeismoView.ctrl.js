@@ -18,6 +18,10 @@ class SeismoView {
                       SeismoStatus.is(file.status, "Edited"));
     };
 
+    $scope.gotoEditor = () => {
+      $scope.go("/edit/" + SeismoImageMap.currentFile.name);
+    };
+
     $scope.logShowing = false;
     $scope.log = "";
 
