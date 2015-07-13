@@ -1,5 +1,5 @@
 class SeismoView {
-  constructor($scope, $routeParams, $timeout, $http, SeismoEditor, SeismoImageMap,
+  constructor($scope, $routeParams, $timeout, $http, $q, SeismoEditor, SeismoImageMap,
               Loading, SeismoStatus, SeismoServer, SeismoData) {
 
     window.viewScope = $scope;
@@ -7,7 +7,10 @@ class SeismoView {
     Loading.reset();
 
     $scope.SeismoImageMap = SeismoImageMap;
+    $scope.SeismoData = SeismoData;
     $scope.Loading = Loading;
+
+    $scope.detailsShowing = false;
 
     $scope.canEdit = () => {
       var file = SeismoImageMap.currentFile;
@@ -53,8 +56,12 @@ class SeismoView {
         var fileObject = files.find((file) => file.name === filename);
         $timeout(() => SeismoImageMap.loadImage(fileObject));
       } else {
-        $http({url: SeismoServer.fileUrl + "/" + filename}).then((res) => {
-          SeismoImageMap.loadImage(res.data);
+        $q.all({
+          stations: $http({ url: SeismoServer.stationsUrl }),
+          file: $http({ url: SeismoServer.fileUrl + "/" + filename })
+        }).then((res) => {
+          SeismoData.setStationQueryData(res.stations.data);
+          SeismoImageMap.loadImage(res.file.data);
         }).catch(() => {
           Loading.start("Seismogram not found.");
         });

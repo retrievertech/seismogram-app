@@ -91,6 +91,8 @@ class SeismoData {
   }
 
   formatDate(file) {
+    if (!file) return;
+
     var pad = (val) => {
       val = val + "";
       return val.length === 1 ? "0" + val : val;
@@ -107,6 +109,7 @@ class SeismoData {
   }
 
   stationLocation(file) {
+    if (!file) return;
     return this.getStation(file.stationId).location;
   }
 
@@ -115,16 +118,19 @@ class SeismoData {
   }
 
   isLongPeriod(file) {
+    if (!file) return;
     var type = parseInt(file.type);
     return type >= 4 && type <= 6;
   }
 
   isShortPriod(file) {
+    if (!file) return;
     var type = parseInt(file.type);
     return type >= 1 && type <= 3;
   }
 
   seismoType(file) {
+    if (!file) return;
     if (this.isLongPeriod(file)) {
       return "Long-period";
     } else {
@@ -133,6 +139,7 @@ class SeismoData {
   }
 
   seismoDirection(file) {
+    if (!file) return;
     var type = parseInt(file.type);
 
     if (type === 1 || type === 4) {

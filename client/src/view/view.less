@@ -71,7 +71,7 @@
       background: white;
       margin-top: 20px;
       box-shadow: 0px 1px 2px #a7a7a7;
-      border-radius: 5px;
+      border-radius: 3px;
 
       // The title of the layers panel
       .title {
@@ -79,7 +79,7 @@
         font-weight: bold;
         padding: 10px;
         text-align: center;
-        border-radius: 5px 5px 0 0;
+        border-radius: 3px 3px 0 0;
       }
 
       &.data-layers {
@@ -116,38 +116,74 @@
   }
 
   //
-  // The top-right controls
+  // The processing log
   //
 
-  .image-log {
+  .window-mixin {
     position: absolute;
     width: 800px;
     left: 50%;
     margin-left: -400px;
-    top: 5%;
-    height: 90%;
+    top: 50px;
+    height: 500px;
     z-index: 30;
     background: white;
+    box-shadow: 0px 1px 2px #a7a7a7;
+    border-radius: 3px;
+    z-index: 50;
 
     .top-bar {
       height: 20px;
-      border-bottom: 1px solid #999;
-      padding: 5px;
+      background: #ddd;
+      border-bottom: 1px solid #aaa;
+      padding: 10px;
       cursor: pointer;
-      button {
+      .title {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .buttons {
         float: right;
         cursor: pointer;
+        font-size: 16px;
       }
     }
 
     .contents {
+      font-size: 16px;
+      margin: 10px;
+    }
+  }
+
+  .details {
+    .window-mixin;
+    width: 400px;
+    margin-left: -200px;
+    height: 200px;
+
+    .contents {
+      .row {
+        line-height: 24px;
+        .label {
+          font-weight: bold;
+          width: 120px;
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  .image-log {
+    .window-mixin;
+    .contents {
       font-family: courier;
       margin: 10px;
+      font-size: 12px;
       -webkit-user-select: text;
       -moz-user-select: text;
       user-select: text;
-      height: 90%;
-      overflow: scroll;
+      height: 440px;
+      overflow: auto;
     }
   }
 

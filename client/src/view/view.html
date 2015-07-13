@@ -1,4 +1,6 @@
 <div class="view-container">
+
+  <!-- the header div at the top -->
   <div class="header">
     <div class="title">
       <span class="title-text">Skate</span>
@@ -8,18 +10,13 @@
     </div>
   </div>
 
+  <!-- the map showing the tiled image and metadata -->
   <div id="image-map" map-link="SeismoImageMap" view-reset="mapReset"></div>
 
-  <div class="image-log" ng-show="logShowing">
-    <div class="top-bar">
-      <button ng-click="hideLog()">Close</button>
-    </div>
-    <div class="contents">
-      <pre>{{log}}</pre>
-    </div>
-  </div>
-
+  <!-- the controls container on the right -->
   <div class="controls">
+
+    <!-- the list of map layers -->
     <div class="actions data-layers" ng-show="!Loading.active() && canEdit()">
       <div class="title">Seismogram Data</div>
       <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
@@ -31,10 +28,11 @@
       </div>
     </div>
 
+    <!-- the list of "actions" below the layers -->
     <div class="actions file-actions">
       <div class="title">Seismogram Actions</div>
       <div class="action">
-        <div class="action-name" ng-click="showDetails()">
+        <div class="action-name" ng-click="detailsShowing=true">
           <span class="icon-info">&nbsp;</span>
           Show Details
         </div>
@@ -51,6 +49,46 @@
           Open in Editor
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- the popup window showing file details -->
+  <div class="details" ng-show="detailsShowing">
+    <div class="top-bar">
+      <a class="buttons" ng-click="detailsShowing=false">
+        <span class="icon-cross"></span> Close
+      </a>
+      <div class="title">File Details</div>
+    </div>
+    <div class="contents">
+      <div class="row">
+        <div class="label">Name:</div> {{ SeismoImageMap.currentFile.name }}
+      </div>
+      <div class="row">
+        <div class="label">Date/Time:</div> {{ SeismoData.formatDate(SeismoImageMap.currentFile) }}
+      </div>
+      <div class="row">
+        <div class="label">Location:</div> {{ SeismoData.stationLocation(SeismoImageMap.currentFile) }}
+      </div>
+      <div class="row">
+        <div class="label">Type:</div> {{ SeismoData.seismoType(SeismoImageMap.currentFile) }}
+      </div>
+      <div class="row">
+        <div class="label">Direction:</div> {{ SeismoData.seismoDirection(SeismoImageMap.currentFile) }}
+      </div>
+    </div>
+  </div>
+
+  <!-- the popup window showing the processing log -->
+  <div class="image-log" ng-show="logShowing">
+    <div class="top-bar">
+      <a class="buttons" ng-click="hideLog()">
+        <span class="icon-cross"></span> Close
+      </a>
+      <div class="title">Processing Log</div>
+    </div>
+    <div class="contents">
+      <pre>{{log}}</pre>
     </div>
   </div>
 </div>
