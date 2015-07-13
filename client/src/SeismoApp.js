@@ -13,6 +13,8 @@ import { SeismoData } from "./browse/SeismoData.svc.js";
 
 import { SeismoEdit } from "./edit/SeismoEdit.ctrl.js";
 import { SeismoEditor } from "./edit/SeismoEditor.svc.js";
+import { MeanLinesEditor } from "./edit/MeanLinesEditor.svc.js";
+import { Popup } from "./edit/Popup.svc.js";
 
 import { SeismoView } from "./view/SeismoView.ctrl.js";
 import { SeismoMain } from "./main/SeismoMain.ctrl.js";
@@ -29,6 +31,8 @@ angular.module("SeismoApp", [])
   .service("SeismoEditor", SeismoEditor)
   .service("Loading", Loading)
   .service("ImageMapLoader", ImageMapLoader)
+  .service("MeanLinesEditor", MeanLinesEditor)
+  .service("Popup", Popup)
   .directive("mapLink", MapLink)
   .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/", {

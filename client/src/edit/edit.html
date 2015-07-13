@@ -13,11 +13,11 @@
 
   <div id="edit-map" map-link="SeismoImageMap"></div>
 
-  <div class="popup-message" ng-show="popupVisible">
-    <div class="message">{{ popupMessage }}</div>
+  <div class="popup-message" ng-show="Popup.visible">
+    <div class="message">{{ Popup.message }}</div>
     <div class="buttons">
-      <div class="button" ng-click="popupYes()">Yes</div>
-      <div class="button" ng-click="popupNo()">No</div>
+      <div class="button" ng-click="Popup.yes()">Yes</div>
+      <div class="button" ng-click="Popup.no()">No</div>
     </div>
   </div>
 
@@ -40,17 +40,17 @@
       <div class="title"><span class="icon-pencil">&nbsp;</span> Editing Tools</div>
 
       <!-- mean lines editing -->
-      <div class="action" ng-class="{'active-action': meanLinesEditing}">
-        <div class="action-name" ng-click="meanLinesEdit()">
+      <div class="action" ng-class="{'active-action': MeanLinesEditor.editing}">
+        <div class="action-name" ng-click="MeanLinesEditor.startEditing()">
           <span class="icon-git-commit">&nbsp;</span>
           Edit Mean Lines
         </div>
       </div>
 
       <!-- add a meanline subaction -->
-      <div class="subaction-group" ng-show="meanLinesEditing">
+      <div class="subaction-group" ng-show="MeanLinesEditor.editing">
         <div class="action sub-action">
-          <div class="action-name" ng-click="meanLinesAdd()">
+          <div class="action-name" ng-click="MeanLinesEditor.addMeanLine()">
             <span class="icon-plus">&nbsp;</span>
             Add Mean Line
           </div>
