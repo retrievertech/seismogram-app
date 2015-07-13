@@ -52,11 +52,18 @@ class SeismoView {
       var filename = $routeParams.filename;
 
       if (SeismoData.gotDataAlready) {
+        // If SeismoData is already populated, we assume we came here through a link
+        // e.g. from the browser, so the file data will already be in SeismoData,
+        // and so will the list of stations.
         var files = SeismoData.filesQueryData.files;
         var fileObject = files.find((file) => file.name === filename);
         $timeout(() => SeismoImageMap.loadImage(fileObject));
       } else {
+        // Otherwise we assume we came to this route directly, so we have to load
+        // the file data and the stations.
         $q.all({
+          // The stations data is currently needed for showing the station
+          // name in the "details" window.
           stations: $http({ url: SeismoServer.stationsUrl }),
           file: $http({ url: SeismoServer.fileUrl + "/" + filename })
         }).then((res) => {
