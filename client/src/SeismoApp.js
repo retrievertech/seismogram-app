@@ -17,6 +17,8 @@ import { SeismoEditor } from "./edit/SeismoEditor.svc.js";
 import { SeismoView } from "./view/SeismoView.ctrl.js";
 import { SeismoMain } from "./main/SeismoMain.ctrl.js";
 
+import { ImageMapLoader } from "./ImageMapLoader.svc.js";
+
 angular.module("SeismoApp", [])
   .service("SeismoStationMap", SeismoStationMap)
   .service("SeismoImageMap", SeismoImageMap)
@@ -26,6 +28,7 @@ angular.module("SeismoApp", [])
   .service("SeismoData", SeismoData)
   .service("SeismoEditor", SeismoEditor)
   .service("Loading", Loading)
+  .service("ImageMapLoader", ImageMapLoader)
   .directive("mapLink", MapLink)
   .config(["$routeProvider", function($routeProvider) {
     $routeProvider.when("/", {
