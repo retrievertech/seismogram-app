@@ -5,6 +5,8 @@ var L = window.L;
 class SeismoImageMap {
 
   constructor($timeout, $location, $http, $q, SeismoServer, SeismoStatus, Loading) {
+    window.imageMap = this;
+
     this.$timeout = $timeout;
     this.$location = $location;
     this.$http = $http;

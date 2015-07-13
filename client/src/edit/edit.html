@@ -13,6 +13,14 @@
 
   <div id="edit-map" map-link="SeismoImageMap"></div>
 
+  <div class="popup-message" ng-show="popupVisible">
+    <div class="message">{{ popupMessage }}</div>
+    <div class="buttons">
+      <div class="button" ng-click="popupYes()">Yes</div>
+      <div class="button" ng-click="popupNo()">No</div>
+    </div>
+  </div>
+
   <!-- the controls container on the right -->
   <div class="controls" ng-show="!Loading.active() && hasData()">
 
@@ -30,6 +38,8 @@
 
     <div class="actions editor-actions">
       <div class="title"><span class="icon-pencil">&nbsp;</span> Editing Tools</div>
+
+      <!-- mean lines editing -->
       <div class="action" ng-class="{'active-action': meanLinesEditing}">
         <div class="action-name" ng-click="meanLinesEdit()">
           <span class="icon-git-commit">&nbsp;</span>
@@ -37,6 +47,7 @@
         </div>
       </div>
 
+      <!-- add a meanline subaction -->
       <div class="subaction-group" ng-show="meanLinesEditing">
         <div class="action sub-action">
           <div class="action-name" ng-click="meanLinesAdd()">
@@ -46,6 +57,7 @@
         </div>
       </div>
 
+      <!-- segment eraser tool button -->
       <div class="action">
         <div class="action-name" ng-click="segmentsErase()">
           <span class="icon-scissors">&nbsp;</span>
@@ -53,6 +65,7 @@
         </div>
       </div>
 
+      <!-- segment assignment tool button -->
       <div class="action">
         <div class="action-name" ng-click="segmentsAssign()">
           <span class="icon-tab">&nbsp;</span>
@@ -61,6 +74,7 @@
       </div>
     </div>
 
+    <!-- a separate section of actions for saving, discarding, and downloading -->
     <div class="actions">
       <div class="action">
         <div class="action-name" ng-click="discardChanges()">
