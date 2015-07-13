@@ -48,9 +48,7 @@ class SeismoStationMap {
     this.stationMarkers = [];
 
     window._.keys(this.SeismoData.filesQueryData.stations).forEach((stationId) => {
-      var stationStatus = this.SeismoData.filesQueryData.stations[stationId];
-      // Sum up all the seismos (TODO: I noticed these counts are buggy.)
-      var total = stationStatus.status.reduce((x,y) => x+y, 0);
+      var total = this.SeismoData.filesQueryData.stations[stationId];
       var station = this.SeismoData.getStation(stationId);
 
       // Make marker. Note: This HTML is styled in styles.less

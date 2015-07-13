@@ -166,30 +166,15 @@ router.get("/files", function(req, res, next) {
 
           var stationMap = {};
 
-          var getStation = function(id) {
-            if (!(id in stationMap)) {
-              stationMap[id] = {
-                status: [0,0,0,0],
-                edited: 0
-              };
-            }
-            return stationMap[id];
-          };
-
           db.collection("files").find(query).batchSize(10000).each(function(err, file) {
             if (file === null) {
               console.timeEnd("processing");
               cb(err, { stationMap: stationMap });
             } else {
-              var station = getStation(file.stationId);
-
-              if (!station) {
-                console.error(file.stationId, "does not exist");
-                return;
+              if (!(file.stationId in stationMap)) {
+                stationMap[file.stationId] = 0;
               }
-
-              station.status[file.status]++;
-              station.edited += +file.edited;
+              stationMap[file.stationId]++;
             }
           });
         }
