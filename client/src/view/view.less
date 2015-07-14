@@ -1,0 +1,111 @@
+//
+// Seismogram viewer styling.
+//
+.view-container {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+
+  .header {
+    .header-mixin;
+    color: #f4f4f4;
+    background: rgba(0, 139, 47, 0.8);
+    box-shadow: 0px 1px 3px #4f4f4f;
+  }
+
+  //
+  // The map showing the tiled seismogram.
+  //
+
+  #image-map {
+    background: #eee;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+
+    .leaflet-control-zoom {
+      margin-top: 45px;
+    }
+  }
+
+  //
+  // The actions/layers panel in the top-right
+  //
+
+  .controls {
+    .controls-mixin;
+  }
+
+  //
+  // The processing log
+  //
+
+  .window-mixin {
+    position: absolute;
+    width: 800px;
+    left: 50%;
+    margin-left: -400px;
+    top: 50px;
+    height: 500px;
+    z-index: 30;
+    background: white;
+    box-shadow: 0px 1px 2px #a7a7a7;
+    border-radius: 3px;
+    z-index: 50;
+
+    .top-bar {
+      height: 20px;
+      background: #ddd;
+      border-bottom: 1px solid #aaa;
+      padding: 10px;
+      cursor: pointer;
+      .title {
+        font-size: 16px;
+        font-weight: bold;
+      }
+      .buttons {
+        float: right;
+        cursor: pointer;
+        font-size: 16px;
+      }
+    }
+
+    .contents {
+      font-size: 16px;
+      margin: 10px;
+    }
+  }
+
+  .details {
+    .window-mixin;
+    width: 400px;
+    margin-left: -200px;
+    height: 200px;
+
+    .contents {
+      .row {
+        line-height: 24px;
+        .label {
+          font-weight: bold;
+          width: 120px;
+          display: inline-block;
+        }
+      }
+    }
+  }
+
+  .image-log {
+    .window-mixin;
+    .contents {
+      font-family: courier;
+      margin: 10px;
+      font-size: 12px;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      user-select: text;
+      height: 440px;
+      overflow: auto;
+    }
+  }
+
+}

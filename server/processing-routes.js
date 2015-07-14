@@ -5,64 +5,16 @@ var fs = require("fs");
 var exec = require("child_process").exec;
 var mktemp = require("mktemp");
 
-var diskCache = require("./disk-cache");
 var queryCache = require("./query-cache");
 var statusSocket = require("./status-socket");
 var escape = require("./util").escape;
 var status = require("./status");
 
 var pipelinePath = __dirname + "/../../seismogram-pipeline";
-var logPath = __dirname + "/../client/logs";
 
 var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
-
-var writeLog = function(filename, logContents) {
-  if (!fs.existsSync(logPath)) {
-    fs.mkdirSync(logPath);
-  }
-
-  var path = logPath + "/" + filename + ".txt";
-
-  fs.writeFile(path, logContents, function(err) {
-    if (err) {
-      console.log("error writing to log", filename, err);
-    }
-  });
-};
-
-router.get("/start/:filename", function(req, res) {
-  var filename = req.params.filename;
-  var path = diskCache.localPath(filename);
-
-  // return immediately
-  res.send({ ok: 1 });
-
-  diskCache.ensureFileIsLocal(filename, function() {
-    process.chdir(pipelinePath);
-
-    var command = "sh get_all_metadata_s3.sh " + filename + " " + escape(path);
-
-    if (process.env.NODE_ENV !== "production") {
-      command += " dev";
-    }
-
-    exec(command, function(err, stdout, stderr) {
-      var log = "== stdout ==\n";
-      log += stdout;
-      log += "\n== stderr ==\n";
-      log += stderr;
-
-      if (err) {
-        setStatus(filename, status.failed);
-      }
-
-      console.log(log);
-      writeLog(filename, log);
-    });
-  });
-});
 
 function setStatus(filename, status, callback) {
   async.waterfall([

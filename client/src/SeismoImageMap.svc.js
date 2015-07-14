@@ -1,24 +1,11 @@
 import { SeismoImageMapCRS } from "./SeismoImageMapCRS.js";
-var L = window.L;
 
-var IntersectionCircle = L.CircleMarker.extend({
-  getRadius: function(zoom, feature) {
-    if (zoom > 5) {
-      return feature.properties.radius / Math.pow(2, 7 - zoom);
-    } else {
-      return 3;
-    }
-  },
-  updateRadius: function(zoom, feature) {
-    feature = feature || this.feature;
-    this.setRadius(this.getRadius(zoom, feature));
-  }
-});
+var L = window.L;
 
 class SeismoImageMap {
 
   constructor($timeout, $location, $http, $q, SeismoServer, SeismoStatus, Loading) {
-    var map = window.imageMap = this;
+    window.imageMap = this;
 
     this.$timeout = $timeout;
     this.$location = $location;
@@ -34,17 +21,6 @@ class SeismoImageMap {
 
     this.metadataLayers = [
       {
-        name: "Region of Interest",
-        key: "roi",
-        on: false,
-        zIndex: 10,
-        leafletLayer: null,
-        style: {
-          color: "blue",
-          weight: 1,
-          opacity: 0.9
-        }
-      }, {
         name: "Mean Lines",
         key: "meanlines",
         on: false,
@@ -52,27 +28,8 @@ class SeismoImageMap {
         leafletLayer: null,
         style: {
           color: "yellow",
-          weight: 1,
+          weight: 3,
           opacity: 0.9
-        }
-      }, {
-        name: "Intersections",
-        key: "intersections",
-        on: false,
-        zIndex: 12,
-        leafletLayer: null,
-        style: {
-          pointToLayer: function(feature, latlng) {
-            var marker = new IntersectionCircle(latlng, {
-              fillColor: "yellow",
-              color: "red",
-              weight: 1,
-              opacity: 1,
-              fillOpacity: 0.9
-            });
-            marker.updateRadius(map.leafletMap.getZoom(), feature);
-            return marker;
-          }
         }
       }, {
         name: "Segments",
@@ -113,18 +70,11 @@ class SeismoImageMap {
       }
     });
 
-    // Zoom-sensitive sizing of circle radii.
-    leafletMap.on("zoomend", () => {
-      var intersections = this.metadataLayers.find((layer) => layer.key === "intersections");
+    leafletMap.setView(new L.LatLng(3000, 8000), 3);
+  }
 
-      if (!intersections.leafletLayer) return;
-
-      var circles = intersections.leafletLayer.getLayers();
-      var zoom = leafletMap.getZoom();
-      circles.forEach((circle) => circle.updateRadius(zoom));
-    });
-
-    leafletMap.setView(new L.LatLng(2000, 7000), 2);
+  getLayer(key) {
+    return this.metadataLayers.find((layer) => layer.key === key);
   }
 
   toggleLayer(layer) {
@@ -155,12 +105,12 @@ class SeismoImageMap {
 
     if (this.$location.host() === "localhost") {
       // we are in development
-      path = this.SeismoStatus.is(file.status, "Edited") ?
+      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
         "edited-metadata" :
         "metadata";
     } else {
       // in production
-      path = this.SeismoStatus.is(file.status, "Edited") ?
+      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
         "https://s3.amazonaws.com/wwssn-edited-metadata" :
         "https://s3.amazonaws.com/wwssn-metadata";
     }
@@ -169,13 +119,11 @@ class SeismoImageMap {
 
     var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
-    // lazy initialization
-    if (!this.imageLayer) {
-      this.imageLayer = L.tileLayer(url, this.imageLayerOpts)
-        .addTo(this.leafletMap);
-    } else {
-      this.imageLayer.setUrl(url);
+    if (this.imageLayer) {
+      this.leafletMap.removeLayer(this.imageLayer);
     }
+
+    this.imageLayer = L.tileLayer(url, this.imageLayerOpts).addTo(this.leafletMap);
 
     this.Loading.start("Loading image...");
 
@@ -193,7 +141,7 @@ class SeismoImageMap {
       }
     });
 
-    if (!this.SeismoStatus.is(file.status, "Complete") && !this.SeismoStatus.is(file.status, "Edited")) {
+    if (!this.SeismoStatus.hasData(file.status)) {
       // nothing to load
       return;
     }

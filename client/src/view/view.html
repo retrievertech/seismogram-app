@@ -1,0 +1,96 @@
+<div class="view-container">
+
+  <!-- the header div at the top -->
+  <div class="header">
+    <div class="title">
+      <span class="title-text" ng-click="go('/')">Skate</span>
+      <span class="title-subtext">Viewer</span>
+      <span ng-show="hasData()">&nbsp;&bullet;&nbsp;</span>
+      <span class="title-subtext" ng-click="gotoEditor()" ng-show="hasData()">Open in Editor</span>
+      &nbsp;&bullet;&nbsp;
+      <span class="title-subtext" ng-click="go('/browse')">Go to Browser</span>
+    </div>
+  </div>
+
+  <!-- the map showing the tiled image and metadata -->
+  <div id="image-map" map-link="SeismoImageMap" view-reset="mapReset"></div>
+
+  <!-- the controls container on the right -->
+  <div class="controls">
+
+    <!-- the list of map layers -->
+    <div class="actions" ng-show="!Loading.active() && hasData()">
+      <div class="title">Seismogram Data</div>
+      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
+        <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
+          <span ng-show="ml.on" class="icon-checkbox-checked">&nbsp;</span>
+          <span ng-show="!ml.on" class="icon-checkbox-unchecked">&nbsp;</span>
+          {{ml.name}}
+        </div>
+      </div>
+    </div>
+
+    <!-- the list of "actions" below the layers -->
+    <div class="actions">
+      <div class="title">Seismogram Actions</div>
+      <div class="action">
+        <div class="action-name" ng-click="detailsShowing=true">
+          <span class="icon-info">&nbsp;</span>
+          Show Details
+        </div>
+      </div>
+      <div class="action" ng-show="!Loading.active() && hasData()">
+        <div class="action-name" ng-click="showLog()">
+          <span class="icon-file-text">&nbsp;</span>
+          Show Processing Log
+        </div>
+      </div>
+      <div class="action" ng-show="!Loading.active() && hasData()">
+        <div class="action-name" ng-click="gotoEditor()">
+          <span class="icon-pencil">&nbsp;</span>
+          Open in Editor
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- the popup window showing file details -->
+  <div class="details" ng-show="detailsShowing">
+    <div class="top-bar">
+      <a class="buttons" ng-click="detailsShowing=false">
+        <span class="icon-cross"></span> Close
+      </a>
+      <div class="title">File Details</div>
+    </div>
+    <div class="contents">
+      <div class="row">
+        <div class="label">Name:</div> {{ SeismoImageMap.currentFile.name }}
+      </div>
+      <div class="row">
+        <div class="label">Date/Time:</div> {{ SeismoData.formatDate(SeismoImageMap.currentFile) }}
+      </div>
+      <div class="row">
+        <div class="label">Location:</div> {{ SeismoData.stationLocation(SeismoImageMap.currentFile) }}
+      </div>
+      <div class="row">
+        <div class="label">Type:</div> {{ SeismoData.seismoType(SeismoImageMap.currentFile) }}
+      </div>
+      <div class="row">
+        <div class="label">Direction:</div> {{ SeismoData.seismoDirection(SeismoImageMap.currentFile) }}
+      </div>
+    </div>
+  </div>
+
+  <!-- the popup window showing the processing log -->
+  <div class="image-log" ng-show="logShowing">
+    <div class="top-bar">
+      <a class="buttons" ng-click="hideLog()">
+        <span class="icon-cross"></span> Close
+      </a>
+      <div class="title">Processing Log</div>
+    </div>
+    <div class="contents">
+      <pre>{{log}}</pre>
+    </div>
+  </div>
+</div>

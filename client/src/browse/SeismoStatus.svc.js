@@ -2,19 +2,22 @@ class SeismoStatus {
   constructor() {
     this.statuses = [{
       code: 0,
-      name: "Not Started"
-    }, {
-      code: 1,
-      name: "Processing"
-    }, {
-      code: 2,
-      name: "Failed"
-    }, {
+      name: "No Data"
+    },
+    // {
+    //  code: 1,
+    //  name: "Processing"
+    //},
+    // {
+    //  code: 2,
+    //  name: "Failed"
+    //},
+    {
       code: 3,
-      name: "Complete"
+      name: "Has Raw Data"
     }, {
       code: 4,
-      name: "Edited"
+      name: "Has Edited Data"
     }];
   }
 
@@ -29,6 +32,10 @@ class SeismoStatus {
   is(code, name) {
     var status = this.getStatus(name);
     return status.code === code;
+  }
+
+  hasData(code) {
+    return code === 3 || code === 4;
   }
 }
 

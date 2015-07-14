@@ -1,0 +1,115 @@
+<div class="browse-container">
+
+  <!-- The top header -->
+
+  <div class="header">
+    <!-- the skate "logo" in the top-left -->
+    <div class="title">
+      <span class="title-text" ng-click="go('/')">Skate</span>
+      <span class="title-subtext">Browser</span>
+    </div>
+
+    <!-- the links in the top-center -->
+    <div class="links">
+      <a ng-class="{'active': listVisible}" ng-click="listVisible=true">
+        <span class="icon-list"></span> List
+      </a>
+      &nbsp; &nbsp; &nbsp;
+      <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">
+        <span class="icon-location2"></span> Map
+      </a>
+    </div>
+
+    <!-- the filter button in the top-right -->
+    <div class="filter">
+      <a ng-class="{'active': filterVisible}" ng-click="filterVisible=true">
+        <span class="icon-search"></span> Search
+      </a>
+    </div>
+  </div>
+
+
+  <!-- The map. The "listVisibe" variable makes the map and the list mutually-exclusive. -->
+  <!-- Note that the map contains dynamic HTML not visible here, namely the pins on the map. -->
+  <!-- See how the pins are added in browse/SeismoStationMap and how they -->
+  <!-- are styled in styles.less. -->
+
+  <div class="seismo-station-map" ng-show="!listVisible">
+    <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="listVisible"></div>
+  </div>
+
+
+  <!-- The seismo thumbnail list -->
+
+  <div class="seismo-list" ng-show="listVisible">
+    <!-- The padding at the top pushes the list down so it's not obscured by the header -->
+    <div class="top-padding"></div>
+
+    <!-- The text in the top-center -->
+    {{SeismoData.filesQueryData.numResults}} seismograms.
+
+    <!-- The list of seismograms. A group is one row of seismograms. -->
+    <div class="group" ng-repeat="group in SeismoData.groups">
+
+      <!-- An individual seismogram box. The seismo-list-item is purely a container. -->
+      <div class="seismo-list-item"
+           ng-repeat="file in group"
+           ng-click="viewSeismogram(file)">
+
+        <!-- The actual seismo box -->
+        <div class="item-content">
+          {{ SeismoData.formatDate(file) }}<br/>
+          {{ SeismoData.stationLocation(file) }}<br/>
+          {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}
+          <div class="filename">{{ file.name }}</div>
+
+          <!-- The thumbnail. Note that it has an inline error handler that replaces the -->
+          <!-- thumb with a fallback thumb in case the thumb doesn't exist -->
+          <img src="https://s3.amazonaws.com/wwssn-thumbnails/{{file.name}}.jpg"
+               onError="this.src='img/nopreview.jpg'" width="100%"/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- The filter/query UI that appears when you click Filter -->
+
+  <div class="query-ui" ng-show="filterVisible">
+    <div class="close-button" ng-click="filterVisible=false">
+      <span class="icon-cross"></span> Close
+    </div>
+    <div class="items">
+      <div class="item">
+        <div class="label">Date From:</div>
+        <input type="text" placeholder="Start date" ng-model="queryModel.dateFrom"></input>
+      </div>
+      <div class="item">
+        <div class="label">Date To:</div>
+        <input type="text" placeholder="End date" ng-model="queryModel.dateTo"></input>
+      </div>
+      <div class="item">
+        <div class="label">Station Names:</div>
+        <input type="text" placeholder="Comma-separated partial station names" ng-model="queryModel.stationNames" />
+      </div>
+      <div class="item">
+        <div class="label">File Names:</div>
+        <input type="text" placeholder="Comma-separated partial file names" ng-model="queryModel.fileNames" />
+      </div>
+      <div class="item">
+        <div class="label">Status:</div>
+        <div class="statuses">
+          <div class="status" ng-repeat="status in SeismoStatus.statuses">
+            <input id="l{{$index}}" type="checkbox" ng-model="queryModel.status[status.code]"/>
+            <label for="l{{$index}}">{{ status.name }}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="search">
+      <div class="button" ng-click="queryFiles()">
+        <span class="icon-search"></span> Find Seismograms
+      </div>
+    </div>
+  </div>
+</div>

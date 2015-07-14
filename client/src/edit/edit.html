@@ -1,0 +1,99 @@
+<div class="edit-container">
+  <!-- the header div at the top -->
+  <div class="header">
+    <div class="title">
+      <span class="title-text" ng-click="go('/')">Skate</span>
+      <span class="title-subtext">Editor</span>
+      &nbsp;&bullet;&nbsp;
+      <span class="title-subtext" ng-click="gotoViewer()">Open in Viewer</span>
+      &nbsp;&bullet;&nbsp;
+      <span class="title-subtext" ng-click="go('/browse')">Go to Browser</span>
+    </div>
+  </div>
+
+  <div id="edit-map" map-link="SeismoImageMap"></div>
+
+  <div class="popup-message" ng-show="Popup.visible">
+    <div class="message">{{ Popup.message }}</div>
+    <div class="buttons">
+      <div class="button" ng-click="Popup.yes()">Yes</div>
+      <div class="button" ng-click="Popup.no()">No</div>
+    </div>
+  </div>
+
+  <!-- the controls container on the right -->
+  <div class="controls" ng-show="!Loading.active() && hasData()">
+
+    <!-- the list of map layers -->
+    <div class="actions data-layers">
+      <div class="title">Seismogram Data</div>
+      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
+        <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
+          <span ng-show="ml.on" class="icon-checkbox-checked">&nbsp;</span>
+          <span ng-show="!ml.on" class="icon-checkbox-unchecked">&nbsp;</span>
+          {{ml.name}}
+        </div>
+      </div>
+    </div>
+
+    <div class="actions editor-actions">
+      <div class="title"><span class="icon-pencil">&nbsp;</span> Editing Tools</div>
+
+      <!-- mean lines editing -->
+      <div class="action" ng-class="{'active-action': MeanLinesEditor.editing}">
+        <div class="action-name" ng-click="MeanLinesEditor.startEditing()">
+          <span class="icon-git-commit">&nbsp;</span>
+          Edit Mean Lines
+        </div>
+      </div>
+
+      <!-- add a meanline subaction -->
+      <div class="subaction-group" ng-show="MeanLinesEditor.editing">
+        <div class="action sub-action">
+          <div class="action-name" ng-click="MeanLinesEditor.addMeanLine()">
+            <span class="icon-plus">&nbsp;</span>
+            Add Mean Line
+          </div>
+        </div>
+      </div>
+
+      <!-- segment eraser tool button -->
+      <div class="action">
+        <div class="action-name" ng-click="segmentsErase()">
+          <span class="icon-scissors">&nbsp;</span>
+          Erase Segments
+        </div>
+      </div>
+
+      <!-- segment assignment tool button -->
+      <div class="action">
+        <div class="action-name" ng-click="segmentsAssign()">
+          <span class="icon-tab">&nbsp;</span>
+          Segment Assignment
+        </div>
+      </div>
+    </div>
+
+    <!-- a separate section of actions for saving, discarding, and downloading -->
+    <div class="actions">
+      <div class="action">
+        <div class="action-name" ng-click="discardChanges()">
+          <span class="icon-spinner11">&nbsp;</span>
+          Discard Changes
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-name" ng-click="saveChanges()">
+          <span class="icon-cloud-upload">&nbsp;</span>
+          Save Changes
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-name" ng-click="download()">
+          <span class="icon-download3">&nbsp;</span>
+          Download Data
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,39 +1,43 @@
 var angular = window.angular;
 
-import { SeismoMain } from "./SeismoMain.ctrl.js";
-import { SeismoStationMap } from "./map/SeismoStationMap.svc.js";
-import { SeismoImageMap } from "./map/SeismoImageMap.svc.js";
-import { SeismoQuery } from "./SeismoQuery.svc.js";
-import { SeismoServer } from "./SeismoServer.svc.js";
-import { SeismoStatus } from "./SeismoStatus.svc.js";
-import { PieOverlay } from "./map/PieOverlay.svc.js";
+// Top-level / shared modules
 import { Loading } from "./Loading.svc.js";
-import { SeismoTimeNubbin } from "./seismo-query-nubbins/SeismoTimeNubbin.dir.js";
-import { SeismoQueryNubbins } from "./seismo-query-nubbins/SeismoQueryNubbins.dir.js";
-import { SeismoData } from "./SeismoData.svc.js";
-import { SeismoEditor } from "./SeismoEditor.svc.js";
-import { SeismoHistogram } from "./SeismoHistogram.svc.js";
-import { MapLink } from "./map/MapLink.dir.js";
+import { Popup } from "./Popup.svc.js";
+import { SeismoImageMap } from "./SeismoImageMap.svc.js";
+import { ImageMapLoader } from "./ImageMapLoader.svc.js";
+import { MapLink } from "./MapLink.dir.js";
 
-angular.module("SeismoApp", [])
-  .controller("SeismoMain", SeismoMain)
-  .service("SeismoStationMap", SeismoStationMap)
-  .service("SeismoImageMap", SeismoImageMap)
-  .service("SeismoQuery", SeismoQuery)
-  .service("SeismoServer", SeismoServer)
-  .service("SeismoStatus", SeismoStatus)
-  .service("SeismoData", SeismoData)
-  .service("SeismoEditor", SeismoEditor)
-  .service("SeismoHistogram", SeismoHistogram)
-  .service("PieOverlay", PieOverlay)
+// App sections
+import { Setup as BrowseSetup } from "./browse/Setup.js";
+import { Setup as ViewSetup } from "./view/Setup.js";
+import { Setup as MainSetup } from "./main/Setup.js";
+import { Setup as EditSetup } from "./edit/Setup.js";
+
+var sections = [ BrowseSetup, ViewSetup, MainSetup, EditSetup ];
+
+var app = angular.module("SeismoApp", []);
+
+// Install the top-level dependencies
+app.service("SeismoImageMap", SeismoImageMap)
   .service("Loading", Loading)
-  .directive("seismoTimeNubbin", SeismoTimeNubbin)
-  .directive("seismoQueryNubbins", SeismoQueryNubbins)
-  .directive("mapLink", MapLink)
-  .run([function() {
-    console.log("Seismo is running.");
-  }]);
+  .service("ImageMapLoader", ImageMapLoader)
+  .service("Popup", Popup)
+  .directive("mapLink", MapLink);
+
+// Each section declares its dependencies
+sections.forEach((section) => section.declare(app));
+
+// Each section installs its routes
+app.config(["$routeProvider", ($routeProvider) =>
+  sections.forEach((section) => section.installRoutes($routeProvider))]);
+
+// Root controller. The function "go" is available to all scopes in all sections
+app.run(function($rootScope, $location, Loading) {
+  $rootScope.Loading = Loading;
+  $rootScope.go = (path) => $location.path(path);
+  console.log("Seismo app is running");
+});
 
 angular.element(document).ready(function() {
-  angular.bootstrap(document, ["SeismoApp"]);
+  angular.bootstrap(document, ["ngRoute", "SeismoApp"]);
 });

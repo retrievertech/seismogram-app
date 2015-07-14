@@ -37,6 +37,10 @@ class Loading {
     this.start(name, type);
     this.$timeout(() => this.stop(name), time);
   }
+
+  reset() {
+    this.messages.length = 0;
+  }
 }
 
 export { Loading };

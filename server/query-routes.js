@@ -2,44 +2,11 @@ var express = require("express");
 var router = express.Router();
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
-var HistogramTool = require("./histogram-tool");
 var queryCache = require("./query-cache");
 
 var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
-
-var histogramTool;
-function prepareHistogramTool() {
-  async.waterfall([
-    connect,
-    function(db, cb) {
-      db.collection("files").find()
-        .sort({date: 1})
-        .limit(1)
-        .toArray(function(err, files) {
-          var lowDate = files[0].date;
-          cb(err, db, lowDate);
-        });
-    },
-    function(db, lowDate, cb) {
-      db.collection("files").find()
-        .sort({date: -1})
-        .limit(1)
-        .toArray(function(err, files) {
-          var highDate = files[0].date;
-          cb(err, db, lowDate, highDate);
-        });
-    },
-    function(db, lowDate, highDate, cb) {
-      histogramTool = new HistogramTool(lowDate, highDate);
-      db.close();
-    }
-  ], function(err) {
-    if (err) console.error(err);
-  });
-}
-prepareHistogramTool();
 
 router.get("/stations", function(req, res, next) {
   async.waterfall([
@@ -50,6 +17,31 @@ router.get("/stations", function(req, res, next) {
     },
     function(stations, cb) {
       res.send(stations);
+      cb(null);
+    }
+  ], function(err) {
+    if (err) next(err);
+  });
+});
+
+router.get("/file/:filename", function(req, res, next) {
+  var filename = req.params.filename;
+
+  async.waterfall([
+    connect,
+    function(db, cb) {
+      var files = db.collection("files");
+      files.find({name: filename}).toArray(function(err, files) {
+        cb(err, db, files);
+      });
+    },
+    function(db, files, cb) {
+      if (files.length > 0) {
+        res.status(200).send(files[0]);
+      } else {
+        res.status(404).send("Not Found");
+      }
+      db.close();
       cb(null);
     }
   ], function(err) {
@@ -71,7 +63,7 @@ router.get("/files", function(req, res, next) {
 
   // result paging
   var page = parseInt(req.query.page) || 1;
-  var pageSize = 40;
+  var pageSize = 20;
 
   // station ids to match. If no ids are provided, all ids are matched
   var stationIds = [];
@@ -103,10 +95,6 @@ router.get("/files", function(req, res, next) {
       return acc;
     }, []);
   }
-
-  // prepare histogramTool for binning
-  var numBins = parseInt(req.query.bins) || 200;
-  histogramTool.setNumBins(numBins);
 
   // build the query.
   // queryComponents is a list of clauses that will be $and-ed together
@@ -177,41 +165,16 @@ router.get("/files", function(req, res, next) {
           console.time("processing");
 
           var stationMap = {};
-          var histogram = {};
-
-          var getStation = function(id) {
-            if (!(id in stationMap)) {
-              stationMap[id] = {
-                status: [0,0,0,0],
-                edited: 0
-              };
-            }
-            return stationMap[id];
-          };
 
           db.collection("files").find(query).batchSize(10000).each(function(err, file) {
             if (file === null) {
               console.timeEnd("processing");
-              cb(err, { stationMap: stationMap, histogram: histogram });
+              cb(err, { stationMap: stationMap });
             } else {
-              var station = getStation(file.stationId);
-
-              if (!station) {
-                console.error(file.stationId, "does not exist");
-                return;
+              if (!(file.stationId in stationMap)) {
+                stationMap[file.stationId] = 0;
               }
-
-              station.status[file.status]++;
-              station.edited += +file.edited;
-
-              var date = new Date(file.date),
-                  binIdx = histogramTool.getBinIdx(date);
-              
-              if (!(binIdx in histogram)) {
-                histogram[binIdx] = 0;
-              }
-
-              histogram[binIdx]++;
+              stationMap[file.stationId]++;
             }
           });
         }
@@ -226,9 +189,7 @@ router.get("/files", function(req, res, next) {
         lowDate: results.lowDate,
         highDate: results.highDate,
         numResults: results.numResults,
-        histogram: results.counts.histogram,
-        files: results.filteredFiles,
-        numBins: numBins
+        files: results.filteredFiles
       };
 
       queryCache.put(req.query, payload);

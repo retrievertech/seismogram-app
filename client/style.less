@@ -1,3 +1,14 @@
+//
+// This file declares:
+//  * styling for the top-level HTML in index.html. This includes the top-level body/html
+//    as well as, e.g., the loading-spinner which lives in index.html
+//
+//  * mixins shared by the CSS in all the views. Mixins are explicitly suffixed with "-mixin".
+//
+//  * `import`s of the CSS for all the views, which live in their respective module
+//    directories.
+//
+
 html {
   width: 100%;
   height: 100%;
@@ -15,266 +26,201 @@ html {
   font-family: 'Didact Gothic', sans-serif;
   font-size: 14px;
 
-  // body is display: flex so that the
-  // right-section is fixed-width and
-  // the left-section is space-filling
-
   body {
     margin: 0;
     width: 100%;
     height: 100%;
-    display: flex;
     -webkit-user-select: none;
     -moz-user-select: none;
     user-select: none;
-    // main layout
 
-    // left-section is display: flex so that the
-    // filters are fixed-height and the map is
-    // space-filling
+    //
+    // The following declarations (down to .app-container) are global and apply to
+    // the entire app.
+    //
 
-    #left-section {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      height: 100%;
+    a {
+      cursor: pointer;
+    }
 
-      .maps {
-        position: relative;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
+    // The global loading spinner. Its HTML is declared in index.html.
+    .loading-spinner {
+      position: absolute;
+      width: 300px;
+      top: 300px;
+      left: 50%;
+      margin-left: -150px;
+      background: white;
+      font-size: 16px;
+      z-index: 30;
+      text-align: center;
+      padding: 5px;
+      border-radius: 3px;
+      box-shadow: 0px 1px 2px #a7a7a7;
+      div {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border-top: 1px solid #ccc;
+        &:first-child {
+          border-top: none;
+        }
+        &.error {
+          background: #ffff66;
+        }
+      }
+    }
 
-        .loading-spinner {
-          position: absolute;
-          width: 200px;
-          top: 0;
-          left: 50%;
-          margin-left: -100px;
-          background: white;
-          z-index: 30;
+    // Global generic popup dialog with Yes/No choices
+    .popup-message {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      width: 300px;
+      margin-left: -150px;
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0px 1px 3px #888;
+      z-index: 50;
+      font-size: 16px;
+
+      .message {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .buttons {
+        text-align: center;
+        .button {
+          display: inline-block;
           text-align: center;
+          width: 100px;
           padding: 5px;
-          div {
+          background: #ddd;
+          border-radius: 3px;
+          box-shadow: 0px 1px 2px #aaa;
+          margin: 10px;
+          cursor: pointer;
+        }
+      }
+    }
+
+    // The header for all the sections. I chose to make it absolute and float on top of the
+    // full-screen list and map views. Note that the title and links (the contents
+    // of the header) are also absolute wrt the window, they are not relative to the
+    // header box.
+    .header-mixin {
+      // inheriters should override:
+      // box-shadow, color, background
+      font-family: "Oxygen", sans-serif;
+      position: absolute;
+      // note: If this isn't set, the header height collapses down. This is because
+      // its contents are also absolute.
+      height: 32px;
+      top: 0; left: 0;
+      font-size: 16px;
+      width: 100%;
+      z-index: 20;
+
+      // The "Skate" part
+      .title {
+        font-weight: bold;
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding-top: 2px;
+        margin-left: 10px;
+        cursor: pointer;
+        .title-text {
+          font-size: 20px;
+        }
+        .title-subtext {
+          font-size: 16px;
+        }
+      }
+    }
+
+    //
+    // This mixin is shared by the view and edit views and it's used to render
+    // the map layers control, the viewer actions, and the editor actions.
+    //
+
+    // This is the top-level container for all the action boxes on the right
+    .controls-mixin {
+      position: absolute;
+      top: 30px;
+      right: 15px;
+      z-index: 30;
+
+      // This is an individual actions box with a title and a list of actions below
+      .actions {
+        opacity: 0.9;
+        color: #333;
+        background: white;
+        margin-top: 20px;
+        box-shadow: 0px 1px 2px #a7a7a7;
+        border-radius: 3px;
+
+        // The title of the layers panel
+        .title {
+          font-size: 16px;
+          font-weight: bold;
+          padding: 10px;
+          text-align: center;
+          border-radius: 3px 3px 0 0;
+          background: rgb(200, 250, 255);
+          border-bottom: 1px solid rgb(124, 156, 159);
+        }
+
+        // To delimit a group of .action.sub-action rows
+        .subaction-group {
+          // A darker at the top gives an recessed look
+          border-top: 1px solid #aaa;
+          border-bottom: 1px solid #ddd;
+        }
+
+        // Each layer
+        .action {
+
+          border-bottom: 1px solid #eee;
+          cursor: pointer;
+          // The contents of the action
+          .action-name {
+            font-size: 16px;
             padding-top: 5px;
             padding-bottom: 5px;
-            border-top: 1px solid #ccc;
-            &:first-child {
-              border-top: none;
-            }
-            &.error {
-              background: #ffff66;
-            }
+            padding-left: 10px;
+            padding-right: 10px;
           }
-        }
-
-        .leaflet-map {
-          position: absolute;
-          top: 0px;
-          left: 0px;
-          width: 100%;
-          height: 100%;
-
-          &#stations-map {
-            z-index: 10;
-
-            /* pies svg */
-
-            .inner-segments path {
-              fill-opacity: 0.9;
-            }
-
-            circle.outer-circle {
-              fill: #044;
-              opacity: 0.25;
-            }
-
-            /* color scheme: http://paletton.com/#uid=50D0B0kGZr3qxC9DOA-KQlZPLgn */
-
-            path.not-started {
-              fill: #FF372C;
-            }
-
-            path.ongoing {
-              fill: #FF8900;
-            }
-
-            path.needs-attention {
-              fill: #AF0900;
-            }
-
-            path.complete {
-              fill: #820600;
-            }
+          &:last-child {
+            border-bottom: none;
           }
-
-          &#image-map { z-index: 20; }
-
-          .leaflet-control-scale {
-            display: none;
+          &.active-action {
+            background: #eee;
           }
-        }
-
-        .button {
-          padding: 10px;
-          cursor: pointer;
-          background: white;
-          text-align: center;
-          margin: 5px;
-          border: 1px solid #aaa;
-        }
-
-        .image-log {
-          position: absolute;
-          width: 800px;
-          left: 50%;
-          margin-left: -400px;
-          top: 5%;
-          height: 90%;
-          z-index: 30;
-          background: white;
-
-          .top-bar {
-            height: 20px;
-            border-bottom: 1px solid #999;
-            padding: 5px;
-            cursor: pointer;
-            button {
-              float: right;
-              cursor: pointer;
+          // A sub-action has a darker background and is indented.
+          &.sub-action {
+            background: #ccc;
+            .action-name {
+              margin-left: 20px;
             }
-          }
-
-          .contents {
-            font-family: courier;
-            margin: 10px;
-            -webkit-user-select: text;
-            -moz-user-select: text;
-            user-select: text;
-            height: 90%;
-            overflow: scroll;
-          }
-        }
-
-        .image-map-controls {
-          position: absolute;
-          top: 10px;
-          right: 10px;
-          z-index: 25;
-          div {
-            .button;
-            &.disabled-button {
-              background-color: #eee;
-              font-style: italic;
-              cursor: wait;
-            }
-          }
-        }
-
-        .image-map-layers {
-          position: absolute;
-          top: 160px;
-          right: 10px;
-          z-index: 25;
-
-          &.while-editing {
-
-          }
-
-          .button-group {
-            .layer-button {
-              .button;
-              width: 120px;
-              display: inline-block;
-            }
-            .edit-button {
-              display: inline-block;
-              .button;
-            }
-            .layer-button, .edit-button {
-              &.active {
-                background: #ADD6FF;
-              }
-            }
-          }
-        }
-
-        .image-map-controls div, .image-map-layers div {
-        }
-      }
-
-      #query-ui {
-        position: absolute;
-        bottom: 30px;
-        left: 20px;
-        width: 400px;
-        background: rgba(255,255,255,0.7);
-        padding: 10px;
-        z-index: 15;
-
-        #seismo-time-nubbin {
-          div {
-            display: inline-block;
-            margin: auto 0;
-          }
-        }
-
-        #seismo-query-nubbins {}
-
-        #query-button {
-          height: 40px;
-        }
-      }
-
-      #histogram {
-        position: absolute;
-        bottom: 0px;
-        left: 0px;
-        z-index: 10;
-
-        .bar.background rect {
-          fill: #044;
-          opacity: 0.25;
-        }
-
-        .bar.overlay rect {
-          fill: #FF372C;
-          opacity: 0.7;
-        }
-
-        .x.axis {
-          path {
-            opacity: 0;
           }
         }
       }
     }
 
-    #right-section {
-      display: inline-block;
-      width: 250px;
-      height: 100%;
+    //
+    // The container that wraps all the views in the app, and its HTML is in index.html.
+    // The CSS for each view lives in its own file in its respective module directory,
+    // near its corresponding HTML
+    //
 
-      .seismo-list {
-        height: 100%;
-        overflow: scroll;
+    .app-container {
 
-        .seismo-list-item {
-          cursor: pointer;
-          text-align: center;
-          padding: 15px;
-          border-bottom: 1px solid #eee;
-          .filename {
-            font-size: 10px;
-            margin-top: 10px;
-            color: #888;
-          }
-          &.active {
-            background: #add6ff;
-          }
-        }
-      }
+      @import (less) "src/main/main.less";
+      @import (less) "src/browse/browse.less";
+      @import (less) "src/view/view.less";
+      @import (less) "src/edit/edit.less";
+
     }
   }
 }
