@@ -46,6 +46,8 @@ TODO
 ----
 
 * Editor:
+  * Reset editor state when navigating to the editor.
+    * Currently, the editor services retain too much state across images.
   * Ability to cancel editing
   * Segment erasure tool
     * Draw a rectangle.
