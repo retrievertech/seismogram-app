@@ -105,12 +105,12 @@ class SeismoImageMap {
 
     if (this.$location.host() === "localhost") {
       // we are in development
-      path = this.SeismoStatus.is(file.status, "Edited") ?
+      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
         "edited-metadata" :
         "metadata";
     } else {
       // in production
-      path = this.SeismoStatus.is(file.status, "Edited") ?
+      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
         "https://s3.amazonaws.com/wwssn-edited-metadata" :
         "https://s3.amazonaws.com/wwssn-metadata";
     }
@@ -141,7 +141,7 @@ class SeismoImageMap {
       }
     });
 
-    if (!this.SeismoStatus.is(file.status, "Complete") && !this.SeismoStatus.is(file.status, "Edited")) {
+    if (!this.SeismoStatus.hasData(file.status)) {
       // nothing to load
       return;
     }

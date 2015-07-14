@@ -12,8 +12,7 @@ class SeismoEdit {
 
     $scope.hasData = () => {
       var file = SeismoImageMap.currentFile;
-      return file && (SeismoStatus.is(file.status, "Complete") ||
-                      SeismoStatus.is(file.status, "Edited"));
+      return file && (SeismoStatus.hasData(file.status));
     };
 
     ImageMapLoader.load($routeParams.filename);

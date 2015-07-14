@@ -158,23 +158,61 @@
   .query-ui {
     position: absolute;
     top: 0px;
-    left: 0px;
-    width: 100%;
+    left: 50%;
+    width: 700px;
+    margin-left: -350px;
     background: white;
     z-index: 30;
+    border-radius: 0px 0px 3px 3px;
     box-shadow: 0px 1px 3px rgba(50,50,50,0.5);
+    font-size: 16px;
 
-    #seismo-time-nubbin {
-      div {
-        display: inline-block;
-        margin: auto 0;
+    .close-button {
+      float: right;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .items {
+      padding: 20px;
+      .item {
+        height: 34px;
+        .label {
+          display: inline-block;
+          width: 120px;
+          cursor: pointer;
+        }
+        input[type="text"] {
+          font-size: 14px;
+          width: 400px;
+          border: 1px solid #ccc;
+          padding: 3px;
+        }
+        input[type="checkbox"], label {
+          cursor: pointer;
+        }
+        .statuses {
+          display: inline-block;
+          .status {
+            width: 140px;
+            display: inline-block;
+          }
+        }
       }
     }
 
-    #seismo-query-nubbins {}
-
-    #query-button {
-      height: 40px;
+    .search {
+      text-align: center;
+      .button {
+        cursor: pointer;
+        display: inline-block;
+        padding: 10px;
+        background: #ddd;
+        border-radius: 3px;
+        box-shadow: 0px 1px 3px #777;
+        margin: 10px;
+        margin-bottom: 15px;
+      }
     }
   }
 }

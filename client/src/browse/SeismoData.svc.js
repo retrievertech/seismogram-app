@@ -16,7 +16,7 @@ class SeismoData {
           $timeout(() => {
             var oldStatus = file.status;
             file.status = obj.status;
-            if ((SeismoStatus.is(file.status, "Complete") || SeismoStatus.is(file.status, "Edited")) &&
+            if ((SeismoStatus.hasData(file.status)) &&
                 file === SeismoImageMap.currentFile && oldStatus !== file.status)
             {
               SeismoEditor.stopEditing();

@@ -22,7 +22,7 @@
 
     <!-- the filter button in the top-right -->
     <div class="filter">
-      <a ng-click="filterVisible=true">
+      <a ng-class="{'active': filterVisible}" ng-click="filterVisible=true">
         <span class="icon-search"></span> Filter
       </a>
     </div>
@@ -76,92 +76,40 @@
   <!-- The filter/query UI that appears when you click Filter -->
 
   <div class="query-ui" ng-show="filterVisible">
-    <div>
-      <div>Date From</div>
-      <input type="text" placeholder="Start date" ng-model="queryModel.dateFrom"></input>
-      <div>Date To</div>
-      <input type="text" placeholder="End date" ng-model="queryModel.dateTo"></input>
+    <div class="close-button" ng-click="filterVisible=false">
+      <span class="icon-cross"></span> Close
     </div>
-
-    <div>
-      <input type="text" placeholder="Station names" ng-model="queryModel.stationNames" />
-      <input type="text" placeholder="File names" ng-model="queryModel.fileNames" />
-
-      <div ng-repeat="status in SeismoStatus.statuses">
-        <input id="l{{$index}}" type="checkbox" ng-model="queryModel.status[status.code]"/>
-        <label for="l{{$index}}">{{ status.name }}</label>
+    <div class="items">
+      <div class="item">
+        <div class="label">Date From:</div>
+        <input type="text" placeholder="Start date" ng-model="queryModel.dateFrom"></input>
+      </div>
+      <div class="item">
+        <div class="label">Date To:</div>
+        <input type="text" placeholder="End date" ng-model="queryModel.dateTo"></input>
+      </div>
+      <div class="item">
+        <div class="label">Station Names:</div>
+        <input type="text" placeholder="Comma-separated partial station names" ng-model="queryModel.stationNames" />
+      </div>
+      <div class="item">
+        <div class="label">File Names:</div>
+        <input type="text" placeholder="Comma-separated partial file names" ng-model="queryModel.fileNames" />
+      </div>
+      <div class="item">
+        <div class="label">Status:</div>
+        <div class="statuses">
+          <div class="status" ng-repeat="status in SeismoStatus.statuses">
+            <input id="l{{$index}}" type="checkbox" ng-model="queryModel.status[status.code]"/>
+            <label for="l{{$index}}">{{ status.name }}</label>
+          </div>
+        </div>
       </div>
     </div>
-
-    <button id="query-button" ng-click="queryFiles()">Query</button>
-  </div>
-
-  <!--div id="left-section">
-    <div class="maps">
-
-      <div ng-hide="imageMapVisible">
-
+    <div class="search">
+      <div class="button" ng-click="queryFiles()">
+        <span class="icon-search"></span> Find Seismograms
       </div>
-      <div ng-show="imageMapVisible">
-        <div id="image-map" class="leaflet-map" map-link="SeismoImageMap" view-reset="[SeismoEditor.editing, imageMapVisible]"></div>
-
-        <div class="image-log" ng-show="logShowing">
-          <div class="top-bar">
-            <button ng-click="hideLog()">Close</button>
-          </div>
-          <div class="contents">
-            <pre>{{log}}</pre>
-          </div>
-        </div>
-
-        <div class="image-map-controls" ng-hide="SeismoEditor.editing">
-          <div ng-click="stopViewingSeismogram()">Back to map</div>
-
-          <div ng-click="startProcessing()"
-               ng-show="!Loading.active() && canProcess()">
-            Start Processing
-          </div>
-
-          <div class="disabled-button" ng-show="isProcessing()">
-            Processing...
-          </div>
-
-          <div ng-click="showLog()" ng-show="!Loading.active() && hasLog()">
-            Show Log
-          </div>
-
-          <div ng-click="SeismoEditor.startEditing()"
-               ng-show="!Loading.active() && canEdit()">
-            Edit this seismogram
-          </div>
-        </div>
-
-        <div class="image-map-controls" ng-show="SeismoEditor.editing">
-          <div ng-show="!SeismoEditor.saving" ng-click="SeismoEditor.saveChanges()">Save Changes</div>
-          <div class="disabled-button" ng-show="SeismoEditor.saving">Saving...</div>
-          <div ng-click="SeismoEditor.discardChanges()">Discard Changes</div>
-          <div ng-click="SeismoEditor.exitEditing()">Exit</div>
-        </div>
-
-        <div class="image-map-layers"
-             ng-class="{'while-editing': SeismoEditor.editing}"
-             ng-show="!Loading.active() && canEdit()">
-          <div class="button-group" ng-repeat="ml in SeismoImageMap.metadataLayers">
-            <div class="layer-button"
-                 ng-class="{'active': ml.on}"
-                 ng-click="SeismoImageMap.toggleLayer(ml)">
-              {{ml.name}}
-            </div>
-            <div class="edit-button"
-                 ng-show="SeismoEditor.editing"
-                 ng-class="{'active': SeismoEditor.layerBeingEdited == ml}"
-                 ng-click="SeismoEditor.startEditingLayer(ml)">
-              Edit
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div-->
+    </div>
   </div>
 </div>

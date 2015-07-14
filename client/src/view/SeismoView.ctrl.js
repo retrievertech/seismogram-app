@@ -14,8 +14,7 @@ class SeismoView {
 
     $scope.canEdit = () => {
       var file = SeismoImageMap.currentFile;
-      return file && (SeismoStatus.is(file.status, "Complete") ||
-                      SeismoStatus.is(file.status, "Edited"));
+      return file && (SeismoStatus.hasData(file.status));
     };
 
     $scope.gotoEditor = () => {
@@ -27,9 +26,7 @@ class SeismoView {
 
     $scope.hasLog = () => {
       var file = SeismoImageMap.currentFile;
-      return file && (SeismoStatus.is(file.status, "Complete") ||
-                      SeismoStatus.is(file.status, "Edited") ||
-                      SeismoStatus.is(file.status, "Failed"));
+      return file && (SeismoStatus.hasData(file.status));
     };
 
     $scope.showLog = () => {

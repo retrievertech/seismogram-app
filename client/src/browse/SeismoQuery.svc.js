@@ -31,7 +31,7 @@ class SeismoQuery {
       seismograms: this.$http({
         url: this.SeismoServer.filesUrl,
         params: {
-          status: "0,1,2,3,4"
+          status: "0,3,4"
         }
       }),
       stations: this.$http({
