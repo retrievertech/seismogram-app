@@ -70,6 +70,40 @@ html {
       }
     }
 
+    // Global generic popup dialog with Yes/No choices
+    .popup-message {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      width: 300px;
+      margin-left: -150px;
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0px 1px 3px #888;
+      z-index: 50;
+      font-size: 16px;
+
+      .message {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .buttons {
+        text-align: center;
+        .button {
+          display: inline-block;
+          text-align: center;
+          width: 100px;
+          padding: 5px;
+          background: #ddd;
+          border-radius: 3px;
+          box-shadow: 0px 1px 2px #aaa;
+          margin: 10px;
+          cursor: pointer;
+        }
+      }
+    }
+
     // The header for all the sections. I chose to make it absolute and float on top of the
     // full-screen list and map views. Note that the title and links (the contents
     // of the header) are also absolute wrt the window, they are not relative to the

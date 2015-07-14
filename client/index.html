@@ -17,14 +17,28 @@
     <script type="text/javascript" src="bower_components/less/dist/less.js"></script>
     <script type="text/javascript" src="bower_components/d3/d3.js"></script>
     <script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
-    <script type="module">import "src/SeismoApp.js"</script>
+    <script type="module">
+      import "src/SeismoApp.js";
+    </script>
   </head>
   <body ng-cloak>
+
+    <!-- generic messages in the center of the screen -->
     <div class="loading-spinner" ng-show="Loading.any()">
       <div ng-repeat="message in Loading.messages" class="{{message.type}}">
         {{ message.name }}
       </div>
     </div>
+
+    <!-- generic popup dialog with Yes/No choice -->
+    <div class="popup-message" ng-show="Popup.visible">
+      <div class="message">{{ Popup.message }}</div>
+      <div class="buttons">
+        <div class="button" ng-click="Popup.yes()">Yes</div>
+        <div class="button" ng-click="Popup.no()">No</div>
+      </div>
+    </div>
+
     <div class="app-container" ng-view></div>
   </body>
 </html>

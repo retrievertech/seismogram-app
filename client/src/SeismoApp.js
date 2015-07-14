@@ -2,6 +2,7 @@ var angular = window.angular;
 
 // Top-level / shared modules
 import { Loading } from "./Loading.svc.js";
+import { Popup } from "./Popup.svc.js";
 import { SeismoImageMap } from "./SeismoImageMap.svc.js";
 import { ImageMapLoader } from "./ImageMapLoader.svc.js";
 import { MapLink } from "./MapLink.dir.js";
@@ -20,6 +21,7 @@ var app = angular.module("SeismoApp", []);
 app.service("SeismoImageMap", SeismoImageMap)
   .service("Loading", Loading)
   .service("ImageMapLoader", ImageMapLoader)
+  .service("Popup", Popup)
   .directive("mapLink", MapLink);
 
 // Each section declares its dependencies
