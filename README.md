@@ -69,7 +69,7 @@ TODO
     * Unassigned segments should have a default color.
 * Browser:
   * Improve the query interface. Date/time pickers, or at least friendlier way to input dates, and station name autocomplete.
-  * Improve styling of "seimogram cards".
+  * Improve styling of "seismogram cards".
     * Add View buttons/links. Add Edit links where they apply.
   * Implement pin popups that show data at that station wrt the current query.
     * Needs a new server route.
