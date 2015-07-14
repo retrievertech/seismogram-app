@@ -7,7 +7,7 @@ class MeanLinesEditor {
   }
 
   // The following function installs editing events on each mean line given:
-  // For forging the x-coordinates to stay constant, and for selecting mean
+  // For forcing the x-coordinates to stay constant, and for selecting mean
   // lines for deletion by clicking them.
 
   installEventsOnMeanLine(meanLine) {
@@ -98,7 +98,7 @@ class MeanLinesEditor {
           // We anchor it as [0,0], and its second point shares the x-coord
           // with the other mean lines, and its y-coord is 0. Basically it
           // gets added to the very top of the seismogram, and its length
-          // is the lenght of the seismogram.
+          // is the length of the seismogram.
           [0,0], [secondPoint[0], 0]
         ]
       }

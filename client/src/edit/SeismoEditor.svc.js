@@ -1,5 +1,3 @@
-var shiftPressed = false;
-
 class SeismoEditor {
 
   constructor($http, Loading, SeismoServer, SeismoImageMap) {
@@ -12,15 +10,6 @@ class SeismoEditor {
 
     this.editing = false;
     this.saving = false;
-
-    // catch shift presses, used for editing intersection radii
-    document.onkeydown = (e) => {
-      if (e.keyCode === 16) shiftPressed = true;
-    };
-
-    document.onkeyup = () => {
-      shiftPressed = false;
-    };
   }
 
   startEditing() {
@@ -81,7 +70,6 @@ class SeismoEditor {
 
     this.layerBeingEdited = layer;
 
-    var map = this.SeismoImageMap.leafletMap;
     layer.leafletLayer.getLayers().forEach((object) => object.enableEdit());
   }
 
