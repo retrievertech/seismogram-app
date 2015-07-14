@@ -68,7 +68,10 @@ TODO
     * Assigned segments take on the color of the mean line.
     * Unassigned segments should have a default color.
 * Browser:
-  * Improve the query interface. Date/time pickers, or at least friendlier way to input dates, and station name autocomplete.
+  * Improve the query interface.
+    * Date/time pickers, or at least friendlier way to input dates
+    * Station name autocomplete
+    * Allow search by LP/SP and direction (north-south, east-west, up-down)
   * Improve styling of "seismogram cards".
     * Add View buttons/links. Add Edit links where they apply.
   * Implement pin popups that show data at that station wrt the current query.
