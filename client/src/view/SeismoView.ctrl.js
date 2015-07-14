@@ -12,7 +12,7 @@ class SeismoView {
 
     $scope.detailsShowing = false;
 
-    $scope.canEdit = () => {
+    $scope.hasData = () => {
       var file = SeismoImageMap.currentFile;
       return file && (SeismoStatus.hasData(file.status));
     };
@@ -23,11 +23,6 @@ class SeismoView {
 
     $scope.logShowing = false;
     $scope.log = "";
-
-    $scope.hasLog = () => {
-      var file = SeismoImageMap.currentFile;
-      return file && (SeismoStatus.hasData(file.status));
-    };
 
     $scope.showLog = () => {
       var file = SeismoImageMap.currentFile;

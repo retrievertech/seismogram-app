@@ -11,7 +11,7 @@ export var Setup = {
       .service("SeismoQuery", SeismoQuery)
       .service("SeismoServer", SeismoServer)
       .service("SeismoStatus", SeismoStatus)
-      .service("SeismoData", SeismoData)
+      .service("SeismoData", SeismoData);
   },
   installRoutes: (routeProvider) => {
     routeProvider.when("/browse", {

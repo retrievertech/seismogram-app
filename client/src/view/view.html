@@ -5,8 +5,8 @@
     <div class="title">
       <span class="title-text" ng-click="go('/')">Skate</span>
       <span class="title-subtext">Viewer</span>
-      &nbsp;&bullet;&nbsp;
-      <span class="title-subtext" ng-click="gotoEditor()">Open in Editor</span>
+      <span ng-show="hasData()">&nbsp;&bullet;&nbsp;</span>
+      <span class="title-subtext" ng-click="gotoEditor()" ng-show="hasData()">Open in Editor</span>
       &nbsp;&bullet;&nbsp;
       <span class="title-subtext" ng-click="go('/browse')">Go to Browser</span>
     </div>
@@ -19,7 +19,7 @@
   <div class="controls">
 
     <!-- the list of map layers -->
-    <div class="actions" ng-show="!Loading.active() && canEdit()">
+    <div class="actions" ng-show="!Loading.active() && hasData()">
       <div class="title">Seismogram Data</div>
       <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
         <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
@@ -39,13 +39,13 @@
           Show Details
         </div>
       </div>
-      <div class="action" ng-show="!Loading.active() && hasLog()">
+      <div class="action" ng-show="!Loading.active() && hasData()">
         <div class="action-name" ng-click="showLog()">
           <span class="icon-file-text">&nbsp;</span>
           Show Processing Log
         </div>
       </div>
-      <div class="action" ng-show="!Loading.active() && canEdit()">
+      <div class="action" ng-show="!Loading.active() && hasData()">
         <div class="action-name" ng-click="gotoEditor()">
           <span class="icon-pencil">&nbsp;</span>
           Open in Editor
