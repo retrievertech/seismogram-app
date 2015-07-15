@@ -1,3 +1,8 @@
+//
+// A service driving a popup that appears on the screen with Yes/No choices. Each
+// choice is assigned a callback that is invoked when the user clicks the respective
+// button.
+//
 class Popup {
   constructor($timeout) {
     this.$timeout = $timeout;

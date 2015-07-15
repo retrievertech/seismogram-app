@@ -1,3 +1,7 @@
+//
+// Message that pops in the middle of the screen. Can display multiple messages and
+// ephemeral messages that disappear after some amount of time has elapsed.
+//
 export class ScreenMessage {
 
   constructor($timeout) {

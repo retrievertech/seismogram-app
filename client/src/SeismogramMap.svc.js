@@ -2,6 +2,10 @@ import { SeismogramMapCRS } from "./SeismogramMapCRS.js";
 
 var L = window.L;
 
+//
+// The service driving the Leaflet map that shows a tiled seismogram. Used in both
+// the viewer and the editor.
+//
 export class SeismogramMap {
 
   constructor($timeout, $location, $http, $q, ServerUrls, FileStatus, ScreenMessage) {

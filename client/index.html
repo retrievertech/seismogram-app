@@ -24,8 +24,8 @@
   <body ng-cloak>
 
     <!-- generic messages in the center of the screen -->
-    <div class="loading-spinner" ng-show="Loading.any()">
-      <div ng-repeat="message in Loading.messages" class="{{message.type}}">
+    <div class="loading-spinner" ng-show="ScreenMessage.any()">
+      <div ng-repeat="message in ScreenMessage.messages" class="{{message.type}}">
         {{ message.name }}
       </div>
     </div>
