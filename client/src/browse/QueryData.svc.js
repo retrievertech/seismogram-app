@@ -1,6 +1,6 @@
 var L = window.L;
 
-class SeismoData {
+export class QueryData {
 
   constructor() {
     this.stationQueryData = [];
@@ -132,5 +132,3 @@ class SeismoData {
     }
   }
 }
-
-export { SeismoData };

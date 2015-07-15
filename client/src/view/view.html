@@ -67,16 +67,16 @@
         <div class="label">Name:</div> {{ SeismoImageMap.currentFile.name }}
       </div>
       <div class="row">
-        <div class="label">Date/Time:</div> {{ SeismoData.formatDate(SeismoImageMap.currentFile) }}
+        <div class="label">Date/Time:</div> {{ QueryData.formatDate(SeismoImageMap.currentFile) }}
       </div>
       <div class="row">
-        <div class="label">Location:</div> {{ SeismoData.stationLocation(SeismoImageMap.currentFile) }}
+        <div class="label">Location:</div> {{ QueryData.stationLocation(SeismoImageMap.currentFile) }}
       </div>
       <div class="row">
-        <div class="label">Type:</div> {{ SeismoData.seismoType(SeismoImageMap.currentFile) }}
+        <div class="label">Type:</div> {{ QueryData.seismoType(SeismoImageMap.currentFile) }}
       </div>
       <div class="row">
-        <div class="label">Direction:</div> {{ SeismoData.seismoDirection(SeismoImageMap.currentFile) }}
+        <div class="label">Direction:</div> {{ QueryData.seismoDirection(SeismoImageMap.currentFile) }}
       </div>
     </div>
   </div>

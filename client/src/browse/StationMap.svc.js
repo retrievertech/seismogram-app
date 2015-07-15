@@ -2,10 +2,10 @@ import {Leaflet} from "bower_components/redfish-util/lib/Leaflet.js";
 
 var L = window.L;
 
-class SeismoStationMap {
+export class StationMap {
 
-  constructor(SeismoData) {
-    this.SeismoData = SeismoData;
+  constructor(QueryData) {
+    this.QueryData = QueryData;
     this.map = null;
     this.leafletMap = null;
     this.stationMarkers = [];
@@ -39,7 +39,7 @@ class SeismoStationMap {
   }
 
   updateBounds() {
-    this.leafletMap.fitBounds(this.SeismoData.resultsBBox());
+    this.leafletMap.fitBounds(this.QueryData.resultsBBox());
   }
 
   renderQueryData() {
@@ -47,9 +47,9 @@ class SeismoStationMap {
     this.stationMarkers.forEach((marker) => this.map.leafletMap.removeLayer(marker));
     this.stationMarkers = [];
 
-    window._.keys(this.SeismoData.filesQueryData.stations).forEach((stationId) => {
-      var total = this.SeismoData.filesQueryData.stations[stationId];
-      var station = this.SeismoData.getStation(stationId);
+    window._.keys(this.QueryData.filesQueryData.stations).forEach((stationId) => {
+      var total = this.QueryData.filesQueryData.stations[stationId];
+      var station = this.QueryData.getStation(stationId);
 
       // Make marker. Note: This HTML is styled in styles.less
       var marker = new L.Marker(new L.LatLng(station.lat, station.lon), {
@@ -76,5 +76,3 @@ class SeismoStationMap {
     this.renderQueryData();
   }
 }
-
-export { SeismoStationMap };

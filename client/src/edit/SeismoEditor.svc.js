@@ -1,9 +1,9 @@
 class SeismoEditor {
 
-  constructor($http, Loading, SeismoServer, SeismoImageMap) {
+  constructor($http, Loading, ServerUrls, SeismoImageMap) {
     this.$http = $http;
     this.Loading = Loading;
-    this.SeismoServer = SeismoServer;
+    this.ServerUrls = ServerUrls;
     this.SeismoImageMap = SeismoImageMap;
 
     this.saving = false;
@@ -22,7 +22,7 @@ class SeismoEditor {
 
     var request = {
       method: "POST",
-      url: this.SeismoServer.saveUrl + "/" + this.SeismoImageMap.currentFile.name,
+      url: this.ServerUrls.saveUrl + "/" + this.SeismoImageMap.currentFile.name,
       data: { layers: layers }
     };
 

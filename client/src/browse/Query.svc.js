@@ -1,27 +1,27 @@
-class SeismoQuery {
-  constructor($http, $q, SeismoServer, SeismoData, SeismoStatus) {
+export class Query {
+  constructor($http, $q, ServerUrls, QueryData, FileStatus) {
     this.$http = $http;
     this.$q = $q;
-    this.SeismoServer = SeismoServer;
-    this.SeismoData = SeismoData;
-    this.SeismoStatus = SeismoStatus;
+    this.ServerUrls = ServerUrls;
+    this.QueryData = QueryData;
+    this.FileStatus = FileStatus;
 
     // This is the model for the query form.
     // To be initialized later when initModel() is called
     this.model = {};
 
-    window.SeismoQuery = this;
+    window.Query = this;
   }
 
   initModel() {
-    this.model.dateFrom = new Date(this.SeismoData.filesQueryData.lowDate);
-    this.model.dateTo = new Date(this.SeismoData.filesQueryData.highDate);
-    this.model.numBins = this.SeismoData.filesQueryData.numBins;
+    this.model.dateFrom = new Date(this.QueryData.filesQueryData.lowDate);
+    this.model.dateTo = new Date(this.QueryData.filesQueryData.highDate);
+    this.model.numBins = this.QueryData.filesQueryData.numBins;
     this.model.stationNames = "";
     this.model.fileNames = "";
     this.model.status = {};
 
-    this.SeismoStatus.statuses.forEach((status) => {
+    this.FileStatus.statuses.forEach((status) => {
       this.model.status[status.code] = true;
     });
   }
@@ -29,13 +29,13 @@ class SeismoQuery {
   initialQuery() {
     return this.$q.all({
       seismograms: this.$http({
-        url: this.SeismoServer.filesUrl,
+        url: this.ServerUrls.filesUrl,
         params: {
           status: "0,3,4"
         }
       }),
       stations: this.$http({
-        url: this.SeismoServer.stationsUrl
+        url: this.ServerUrls.stationsUrl
       })
     });
   }
@@ -44,7 +44,7 @@ class SeismoQuery {
     var params = this.createQuery(paramModel);
     return this.$http({
       method: "GET",
-      url: this.SeismoServer.filesUrl,
+      url: this.ServerUrls.filesUrl,
       params: params
     });
   }
@@ -66,7 +66,7 @@ class SeismoQuery {
     var stationNames = queryParamModel.stationNames
       .split(",").map((stationName) => stationName.trim());
 
-    var stationIds = this.SeismoData.stationQueryData
+    var stationIds = this.QueryData.stationQueryData
       .filter((station) => stationNames.find((stationName) =>
         station.location.toLowerCase().indexOf(stationName.toLowerCase()) !== -1 ||
         station.code.toLowerCase().indexOf(stationName.toLowerCase()) !== -1
@@ -102,5 +102,3 @@ class SeismoQuery {
   }
 
 }
-
-export { SeismoQuery };

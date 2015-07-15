@@ -1,7 +1,7 @@
-class SeismoBrowse {
+export class Browse {
 
-  constructor($scope, $location, $timeout, SeismoStationMap, SeismoQuery,
-              SeismoData, SeismoStatus, Loading) {
+  constructor($scope, $location, $timeout, StationMap, Query,
+              QueryData, FileStatus, Loading) {
 
     // for debugging
     window.scope = $scope;
@@ -9,18 +9,18 @@ class SeismoBrowse {
     Loading.reset();
 
     // Referred to in browse.html
-    $scope.SeismoData = SeismoData;
-    $scope.SeismoStatus = SeismoStatus;
-    $scope.SeismoStationMap = SeismoStationMap;
+    $scope.QueryData = QueryData;
+    $scope.FileStatus = FileStatus;
+    $scope.StationMap = StationMap;
 
     // Whether the list is visible. When it's false, the map is visible.
     $scope.listVisible = true;
     // Whether the filter/query UI is visible
     $scope.filterVisible = false;
 
-    // The query model is a member of the SeismoQuery service so that it persists across
+    // The query model is a member of the Query service so that it persists across
     // view changes.
-    $scope.queryModel = SeismoQuery.model;
+    $scope.queryModel = Query.model;
 
     $scope.viewSeismogram = (file) => {
       $scope.go("/view/" + file.name);
@@ -32,13 +32,13 @@ class SeismoBrowse {
 
       Loading.start("Loading results...");
 
-      return SeismoQuery.queryFiles().then((res) => {
+      return Query.queryFiles().then((res) => {
         console.log("Query complete.", res.data);
 
-        // update the SeismoData files data
-        SeismoData.setFilesQueryData(res.data);
+        // update the QueryData files data
+        QueryData.setFilesQueryData(res.data);
         // update the map
-        SeismoStationMap.update();
+        StationMap.update();
 
         Loading.stop("Loading results...");
       });
@@ -46,10 +46,10 @@ class SeismoBrowse {
 
     var main = () => {
       // If we come here from a different route (e.g. by clicking the back button from
-      // another view), we see if the SeismoData service had alrady been populated with
+      // another view), we see if the QueryData service had alrady been populated with
       // data, and load that data instead.
-      if (SeismoData.gotDataAlready) {
-        $timeout(() => SeismoStationMap.update());
+      if (QueryData.gotDataAlready) {
+        $timeout(() => StationMap.update());
         return;
       }
 
@@ -58,17 +58,17 @@ class SeismoBrowse {
 
       Loading.start("Loading seismograms...");
 
-      SeismoQuery.initialQuery().then((res) => {
+      Query.initialQuery().then((res) => {
         console.log("Initial query complete.", res);
 
         // populate station data
-        SeismoData.setStationQueryData(res.stations.data);
+        QueryData.setStationQueryData(res.stations.data);
         // populate station data
-        SeismoData.setFilesQueryData(res.seismograms.data);
+        QueryData.setFilesQueryData(res.seismograms.data);
         // drop pins on the map
-        SeismoStationMap.update();
+        StationMap.update();
         // populate the model (for the filter/query form)
-        SeismoQuery.initModel();
+        Query.initModel();
 
         Loading.stop("Loading seismograms...");
       });
@@ -77,5 +77,3 @@ class SeismoBrowse {
     main();
   }
 }
-
-export { SeismoBrowse };

@@ -4,15 +4,15 @@ var L = window.L;
 
 class SeismoImageMap {
 
-  constructor($timeout, $location, $http, $q, SeismoServer, SeismoStatus, Loading) {
+  constructor($timeout, $location, $http, $q, ServerUrls, FileStatus, Loading) {
     window.imageMap = this;
 
     this.$timeout = $timeout;
     this.$location = $location;
     this.$http = $http;
     this.$q = $q;
-    this.SeismoServer = SeismoServer;
-    this.SeismoStatus = SeismoStatus;
+    this.ServerUrls = ServerUrls;
+    this.FileStatus = FileStatus;
     this.Loading = Loading;
 
     this.leafletMap = null;
@@ -105,19 +105,19 @@ class SeismoImageMap {
 
     if (this.$location.host() === "localhost") {
       // we are in development
-      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
+      path = this.FileStatus.is(file.status, "Has Edited Data") ?
         "edited-metadata" :
         "metadata";
     } else {
       // in production
-      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
+      path = this.FileStatus.is(file.status, "Has Edited Data") ?
         "https://s3.amazonaws.com/wwssn-edited-metadata" :
         "https://s3.amazonaws.com/wwssn-metadata";
     }
 
     var s3Prefix = path + "/" + file.name + "/";
 
-    var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
+    var url = this.ServerUrls.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
     if (this.imageLayer) {
       this.leafletMap.removeLayer(this.imageLayer);
@@ -141,7 +141,7 @@ class SeismoImageMap {
       }
     });
 
-    if (!this.SeismoStatus.hasData(file.status)) {
+    if (!this.FileStatus.hasData(file.status)) {
       // nothing to load
       return;
     }

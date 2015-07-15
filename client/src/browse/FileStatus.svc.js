@@ -1,4 +1,4 @@
-class SeismoStatus {
+export class FileStatus {
   constructor() {
     this.statuses = [{
       code: 0,
@@ -38,5 +38,3 @@ class SeismoStatus {
     return code === 3 || code === 4;
   }
 }
-
-export { SeismoStatus };

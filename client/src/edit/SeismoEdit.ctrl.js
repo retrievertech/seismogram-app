@@ -1,6 +1,6 @@
 class SeismoEdit {
-  constructor($scope, $routeParams, SeismoImageMap, SeismoData, ImageMapLoader,
-              SeismoStatus, MeanLinesEditor, Popup) {
+  constructor($scope, $routeParams, SeismoImageMap, QueryData, ImageMapLoader,
+              FileStatus, MeanLinesEditor, Popup) {
 
     $scope.SeismoImageMap = SeismoImageMap;
     $scope.MeanLinesEditor = MeanLinesEditor;
@@ -14,7 +14,7 @@ class SeismoEdit {
 
     $scope.hasData = () => {
       var file = SeismoImageMap.currentFile;
-      return file && (SeismoStatus.hasData(file.status));
+      return file && (FileStatus.hasData(file.status));
     };
 
     ImageMapLoader.load($routeParams.filename);

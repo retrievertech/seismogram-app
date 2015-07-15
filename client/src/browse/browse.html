@@ -31,11 +31,11 @@
 
   <!-- The map. The "listVisibe" variable makes the map and the list mutually-exclusive. -->
   <!-- Note that the map contains dynamic HTML not visible here, namely the pins on the map. -->
-  <!-- See how the pins are added in browse/SeismoStationMap and how they -->
+  <!-- See how the pins are added in browse/StationMap and how they -->
   <!-- are styled in styles.less. -->
 
   <div class="seismo-station-map" ng-show="!listVisible">
-    <div id="stations-map" class="leaflet-map" map-link="SeismoStationMap" view-reset="listVisible"></div>
+    <div id="stations-map" class="leaflet-map" map-link="StationMap" view-reset="listVisible"></div>
   </div>
 
 
@@ -46,10 +46,10 @@
     <div class="top-padding"></div>
 
     <!-- The text in the top-center -->
-    {{SeismoData.filesQueryData.numResults}} seismograms.
+    {{QueryData.filesQueryData.numResults}} seismograms.
 
     <!-- The list of seismograms. A group is one row of seismograms. -->
-    <div class="group" ng-repeat="group in SeismoData.groups">
+    <div class="group" ng-repeat="group in QueryData.groups">
 
       <!-- An individual seismogram box. The seismo-list-item is purely a container. -->
       <div class="seismo-list-item"
@@ -58,9 +58,9 @@
 
         <!-- The actual seismo box -->
         <div class="item-content">
-          {{ SeismoData.formatDate(file) }}<br/>
-          {{ SeismoData.stationLocation(file) }}<br/>
-          {{ SeismoData.seismoType(file) }}, {{ SeismoData.seismoDirection(file) }}
+          {{ QueryData.formatDate(file) }}<br/>
+          {{ QueryData.stationLocation(file) }}<br/>
+          {{ QueryData.seismoType(file) }}, {{ QueryData.seismoDirection(file) }}
           <div class="filename">{{ file.name }}</div>
 
           <!-- The thumbnail. Note that it has an inline error handler that replaces the -->
@@ -99,7 +99,7 @@
       <div class="item">
         <div class="label">Status:</div>
         <div class="statuses">
-          <div class="status" ng-repeat="status in SeismoStatus.statuses">
+          <div class="status" ng-repeat="status in FileStatus.statuses">
             <input id="l{{$index}}" type="checkbox" ng-model="queryModel.status[status.code]"/>
             <label for="l{{$index}}">{{ status.name }}</label>
           </div>

@@ -1,20 +1,20 @@
 class SeismoView {
   constructor($scope, $routeParams, $timeout, $http, $q, SeismoImageMap,
-              Loading, SeismoStatus, SeismoServer, SeismoData, ImageMapLoader) {
+              Loading, FileStatus, ServerUrls, QueryData, ImageMapLoader) {
 
     window.viewScope = $scope;
 
     Loading.reset();
 
     $scope.SeismoImageMap = SeismoImageMap;
-    $scope.SeismoData = SeismoData;
+    $scope.QueryData = QueryData;
     $scope.Loading = Loading;
 
     $scope.detailsShowing = false;
 
     $scope.hasData = () => {
       var file = SeismoImageMap.currentFile;
-      return file && (SeismoStatus.hasData(file.status));
+      return file && (FileStatus.hasData(file.status));
     };
 
     $scope.gotoEditor = () => {
