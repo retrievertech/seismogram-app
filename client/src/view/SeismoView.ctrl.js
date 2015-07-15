@@ -1,5 +1,5 @@
 class SeismoView {
-  constructor($scope, $routeParams, $timeout, $http, $q, SeismoEditor, SeismoImageMap,
+  constructor($scope, $routeParams, $timeout, $http, $q, SeismoImageMap,
               Loading, SeismoStatus, SeismoServer, SeismoData, ImageMapLoader) {
 
     window.viewScope = $scope;

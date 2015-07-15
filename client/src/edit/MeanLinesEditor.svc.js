@@ -1,15 +1,46 @@
 class MeanLinesEditor {
-  constructor(SeismoEditor, SeismoImageMap, Popup) {
-    this.SeismoEditor = SeismoEditor;
+  constructor(SeismoImageMap, Popup) {
     this.SeismoImageMap = SeismoImageMap;
     this.Popup = Popup;
     this.editing = false;
   }
 
-  stopEditing() {
+  // Start editing mean lines:
+
+  startEditing() {
+    if (this.editing) return;
+
     var meanlines = this.SeismoImageMap.getLayer("meanlines");
-    meanlines.leafletLayer.getLayers().forEach((meanLine) =>
-      this.deleteEventsFromMeanLine(meanLine));
+
+    // Force the layer to be visible.
+    if (!meanlines.on) {
+      this.SeismoImageMap.toggleLayer(meanlines);
+    }
+
+    meanlines.leafletLayer.getLayers().forEach((meanLine) => {
+      // We install the editing events on each mean line
+      this.installEventsOnMeanLine(meanLine);
+      // Turn on Leaflet.Editable on the mean line
+      meanLine.enableEdit();
+    });
+
+    this.editing = true;
+  }
+
+  // Stop editing mean lines.
+
+  stopEditing() {
+    if (!this.editing) return;
+
+    var meanlines = this.SeismoImageMap.getLayer("meanlines");
+
+    meanlines.leafletLayer.getLayers().forEach((meanLine) => {
+      // Delete the previously installed editing events
+      this.deleteEventsFromMeanLine(meanLine);
+      // Disable Leaflet.Editable for the mean line
+      meanLine.disableEdit();
+    });
+
     this.editing = false;
   }
 
@@ -74,26 +105,13 @@ class MeanLinesEditor {
     });
   }
 
-  // Start editing mean lines:
-
-  startEditing() {
-    if (this.editing) return;
-
-    var meanlines = this.SeismoImageMap.getLayer("meanlines");
-    // We install the editing events on each mean line
-    meanlines.leafletLayer.getLayers().forEach((meanLine) => this.installEventsOnMeanLine(meanLine));
-    // We enable the Leaflet.Editable editor
-    this.SeismoEditor.startEditingLayer(meanlines);
-    this.editing = true;
-  }
-
   // Add a new meanline:
 
   addMeanLine() {
     // First we stop editing, which disables the Leaflet.Editable editor on
     // all mean lines. This is crucial because otherwise, the editor will not
     // be automatically enabled on the newly added line.
-    this.SeismoEditor.stopEditing();
+    this.stopEditing();
 
     var meanlines = this.SeismoImageMap.getLayer("meanlines");
 
@@ -120,9 +138,7 @@ class MeanLinesEditor {
     // Add the mean line to the mean lines layer.
     meanlines.leafletLayer.addData(newLine);
 
-    // We invoke startEditing() as opposed to SeismoEditor.startEditingLayer()
-    // because startEditing() makes sure to install all the editing events on all
-    // meanlines, which includes the newly created mean line.
+    // Restart the editing
     this.startEditing();
   }
 }

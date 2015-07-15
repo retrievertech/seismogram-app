@@ -6,19 +6,7 @@ class SeismoEditor {
     this.SeismoServer = SeismoServer;
     this.SeismoImageMap = SeismoImageMap;
 
-    this.layerBeingEdited = null;
-
-    this.editing = false;
     this.saving = false;
-  }
-
-  startEditing() {
-    this.editing = true;
-  }
-
-  exitEditing() {
-    this.editing = false;
-    this.stopEditing();
   }
 
   saveChanges() {
@@ -48,39 +36,9 @@ class SeismoEditor {
   }
 
   discardChanges() {
-    this.stopEditing();
-
     this.SeismoImageMap.metadataLayers
       .filter((layer) => layer.key !== "segments")
       .forEach((layer) => this.SeismoImageMap.resetLayer(layer));
-  }
-
-  startEditingLayer(layer) {
-    this.stopEditing();
-
-    // if the layer is off, turn it on
-    if (!layer.on) {
-      this.SeismoImageMap.toggleLayer(layer);
-    }
-
-    // not yet for these
-    if (layer.key === "segments") {
-      return;
-    }
-
-    this.layerBeingEdited = layer;
-
-    layer.leafletLayer.getLayers().forEach((object) => object.enableEdit());
-  }
-
-  stopEditing() {
-    var layer = this.layerBeingEdited;
-
-    if (layer !== null) {
-      layer.leafletLayer.getLayers().forEach((object) => object.disableEdit());
-    }
-
-    this.layerBeingEdited = null;
   }
 
 }
