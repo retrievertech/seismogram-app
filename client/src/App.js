@@ -1,10 +1,10 @@
 var angular = window.angular;
 
 // Top-level / shared modules
-import { Loading } from "./Loading.svc.js";
+import { ScreenMessage } from "./ScreenMessage.svc.js";
 import { Popup } from "./Popup.svc.js";
-import { SeismoImageMap } from "./SeismoImageMap.svc.js";
-import { ImageMapLoader } from "./ImageMapLoader.svc.js";
+import { SeismogramMap } from "./SeismogramMap.svc.js";
+import { SeismogramMapLoader } from "./SeismogramMapLoader.svc.js";
 import { MapLink } from "./MapLink.dir.js";
 
 // App sections
@@ -15,12 +15,12 @@ import { Setup as EditSetup } from "./edit/Setup.js";
 
 var sections = [ BrowseSetup, ViewSetup, MainSetup, EditSetup ];
 
-var app = angular.module("SeismoApp", []);
+var app = angular.module("App", []);
 
 // Install the top-level dependencies
-app.service("SeismoImageMap", SeismoImageMap)
-  .service("Loading", Loading)
-  .service("ImageMapLoader", ImageMapLoader)
+app.service("SeismogramMap", SeismogramMap)
+  .service("ScreenMessage", ScreenMessage)
+  .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
   .directive("mapLink", MapLink);
 
@@ -32,12 +32,12 @@ app.config(["$routeProvider", ($routeProvider) =>
   sections.forEach((section) => section.installRoutes($routeProvider))]);
 
 // Root controller. The function "go" is available to all scopes in all sections
-app.run(function($rootScope, $location, Loading) {
-  $rootScope.Loading = Loading;
+app.run(function($rootScope, $location, ScreenMessage) {
+  $rootScope.ScreenMessage = ScreenMessage;
   $rootScope.go = (path) => $location.path(path);
   console.log("Seismo app is running");
 });
 
 angular.element(document).ready(function() {
-  angular.bootstrap(document, ["ngRoute", "SeismoApp"]);
+  angular.bootstrap(document, ["ngRoute", "App"]);
 });

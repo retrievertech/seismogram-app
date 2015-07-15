@@ -1,4 +1,4 @@
-import { SeismoEdit } from "./SeismoEdit.ctrl.js";
+import { Edit } from "./Edit.ctrl.js";
 import { MeanLinesEditor } from "./MeanLinesEditor.svc.js";
 
 export var Setup = {
@@ -8,7 +8,7 @@ export var Setup = {
   installRoutes: (routeProvider) => {
     routeProvider.when("/edit/:filename", {
       templateUrl: "src/edit/edit.html",
-      controller: SeismoEdit
+      controller: Edit
     });
   }
 };

@@ -20,9 +20,7 @@ var imageMapProjection = {
 };
 
 // Defines a flat (null transformation) coordinate space with (0,0) in the top-left.
-var SeismoImageMapCRS = L.extend({}, L.CRS.Simple, {
+export var SeismogramMapCRS = L.extend({}, L.CRS.Simple, {
   projection: imageMapProjection,
   transformation: new L.Transformation(1, 0, 1, 0)
 });
-
-export { SeismoImageMapCRS };

@@ -1,12 +1,12 @@
 export class Browse {
 
   constructor($scope, $location, $timeout, StationMap, Query,
-              QueryData, FileStatus, Loading) {
+              QueryData, FileStatus, ScreenMessage) {
 
     // for debugging
     window.scope = $scope;
 
-    Loading.reset();
+    ScreenMessage.reset();
 
     // Referred to in browse.html
     $scope.QueryData = QueryData;
@@ -30,7 +30,7 @@ export class Browse {
       // make the filter UI disappear
       $scope.filterVisible = false;
 
-      Loading.start("Loading results...");
+      ScreenMessage.start("ScreenMessage results...");
 
       return Query.queryFiles().then((res) => {
         console.log("Query complete.", res.data);
@@ -40,7 +40,7 @@ export class Browse {
         // update the map
         StationMap.update();
 
-        Loading.stop("Loading results...");
+        ScreenMessage.stop("ScreenMessage results...");
       });
     };
 
@@ -56,7 +56,7 @@ export class Browse {
       // If we didn't come here from a different route, do the initial query --
       // This queries both the /stations and /files endpoints.
 
-      Loading.start("Loading seismograms...");
+      ScreenMessage.start("ScreenMessage seismograms...");
 
       Query.initialQuery().then((res) => {
         console.log("Initial query complete.", res);
@@ -70,7 +70,7 @@ export class Browse {
         // populate the model (for the filter/query form)
         Query.initModel();
 
-        Loading.stop("Loading seismograms...");
+        ScreenMessage.stop("ScreenMessage seismograms...");
       });
     };
 

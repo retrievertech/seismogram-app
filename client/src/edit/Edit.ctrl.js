@@ -1,24 +1,22 @@
-class SeismoEdit {
-  constructor($scope, $routeParams, SeismoImageMap, QueryData, ImageMapLoader,
+export class Edit {
+  constructor($scope, $routeParams, SeismogramMap, QueryData, SeismogramMapLoader,
               FileStatus, MeanLinesEditor, Popup) {
 
-    $scope.SeismoImageMap = SeismoImageMap;
+    $scope.SeismogramMap = SeismogramMap;
     $scope.MeanLinesEditor = MeanLinesEditor;
     $scope.Popup = Popup;
 
     $scope.$on("$locationChangeStart", () => MeanLinesEditor.stopEditing());
 
     $scope.gotoViewer = () => {
-      $scope.go("/view/" + SeismoImageMap.currentFile.name);
+      $scope.go("/view/" + SeismogramMap.currentFile.name);
     };
 
     $scope.hasData = () => {
-      var file = SeismoImageMap.currentFile;
+      var file = SeismogramMap.currentFile;
       return file && (FileStatus.hasData(file.status));
     };
 
-    ImageMapLoader.load($routeParams.filename);
+    SeismogramMapLoader.load($routeParams.filename);
   }
 }
-
-export { SeismoEdit };

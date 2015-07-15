@@ -11,7 +11,7 @@
     </div>
   </div>
 
-  <div id="edit-map" map-link="SeismoImageMap"></div>
+  <div id="edit-map" map-link="SeismogramMap"></div>
 
   <div class="popup-message" ng-show="Popup.visible">
     <div class="message">{{ Popup.message }}</div>
@@ -22,13 +22,13 @@
   </div>
 
   <!-- the controls container on the right -->
-  <div class="controls" ng-show="!Loading.active() && hasData()">
+  <div class="controls" ng-show="!ScreenMessage.active() && hasData()">
 
     <!-- the list of map layers -->
     <div class="actions data-layers">
       <div class="title">Seismogram Data</div>
-      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
-        <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
+      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismogramMap.metadataLayers">
+        <div class="action-name" ng-click="SeismogramMap.toggleLayer(ml)">
           <span ng-show="ml.on" class="icon-checkbox-checked">&nbsp;</span>
           <span ng-show="!ml.on" class="icon-checkbox-unchecked">&nbsp;</span>
           {{ml.name}}

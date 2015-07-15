@@ -1,4 +1,4 @@
-class Loading {
+export class ScreenMessage {
 
   constructor($timeout) {
     this.$timeout = $timeout;
@@ -42,5 +42,3 @@ class Loading {
     this.messages.length = 0;
   }
 }
-
-export { Loading };

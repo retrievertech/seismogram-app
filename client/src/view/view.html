@@ -13,16 +13,16 @@
   </div>
 
   <!-- the map showing the tiled image and metadata -->
-  <div id="image-map" map-link="SeismoImageMap" view-reset="mapReset"></div>
+  <div id="image-map" map-link="SeismogramMap" view-reset="mapReset"></div>
 
   <!-- the controls container on the right -->
   <div class="controls">
 
     <!-- the list of map layers -->
-    <div class="actions" ng-show="!Loading.active() && hasData()">
+    <div class="actions" ng-show="!ScreenMessage.active() && hasData()">
       <div class="title">Seismogram Data</div>
-      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
-        <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
+      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismogramMap.metadataLayers">
+        <div class="action-name" ng-click="SeismogramMap.toggleLayer(ml)">
           <span ng-show="ml.on" class="icon-checkbox-checked">&nbsp;</span>
           <span ng-show="!ml.on" class="icon-checkbox-unchecked">&nbsp;</span>
           {{ml.name}}
@@ -39,13 +39,13 @@
           Show Details
         </div>
       </div>
-      <div class="action" ng-show="!Loading.active() && hasData()">
+      <div class="action" ng-show="!ScreenMessage.active() && hasData()">
         <div class="action-name" ng-click="showLog()">
           <span class="icon-file-text">&nbsp;</span>
           Show Processing Log
         </div>
       </div>
-      <div class="action" ng-show="!Loading.active() && hasData()">
+      <div class="action" ng-show="!ScreenMessage.active() && hasData()">
         <div class="action-name" ng-click="gotoEditor()">
           <span class="icon-pencil">&nbsp;</span>
           Open in Editor
@@ -64,19 +64,19 @@
     </div>
     <div class="contents">
       <div class="row">
-        <div class="label">Name:</div> {{ SeismoImageMap.currentFile.name }}
+        <div class="label">Name:</div> {{ SeismogramMap.currentFile.name }}
       </div>
       <div class="row">
-        <div class="label">Date/Time:</div> {{ QueryData.formatDate(SeismoImageMap.currentFile) }}
+        <div class="label">Date/Time:</div> {{ QueryData.formatDate(SeismogramMap.currentFile) }}
       </div>
       <div class="row">
-        <div class="label">Location:</div> {{ QueryData.stationLocation(SeismoImageMap.currentFile) }}
+        <div class="label">Location:</div> {{ QueryData.stationLocation(SeismogramMap.currentFile) }}
       </div>
       <div class="row">
-        <div class="label">Type:</div> {{ QueryData.seismoType(SeismoImageMap.currentFile) }}
+        <div class="label">Type:</div> {{ QueryData.seismoType(SeismogramMap.currentFile) }}
       </div>
       <div class="row">
-        <div class="label">Direction:</div> {{ QueryData.seismoDirection(SeismoImageMap.currentFile) }}
+        <div class="label">Direction:</div> {{ QueryData.seismoDirection(SeismogramMap.currentFile) }}
       </div>
     </div>
   </div>

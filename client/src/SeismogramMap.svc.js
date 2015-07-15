@@ -1,10 +1,10 @@
-import { SeismoImageMapCRS } from "./SeismoImageMapCRS.js";
+import { SeismogramMapCRS } from "./SeismogramMapCRS.js";
 
 var L = window.L;
 
-class SeismoImageMap {
+export class SeismogramMap {
 
-  constructor($timeout, $location, $http, $q, ServerUrls, FileStatus, Loading) {
+  constructor($timeout, $location, $http, $q, ServerUrls, FileStatus, ScreenMessage) {
     window.imageMap = this;
 
     this.$timeout = $timeout;
@@ -13,7 +13,7 @@ class SeismoImageMap {
     this.$q = $q;
     this.ServerUrls = ServerUrls;
     this.FileStatus = FileStatus;
-    this.Loading = Loading;
+    this.ScreenMessage = ScreenMessage;
 
     this.leafletMap = null;
     this.currentFile = null;
@@ -63,7 +63,7 @@ class SeismoImageMap {
   init(id) {
     var leafletMap = this.leafletMap = L.map(id, {
       minZoom: 0,
-      crs: SeismoImageMapCRS,
+      crs: SeismogramMapCRS,
       editable: true,
       editOptions: {
         skipMiddleMarkers: true
@@ -125,12 +125,12 @@ class SeismoImageMap {
 
     this.imageLayer = L.tileLayer(url, this.imageLayerOpts).addTo(this.leafletMap);
 
-    this.Loading.start("Loading image...");
+    this.ScreenMessage.start("ScreenMessage image...");
 
     this.imageLayer.on("load", () => {
       this.$timeout(() => {
         this.imageIsLoaded = true;
-        this.Loading.stop("Loading image...");
+        this.ScreenMessage.stop("ScreenMessage image...");
       });
     });
 
@@ -146,7 +146,7 @@ class SeismoImageMap {
       return;
     }
 
-    this.Loading.start("Loading metadata...");
+    this.ScreenMessage.start("ScreenMessage metadata...");
 
     // load the data and recreate the layers
     var promises = this.metadataLayers.map((layer) => {
@@ -167,10 +167,8 @@ class SeismoImageMap {
         }
       });
 
-      this.Loading.stop("Loading metadata...");
+      this.ScreenMessage.stop("ScreenMessage metadata...");
     });
   }
 
 }
-
-export { SeismoImageMap };
