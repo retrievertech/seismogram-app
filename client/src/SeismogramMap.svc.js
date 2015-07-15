@@ -129,12 +129,12 @@ export class SeismogramMap {
 
     this.imageLayer = L.tileLayer(url, this.imageLayerOpts).addTo(this.leafletMap);
 
-    this.ScreenMessage.start("ScreenMessage image...");
+    this.ScreenMessage.start("Loading image...");
 
     this.imageLayer.on("load", () => {
       this.$timeout(() => {
         this.imageIsLoaded = true;
-        this.ScreenMessage.stop("ScreenMessage image...");
+        this.ScreenMessage.stop("Loading image...");
       });
     });
 
@@ -150,7 +150,7 @@ export class SeismogramMap {
       return;
     }
 
-    this.ScreenMessage.start("ScreenMessage metadata...");
+    this.ScreenMessage.start("Loading metadata...");
 
     // load the data and recreate the layers
     var promises = this.metadataLayers.map((layer) => {
@@ -171,7 +171,7 @@ export class SeismogramMap {
         }
       });
 
-      this.ScreenMessage.stop("ScreenMessage metadata...");
+      this.ScreenMessage.stop("Loading metadata...");
     });
   }
 
