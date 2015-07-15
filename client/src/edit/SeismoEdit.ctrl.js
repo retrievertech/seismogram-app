@@ -6,6 +6,8 @@ class SeismoEdit {
     $scope.MeanLinesEditor = MeanLinesEditor;
     $scope.Popup = Popup;
 
+    $scope.$on("$locationChangeStart", () => MeanLinesEditor.stopEditing());
+
     $scope.gotoViewer = () => {
       $scope.go("/view/" + SeismoImageMap.currentFile.name);
     };

@@ -6,6 +6,19 @@ class MeanLinesEditor {
     this.editing = false;
   }
 
+  stopEditing() {
+    var meanlines = this.SeismoImageMap.getLayer("meanlines");
+    meanlines.leafletLayer.getLayers().forEach((meanLine) =>
+      this.deleteEventsFromMeanLine(meanLine));
+    this.editing = false;
+  }
+
+  deleteEventsFromMeanLine(meanLine) {
+    meanLine.off("editable:vertex:dragstart");
+    meanLine.off("editable:vertex:drag");
+    meanLine.off("click");
+  }
+
   // The following function installs editing events on each mean line given:
   // For forcing the x-coordinates to stay constant, and for selecting mean
   // lines for deletion by clicking them.
@@ -15,9 +28,7 @@ class MeanLinesEditor {
 
     // Get rid of previously-installed events
 
-    meanLine.off("editable:vertex:dragstart");
-    meanLine.off("editable:vertex:drag");
-    meanLine.off("click");
+    this.deleteEventsFromMeanLine(meanLine);
 
     // The following two event installs force the x-coordinate of the currently
     // dragged mean line knob to remain constant.
@@ -66,6 +77,8 @@ class MeanLinesEditor {
   // Start editing mean lines:
 
   startEditing() {
+    if (this.editing) return;
+
     var meanlines = this.SeismoImageMap.getLayer("meanlines");
     // We install the editing events on each mean line
     meanlines.leafletLayer.getLayers().forEach((meanLine) => this.installEventsOnMeanLine(meanLine));
