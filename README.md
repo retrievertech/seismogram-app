@@ -71,6 +71,8 @@ TODO
     * Assigned segments take on the color of the mean line.
     * Unassigned segments should have a default color.
 * Browser:
+  * Sometimes pins overlap. E.g., Albuquerque has two stations with identical Lat/Lon. When this happens,
+    it appears as if the file count is wrong for that station (the pin underneath being obscured). 
   * Improve the query interface.
     * Date/time pickers, or at least friendlier way to input dates
     * Station name autocomplete
