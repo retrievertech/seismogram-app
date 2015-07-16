@@ -1,3 +1,5 @@
+var infoOpened = false;
+
 export class Edit {
   constructor($scope, $routeParams, SeismogramMap, QueryData, SeismogramMapLoader,
               FileStatus, MeanLinesEditor, SegmentErasureEditor, Popup) {
@@ -20,6 +22,9 @@ export class Edit {
       return file && (FileStatus.hasData(file.status));
     };
 
+    // Whether we show tool info
+    $scope.infoVisible = false;
+
     //
     // This little trick lets us keep only one running editor at any time. This implies
     // that the editors respect an interface containing the functions `startEditing()`
@@ -32,6 +37,11 @@ export class Edit {
       }
       editor.startEditing();
       currentEditor = editor;
+
+      if (!infoOpened) {
+        $scope.infoVisible = true;
+        infoOpened = true;
+      }
     };
 
     SeismogramMapLoader.load($routeParams.filename);

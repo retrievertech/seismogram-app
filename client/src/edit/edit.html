@@ -13,6 +13,38 @@
 
   <div id="edit-map" map-link="SeismogramMap"></div>
 
+  <div class="info" ng-show="infoVisible">
+    <div class="close" ng-click="infoVisible=false">
+      <span class="icon-cross"></span>
+    </div>
+
+    <div ng-show="MeanLinesEditor.editing">
+      <div class="title">
+        <span class="icon-info">&nbsp;</span> Mean Lines Editor
+      </div>
+      <div class="content">
+        <ul>
+          <li>Click on a mean line to delete it.</li>
+          <li>Click "Add Mean Line" in the Editing Tools to add a new mean line to the top of the seismogram image.</li>
+          <li>Use the knobs at the ends of each mean line to move the respective mean line.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div ng-show="SegmentErasureEditor.editing">
+      <div class="title">
+        <span class="icon-info">&nbsp;</span> Segment Erasure Tool
+      </div>
+      <div class="content">
+        <ul>
+          <li>Move the selection rectangle on top of segment data you would like to delete.</li>
+          <li>Use the knobs to adjust the size of the selection rectangle.</li>
+          <li>Click "Erase Data in Region" in Editing Tools to delete any segment data intersecting the selection rectangle.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
   <!-- the segment erasure rectangle -->
   <div ng-show="SegmentErasureEditor.editing">
     <!-- the rectangle outline -->
@@ -90,6 +122,13 @@
         </div>
 
         <div class="action sub-action">
+          <div class="action-name" ng-click="infoVisible=true">
+            <span class="icon-info">&nbsp;</span>
+            Show Info
+          </div>
+        </div>
+
+        <div class="action sub-action">
           <div class="action-name" ng-click="MeanLinesEditor.stopEditing()">
             <span class="icon-blocked">&nbsp;</span>
             Stop Editing
@@ -110,6 +149,13 @@
           <div class="action-name" ng-click="SegmentErasureEditor.eraseData()">
             <span class="icon-scissors">&nbsp;</span>
             Erase Data in Region
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="infoVisible=true">
+            <span class="icon-info">&nbsp;</span>
+            Show Info
           </div>
         </div>
 
