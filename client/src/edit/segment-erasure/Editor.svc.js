@@ -9,6 +9,10 @@ export class Editor {
   }
 
   startEditing() {
+    var segmentsLayer = this.SeismogramMap.getLayer("segments");
+    if (!segmentsLayer.on) {
+      this.SeismogramMap.toggleLayer(segmentsLayer);
+    }
     this.editing = true;
   }
 
