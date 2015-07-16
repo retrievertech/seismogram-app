@@ -1,6 +1,6 @@
 import { Edit } from "./Edit.ctrl.js";
 import { MeanLinesEditor } from "./MeanLinesEditor.svc.js";
-import { SegmentErasureEditor } from "./segment-erasure/Editor.svc.js";
+import { Editor as SegmentErasureEditor } from "./segment-erasure/Editor.svc.js";
 import { RectangleDiv } from "./segment-erasure/RectangleDiv.dir.js";
 import { RectangleKnobDiv } from "./segment-erasure/RectangleKnobDiv.dir.js";
 

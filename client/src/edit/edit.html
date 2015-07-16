@@ -14,11 +14,9 @@
   <div id="edit-map" map-link="SeismogramMap"></div>
 
   <div ng-show="SegmentErasureEditor.editing">
-    <div class="rectangle-div"
+    <div class="rectangle-div" rectangle-div
          style="top: {{rect.n}}px; left: {{rect.w}}px;
-                width: {{rect.width()}}px; height: {{rect.height()}}px;"
-         rectangle-div
-         ng-show="SegmentErasureEditor.editing"></div>
+                width: {{rect.width()}}px; height: {{rect.height()}}px;"></div>
 
     <div class="rectangle-knob-div n" rectangle-knob-div="n"
          style="top: {{rect.n}}px; left: {{rect.w + rect.width()/2 + 2}}px;"></div>
@@ -101,6 +99,22 @@
         <div class="action-name" ng-click="startEditing(SegmentErasureEditor)">
           <span class="icon-scissors">&nbsp;</span>
           Erase Segments
+        </div>
+      </div>
+
+      <div class="subaction-group" ng-show="SegmentErasureEditor.editing">
+        <div class="action sub-action">
+          <div class="action-name" ng-click="SegmentErasureEditor.eraseData()">
+            <span class="icon-scissors">&nbsp;</span>
+            Erase Data in Region
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="SegmentErasureEditor.stopEditing()">
+            <span class="icon-blocked">&nbsp;</span>
+            Stop Editing
+          </div>
         </div>
       </div>
 
