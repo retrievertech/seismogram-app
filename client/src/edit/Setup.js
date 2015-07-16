@@ -1,4 +1,5 @@
 import { Edit } from "./Edit.ctrl.js";
+import { DataHandler } from "./DataHandler.svc.js";
 import { MeanLinesEditor } from "./MeanLinesEditor.svc.js";
 import { Editor as SegmentErasureEditor } from "./segment-erasure/Editor.svc.js";
 import { RectangleDiv } from "./segment-erasure/RectangleDiv.dir.js";
@@ -8,6 +9,7 @@ export var Setup = {
   declare: (app) => {
     app.service("MeanLinesEditor", MeanLinesEditor)
       .service("SegmentErasureEditor", SegmentErasureEditor)
+      .service("DataHandler", DataHandler)
       .directive("rectangleDiv", RectangleDiv)
       .directive("rectangleKnobDiv", RectangleKnobDiv);
   },

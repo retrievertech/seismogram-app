@@ -2,7 +2,7 @@ var infoOpened = false;
 
 export class Edit {
   constructor($scope, $routeParams, SeismogramMap, QueryData, SeismogramMapLoader,
-              FileStatus, MeanLinesEditor, SegmentErasureEditor, Popup) {
+              FileStatus, MeanLinesEditor, SegmentErasureEditor, Popup, DataHandler) {
 
     $scope.SeismogramMap = SeismogramMap;
     $scope.MeanLinesEditor = MeanLinesEditor;
@@ -43,6 +43,28 @@ export class Edit {
         infoOpened = true;
       }
     };
+
+    $scope.stopEditing = () => {
+      if (currentEditor) {
+        currentEditor.stopEditing();
+      }
+
+      $scope.infoVisible = false;
+    };
+
+    $scope.saveChanges = () => {
+      DataHandler.saveChanges();
+    };
+
+    $scope.discardChanges = () => {
+      if (currentEditor) {
+        $scope.infoVisible = false;
+        currentEditor.stopEditing();
+      }
+      DataHandler.discardChanges();
+    };
+
+    $scope.download = () => DataHandler.downloadFiles();
 
     SeismogramMapLoader.load($routeParams.filename);
   }
