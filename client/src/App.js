@@ -35,6 +35,15 @@ app.config(["$routeProvider", ($routeProvider) =>
 app.run(function($rootScope, $location, ScreenMessage) {
   $rootScope.ScreenMessage = ScreenMessage;
   $rootScope.go = (path) => $location.path(path);
+
+  $rootScope.range = (a,b) => {
+    var arr = new Array(b - a + 1);
+    for (var v = a, i = 0; v <= b; ++i, ++v) {
+      arr[i] = v;
+    }
+    return arr;
+  };
+
   console.log("Seismo app is running");
 });
 
