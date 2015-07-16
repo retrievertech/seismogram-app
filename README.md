@@ -46,17 +46,17 @@ TODO
 ----
 
 * Editor:
-  * Reset editor state when navigating to the editor.
-    * Currently, the editor services retain too much state across images.
-  * Ability to cancel editing
-  * Segment erasure tool
-    * Draw a rectangle.
-    * A popup shows up "Delete segments in region?"
-    * Adjust the rectangle. Click "Yes". Segment data is deleted.
+  * ~~Reset editor state when navigating to the editor.~~
+    * ~~Currently, the editor services retain too much state across images.~~
+  * ~~Ability to cancel editing~~
+  * ~~Segment erasure tool~~
+    * ~~Draw a rectangle.~~
+    * ~~A popup shows up "Delete segments in region?"~~
+    * ~~Adjust the rectangle. Click "Yes". Segment data is deleted.~~
     * Other option: Draw a circle in addition to a rectangle.
   * Hook up saving function.
   * Hook up "Discard Changes".
-  * Allow adjusting the opacity of the image layer to better focus on the data.
+  * ~~Allow adjusting the opacity of the image layer to better focus on the data.~~
   * Implement data downloading, probably just a ZIP of JSONs for now.
   * Implement Segment Assignment
     * Auto assignment is not run by default, we give the user a chance to edit mean lines.
