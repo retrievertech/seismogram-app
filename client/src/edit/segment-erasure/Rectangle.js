@@ -1,3 +1,7 @@
+//
+// A simple rectangle utility, the "model" behind the UI div that can be dragged
+// and moved around to define the area in which to clip segment data.
+//
 export class Rectangle {
   constructor() {
     this.n = 300;

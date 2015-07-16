@@ -1,5 +1,9 @@
 var $ = window.$;
 
+//
+// A simple utility that tracks these two pieces of state, mousedown, and editing (for
+// the erasure editor) and is shared by the rectangle directives.
+//
 export class Watcher {
   constructor() {
     this.down = false;

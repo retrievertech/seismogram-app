@@ -5,6 +5,7 @@ export class Edit {
     $scope.SeismogramMap = SeismogramMap;
     $scope.MeanLinesEditor = MeanLinesEditor;
     $scope.SegmentErasureEditor = SegmentErasureEditor;
+    // A little shorthand for the rectangle.
     $scope.rect = SegmentErasureEditor.rect;
     $scope.Popup = Popup;
 
@@ -19,6 +20,11 @@ export class Edit {
       return file && (FileStatus.hasData(file.status));
     };
 
+    //
+    // This little trick lets us keep only one running editor at any time. This implies
+    // that the editors respect an interface containing the functions `startEditing()`
+    // and `stopEditing()`
+    //
     var currentEditor = null;
     $scope.startEditing = (editor) => {
       if (currentEditor) {
