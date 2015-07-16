@@ -11,7 +11,72 @@
     </div>
   </div>
 
-  <div id="edit-map" map-link="SeismoImageMap"></div>
+  <div id="edit-map" map-link="SeismogramMap"></div>
+
+  <div class="info" ng-show="infoVisible">
+    <div class="close" ng-click="infoVisible=false">
+      <span class="icon-cross"></span>
+    </div>
+
+    <div ng-show="MeanLinesEditor.editing">
+      <div class="title">
+        <span class="icon-info">&nbsp;</span> Mean Lines Editor
+      </div>
+      <div class="content">
+        <ul>
+          <li>Click on a mean line to delete it.</li>
+          <li>Click "Add Mean Line" in the Editing Tools to add a new mean line to the top of the seismogram image.</li>
+          <li>Use the knobs at the ends of each mean line to move the respective mean line.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div ng-show="SegmentErasureEditor.editing">
+      <div class="title">
+        <span class="icon-info">&nbsp;</span> Segment Erasure Tool
+      </div>
+      <div class="content">
+        <ul>
+          <li>Move the selection rectangle on top of segment data you would like to delete.</li>
+          <li>Use the knobs to adjust the size of the selection rectangle.</li>
+          <li>Click "Erase Data in Region" in Editing Tools to delete any segment data intersecting the selection rectangle.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- the segment erasure rectangle -->
+  <div ng-show="SegmentErasureEditor.editing">
+    <!-- the rectangle outline -->
+    <div class="rectangle-div" rectangle-div
+         style="top: {{rect.n}}px; left: {{rect.w}}px;
+                width: {{rect.width()}}px; height: {{rect.height()}}px;"></div>
+
+    <!-- the 8 knobs -->
+    <div class="rectangle-knob-div n" rectangle-knob-div="n"
+         style="top: {{rect.n}}px; left: {{rect.w + rect.width()/2 + 2}}px;"></div>
+
+    <div class="rectangle-knob-div s" rectangle-knob-div="s"
+         style="top: {{rect.s}}px; left: {{rect.w + rect.width()/2 + 2}}px;"></div>
+
+    <div class="rectangle-knob-div e" rectangle-knob-div="e"
+         style="top: {{rect.n + rect.height()/2 + 2}}px; left: {{rect.e}}px;"></div>
+
+    <div class="rectangle-knob-div w" rectangle-knob-div="w"
+         style="top: {{rect.n + rect.height()/2 + 2}}px; left: {{rect.w}}px;"></div>
+
+    <div class="rectangle-knob-div nw" rectangle-knob-div="nw"
+         style="top: {{rect.n}}px; left: {{rect.w}}px;"></div>
+
+    <div class="rectangle-knob-div ne" rectangle-knob-div="ne"
+         style="top: {{rect.n}}px; left: {{rect.e}}px;"></div>
+
+    <div class="rectangle-knob-div sw" rectangle-knob-div="sw"
+         style="top: {{rect.s}}px; left: {{rect.w}}px;"></div>
+
+    <div class="rectangle-knob-div se" rectangle-knob-div="se"
+         style="top: {{rect.s}}px; left: {{rect.e}}px;"></div>
+  </div>
 
   <div class="popup-message" ng-show="Popup.visible">
     <div class="message">{{ Popup.message }}</div>
@@ -22,16 +87,27 @@
   </div>
 
   <!-- the controls container on the right -->
-  <div class="controls" ng-show="!Loading.active() && hasData()">
+  <div class="controls" ng-show="!ScreenMessage.active() && hasData()">
 
     <!-- the list of map layers -->
     <div class="actions data-layers">
       <div class="title">Seismogram Data</div>
-      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismoImageMap.metadataLayers">
-        <div class="action-name" ng-click="SeismoImageMap.toggleLayer(ml)">
+      <div class="action" ng-class="{'active': ml.on}" ng-repeat="ml in SeismogramMap.metadataLayers">
+        <div class="action-name" ng-click="SeismogramMap.toggleLayer(ml)">
           <span ng-show="ml.on" class="icon-checkbox-checked">&nbsp;</span>
           <span ng-show="!ml.on" class="icon-checkbox-unchecked">&nbsp;</span>
           {{ml.name}}
+        </div>
+      </div>
+      <div class="action">
+        <div class="action-name">
+          Image Opacity:
+          <div class="opacity-container">
+            <div class="opacity-box"
+                 ng-class="{'active': SeismogramMap.imageLayer.options.opacity == i / 10}"
+                 ng-repeat="i in range(0,10)"
+                 ng-click="SeismogramMap.imageLayer.setOpacity(i / 10)"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -41,7 +117,7 @@
 
       <!-- mean lines editing -->
       <div class="action" ng-class="{'active-action': MeanLinesEditor.editing}">
-        <div class="action-name" ng-click="MeanLinesEditor.startEditing()">
+        <div class="action-name" ng-click="startEditing(MeanLinesEditor)">
           <span class="icon-git-commit">&nbsp;</span>
           Edit Mean Lines
         </div>
@@ -55,13 +131,50 @@
             Add Mean Line
           </div>
         </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="infoVisible=true">
+            <span class="icon-info">&nbsp;</span>
+            Show Info
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="MeanLinesEditor.stopEditing()">
+            <span class="icon-blocked">&nbsp;</span>
+            Stop Editing
+          </div>
+        </div>
       </div>
 
       <!-- segment eraser tool button -->
-      <div class="action">
-        <div class="action-name" ng-click="segmentsErase()">
+      <div class="action" ng-class="{'active-action': SegmentErasureEditor.editing}">
+        <div class="action-name" ng-click="startEditing(SegmentErasureEditor)">
           <span class="icon-scissors">&nbsp;</span>
           Erase Segments
+        </div>
+      </div>
+
+      <div class="subaction-group" ng-show="SegmentErasureEditor.editing">
+        <div class="action sub-action">
+          <div class="action-name" ng-click="SegmentErasureEditor.eraseData()">
+            <span class="icon-scissors">&nbsp;</span>
+            Erase Data in Region
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="infoVisible=true">
+            <span class="icon-info">&nbsp;</span>
+            Show Info
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="SegmentErasureEditor.stopEditing()">
+            <span class="icon-blocked">&nbsp;</span>
+            Stop Editing
+          </div>
         </div>
       </div>
 

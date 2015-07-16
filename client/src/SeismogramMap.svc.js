@@ -1,19 +1,23 @@
-import { SeismoImageMapCRS } from "./SeismoImageMapCRS.js";
+import { SeismogramMapCRS } from "./SeismogramMapCRS.js";
 
 var L = window.L;
 
-class SeismoImageMap {
+//
+// The service driving the Leaflet map that shows a tiled seismogram. Used in both
+// the viewer and the editor.
+//
+export class SeismogramMap {
 
-  constructor($timeout, $location, $http, $q, SeismoServer, SeismoStatus, Loading) {
+  constructor($timeout, $location, $http, $q, ServerUrls, FileStatus, ScreenMessage) {
     window.imageMap = this;
 
     this.$timeout = $timeout;
     this.$location = $location;
     this.$http = $http;
     this.$q = $q;
-    this.SeismoServer = SeismoServer;
-    this.SeismoStatus = SeismoStatus;
-    this.Loading = Loading;
+    this.ServerUrls = ServerUrls;
+    this.FileStatus = FileStatus;
+    this.ScreenMessage = ScreenMessage;
 
     this.leafletMap = null;
     this.currentFile = null;
@@ -63,7 +67,7 @@ class SeismoImageMap {
   init(id) {
     var leafletMap = this.leafletMap = L.map(id, {
       minZoom: 0,
-      crs: SeismoImageMapCRS,
+      crs: SeismogramMapCRS,
       editable: true,
       editOptions: {
         skipMiddleMarkers: true
@@ -105,19 +109,19 @@ class SeismoImageMap {
 
     if (this.$location.host() === "localhost") {
       // we are in development
-      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
+      path = this.FileStatus.is(file.status, "Has Edited Data") ?
         "edited-metadata" :
         "metadata";
     } else {
       // in production
-      path = this.SeismoStatus.is(file.status, "Has Edited Data") ?
+      path = this.FileStatus.is(file.status, "Has Edited Data") ?
         "https://s3.amazonaws.com/wwssn-edited-metadata" :
         "https://s3.amazonaws.com/wwssn-metadata";
     }
 
     var s3Prefix = path + "/" + file.name + "/";
 
-    var url = this.SeismoServer.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
+    var url = this.ServerUrls.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
 
     if (this.imageLayer) {
       this.leafletMap.removeLayer(this.imageLayer);
@@ -125,12 +129,12 @@ class SeismoImageMap {
 
     this.imageLayer = L.tileLayer(url, this.imageLayerOpts).addTo(this.leafletMap);
 
-    this.Loading.start("Loading image...");
+    this.ScreenMessage.start("Loading image...");
 
     this.imageLayer.on("load", () => {
       this.$timeout(() => {
         this.imageIsLoaded = true;
-        this.Loading.stop("Loading image...");
+        this.ScreenMessage.stop("Loading image...");
       });
     });
 
@@ -141,12 +145,12 @@ class SeismoImageMap {
       }
     });
 
-    if (!this.SeismoStatus.hasData(file.status)) {
+    if (!this.FileStatus.hasData(file.status)) {
       // nothing to load
       return;
     }
 
-    this.Loading.start("Loading metadata...");
+    this.ScreenMessage.start("Loading metadata...");
 
     // load the data and recreate the layers
     var promises = this.metadataLayers.map((layer) => {
@@ -167,10 +171,8 @@ class SeismoImageMap {
         }
       });
 
-      this.Loading.stop("Loading metadata...");
+      this.ScreenMessage.stop("Loading metadata...");
     });
   }
 
 }
-
-export { SeismoImageMap };

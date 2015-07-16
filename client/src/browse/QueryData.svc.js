@@ -1,31 +1,12 @@
 var L = window.L;
-var io = window.io;
 
-class SeismoData {
+export class QueryData {
 
-  constructor($timeout, SeismoServer, SeismoStatus, SeismoImageMap, SeismoEditor) {
+  constructor() {
     this.stationQueryData = [];
     this.filesQueryData = {};
     this.groups = [];
     this.gotDataAlready = false;
-
-    io(SeismoServer.url).on("status-update", (obj) => {
-      console.log("status-update", obj);
-      this.files.forEach((file) => {
-        if (file.name === obj.filename) {
-          $timeout(() => {
-            var oldStatus = file.status;
-            file.status = obj.status;
-            if ((SeismoStatus.hasData(file.status)) &&
-                file === SeismoImageMap.currentFile && oldStatus !== file.status)
-            {
-              SeismoEditor.stopEditing();
-              SeismoImageMap.loadImage(file);
-            }
-          });
-        }
-      });
-    });
   }
 
   // This method populates the "groups" prop.
@@ -151,5 +132,3 @@ class SeismoData {
     }
   }
 }
-
-export { SeismoData };

@@ -12,9 +12,9 @@ var d3 = window.d3;
 
 class PieOverlay extends LeafletD3Overlay {
 
-  constructor(SeismoData) {
+  constructor(QueryData) {
     super();
-    this.SeismoData = SeismoData;
+    this.QueryData = QueryData;
   }
 
   init(leafletMap) {
@@ -27,7 +27,7 @@ class PieOverlay extends LeafletD3Overlay {
   }
 
   renderStatuses() {
-    var stationStatuses = this.SeismoData.stationStatuses;
+    var stationStatuses = this.QueryData.stationStatuses;
 
     // expects stationStatuses to be a dictionary of station objects:
     // {
@@ -100,7 +100,7 @@ class PieOverlay extends LeafletD3Overlay {
   }
 
   renderStations() {
-    var stationData = this.SeismoData.stations;
+    var stationData = this.QueryData.stations;
 
     // expects stations to be an array of station objects:
     // [

@@ -1,31 +1,31 @@
-class SeismoView {
-  constructor($scope, $routeParams, $timeout, $http, $q, SeismoEditor, SeismoImageMap,
-              Loading, SeismoStatus, SeismoServer, SeismoData, ImageMapLoader) {
+export class View {
+  constructor($scope, $routeParams, $timeout, $http, $q, SeismogramMap,
+              ScreenMessage, FileStatus, ServerUrls, QueryData, SeismogramMapLoader) {
 
     window.viewScope = $scope;
 
-    Loading.reset();
+    ScreenMessage.reset();
 
-    $scope.SeismoImageMap = SeismoImageMap;
-    $scope.SeismoData = SeismoData;
-    $scope.Loading = Loading;
+    $scope.SeismogramMap = SeismogramMap;
+    $scope.QueryData = QueryData;
+    $scope.ScreenMessage = ScreenMessage;
 
     $scope.detailsShowing = false;
 
     $scope.hasData = () => {
-      var file = SeismoImageMap.currentFile;
-      return file && (SeismoStatus.hasData(file.status));
+      var file = SeismogramMap.currentFile;
+      return file && (FileStatus.hasData(file.status));
     };
 
     $scope.gotoEditor = () => {
-      $scope.go("/edit/" + SeismoImageMap.currentFile.name);
+      $scope.go("/edit/" + SeismogramMap.currentFile.name);
     };
 
     $scope.logShowing = false;
     $scope.log = "";
 
     $scope.showLog = () => {
-      var file = SeismoImageMap.currentFile;
+      var file = SeismogramMap.currentFile;
       var token = Math.random();
       var url = "logs/" + file.name + ".txt?token="+token;
 
@@ -44,8 +44,6 @@ class SeismoView {
       $scope.logShowing = false;
     };
 
-    ImageMapLoader.load($routeParams.filename);
+    SeismogramMapLoader.load($routeParams.filename);
   }
 }
-
-export { SeismoView };

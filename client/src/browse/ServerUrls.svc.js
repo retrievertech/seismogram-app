@@ -1,4 +1,4 @@
-class SeismoServer {
+export class ServerUrls {
   constructor($location) {
     var port = 3000;
     this.url = $location.protocol() + "://" + $location.host() + ":" + port;
@@ -11,5 +11,3 @@ class SeismoServer {
     this.saveUrl = this.url + "/processing/save";
   }
 }
-
-export { SeismoServer };

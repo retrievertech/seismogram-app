@@ -11,6 +11,7 @@
     <script type="text/javascript">new traceur.WebPageTranscoder(document.location.href).run();</script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
+    <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
     <script type="text/javascript" src="bower_components/underscore/underscore.js"></script>
     <script type="text/javascript" src="bower_components/leaflet/dist/leaflet.js"></script>
     <script type="text/javascript" src="bower_components/leaflet.editable/src/Leaflet.Editable.js"></script>
@@ -18,14 +19,14 @@
     <script type="text/javascript" src="bower_components/d3/d3.js"></script>
     <script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
     <script type="module">
-      import "src/SeismoApp.js";
+      import "src/App.js";
     </script>
   </head>
   <body ng-cloak>
 
     <!-- generic messages in the center of the screen -->
-    <div class="loading-spinner" ng-show="Loading.any()">
-      <div ng-repeat="message in Loading.messages" class="{{message.type}}">
+    <div class="loading-spinner" ng-show="ScreenMessage.any()">
+      <div ng-repeat="message in ScreenMessage.messages" class="{{message.type}}">
         {{ message.name }}
       </div>
     </div>

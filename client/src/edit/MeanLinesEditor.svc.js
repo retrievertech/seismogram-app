@@ -1,9 +1,53 @@
 class MeanLinesEditor {
-  constructor(SeismoEditor, SeismoImageMap, Popup) {
-    this.SeismoEditor = SeismoEditor;
-    this.SeismoImageMap = SeismoImageMap;
+  constructor(SeismogramMap, Popup) {
+    this.SeismogramMap = SeismogramMap;
     this.Popup = Popup;
     this.editing = false;
+  }
+
+  // Start editing mean lines:
+
+  startEditing() {
+    if (this.editing) return;
+
+    var meanlines = this.SeismogramMap.getLayer("meanlines");
+
+    // Force the layer to be visible.
+    if (!meanlines.on) {
+      this.SeismogramMap.toggleLayer(meanlines);
+    }
+
+    meanlines.leafletLayer.getLayers().forEach((meanLine) => {
+      // We install the editing events on each mean line
+      this.installEventsOnMeanLine(meanLine);
+      // Turn on Leaflet.Editable on the mean line
+      meanLine.enableEdit();
+    });
+
+    this.editing = true;
+  }
+
+  // Stop editing mean lines.
+
+  stopEditing() {
+    if (!this.editing) return;
+
+    var meanlines = this.SeismogramMap.getLayer("meanlines");
+
+    meanlines.leafletLayer.getLayers().forEach((meanLine) => {
+      // Delete the previously installed editing events
+      this.deleteEventsFromMeanLine(meanLine);
+      // Disable Leaflet.Editable for the mean line
+      meanLine.disableEdit();
+    });
+
+    this.editing = false;
+  }
+
+  deleteEventsFromMeanLine(meanLine) {
+    meanLine.off("editable:vertex:dragstart");
+    meanLine.off("editable:vertex:drag");
+    meanLine.off("click");
   }
 
   // The following function installs editing events on each mean line given:
@@ -11,13 +55,11 @@ class MeanLinesEditor {
   // lines for deletion by clicking them.
 
   installEventsOnMeanLine(meanLine) {
-    var meanlines = this.SeismoImageMap.getLayer("meanlines");
+    var meanlines = this.SeismogramMap.getLayer("meanlines");
 
     // Get rid of previously-installed events
 
-    meanLine.off("editable:vertex:dragstart");
-    meanLine.off("editable:vertex:drag");
-    meanLine.off("click");
+    this.deleteEventsFromMeanLine(meanLine);
 
     // The following two event installs force the x-coordinate of the currently
     // dragged mean line knob to remain constant.
@@ -63,26 +105,15 @@ class MeanLinesEditor {
     });
   }
 
-  // Start editing mean lines:
-
-  startEditing() {
-    var meanlines = this.SeismoImageMap.getLayer("meanlines");
-    // We install the editing events on each mean line
-    meanlines.leafletLayer.getLayers().forEach((meanLine) => this.installEventsOnMeanLine(meanLine));
-    // We enable the Leaflet.Editable editor
-    this.SeismoEditor.startEditingLayer(meanlines);
-    this.editing = true;
-  }
-
   // Add a new meanline:
 
   addMeanLine() {
     // First we stop editing, which disables the Leaflet.Editable editor on
     // all mean lines. This is crucial because otherwise, the editor will not
     // be automatically enabled on the newly added line.
-    this.SeismoEditor.stopEditing();
+    this.stopEditing();
 
-    var meanlines = this.SeismoImageMap.getLayer("meanlines");
+    var meanlines = this.SeismogramMap.getLayer("meanlines");
 
     // We grab the seismogram's maximal x-coordinate by grabbing the first
     // mean line and getting the x-coord of its second point.
@@ -107,9 +138,7 @@ class MeanLinesEditor {
     // Add the mean line to the mean lines layer.
     meanlines.leafletLayer.addData(newLine);
 
-    // We invoke startEditing() as opposed to SeismoEditor.startEditingLayer()
-    // because startEditing() makes sure to install all the editing events on all
-    // meanlines, which includes the newly created mean line.
+    // Restart the editing
     this.startEditing();
   }
 }

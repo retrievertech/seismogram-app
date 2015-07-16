@@ -1,4 +1,8 @@
-class Loading {
+//
+// Message that pops in the middle of the screen. Can display multiple messages and
+// ephemeral messages that disappear after some amount of time has elapsed.
+//
+export class ScreenMessage {
 
   constructor($timeout) {
     this.$timeout = $timeout;
@@ -42,5 +46,3 @@ class Loading {
     this.messages.length = 0;
   }
 }
-
-export { Loading };
