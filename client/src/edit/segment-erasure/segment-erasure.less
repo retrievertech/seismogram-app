@@ -1,0 +1,46 @@
+.rectangle-div {
+  position: absolute;
+  background: none;
+  border: 3px dotted white;
+  z-index: 20;
+  cursor: move;
+}
+
+.rectangle-knob-div {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: white;
+  z-index: 20;
+  box-shadow: 0px 0px 3px #333;
+  &.n, &.s {
+    cursor: ns-resize;
+    margin-left: -5px;
+  }
+  &.s {
+    margin-top: -5px;
+  }
+  &.e, &.w {
+    cursor: ew-resize;
+    margin-top: -5px;
+  }
+  &.e {
+    margin-left: -5px;
+  }
+  &.nw, &.se {
+    cursor: nwse-resize;
+  }
+  &.se {
+    margin-left: -5px;
+    margin-top: -5px;
+  }
+  &.ne, &.sw {
+    cursor: nesw-resize;
+  }
+  &.ne {
+    margin-left: -5px;
+  }
+  &.sw {
+    margin-top: -5px;
+  }
+}
