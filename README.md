@@ -58,6 +58,7 @@ TODO
   * ~~Hook up "Discard Changes".~~
   * ~~Allow adjusting the opacity of the image layer to better focus on the data.~~
   * ~~Implement data downloading, probably just a ZIP of JSONs for now.~~
+  * Share metadata cache between viewer and editor to avoid hitting the server when unnecessary.
   * Implement Segment Assignment
     * Auto assignment is not run by default, we give the user a chance to edit mean lines.
     * Click "Auto Assignment" to run our assignment algorithm.
