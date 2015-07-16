@@ -53,15 +53,19 @@ export class Edit {
     };
 
     $scope.saveChanges = () => {
-      DataHandler.saveChanges();
+      Popup.open("This action will upload the current data to the server. Proceed?", () => {
+        DataHandler.saveChanges();
+      });
     };
 
     $scope.discardChanges = () => {
-      if (currentEditor) {
-        $scope.infoVisible = false;
-        currentEditor.stopEditing();
-      }
-      DataHandler.discardChanges();
+      Popup.open("This action will roll back to the last save. Proceed?", () => {
+        if (currentEditor) {
+          $scope.infoVisible = false;
+          currentEditor.stopEditing();
+        }
+        DataHandler.discardChanges();
+      });
     };
 
     $scope.download = () => DataHandler.downloadFiles();
