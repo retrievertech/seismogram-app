@@ -15,13 +15,17 @@ class Popup {
   // called when clicking "yes"
   yes() {
     this.visible = false;
-    this.currentYesCb();
+    if (typeof this.currentYesCb === "function") {
+      this.currentYesCb();
+    }
   }
 
   // fired when clicking "no"
   no() {
     this.visible = false;
-    this.currentNoCb();
+    if (typeof this.currentNoCb === "function") {
+      this.currentNoCb();
+    }
   }
 
   // Open the popup and save the two callbacks. Invoke one of them depending
