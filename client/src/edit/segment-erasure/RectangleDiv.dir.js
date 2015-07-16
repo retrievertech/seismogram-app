@@ -16,14 +16,19 @@ export class RectangleDiv {
       // This saves the position of the click point relative to the top-left corner
       // of the rectangle. We use this offset so we can enable dragging the rect
       // by clicking anywhere on it and dragging.
-      var offsets = { left: 0, top: 0 };
+
+      // We also save the original width and height as we expect them to not change
+      // during the move/mousedrag.
+      var valuesAtMouseDown = { left: 0, top: 0, width: 0, height: 0 };
 
       // When we first click the rect, before we drag.
       $(element).on("mousedown", (evt) => {
         // Save the offset between the click point and the top-left corner of the box.
-        offsets = {
+        valuesAtMouseDown = {
           left: evt.clientX - rect.w,
-          top: evt.clientY - rect.n
+          top: evt.clientY - rect.n,
+          width: rect.width(),
+          height: rect.height()
         };
       });
 
@@ -32,19 +37,21 @@ export class RectangleDiv {
         // We only do stuff if we're dragging and the Segment Erasure editor is running.
         if (!watcher.down || !watcher.editing) return;
 
-        $timeout(() => {
-          var width = rect.width(),
-              height = rect.height();
+        var w = evt.clientX - valuesAtMouseDown.left;
+        var n = evt.clientY - valuesAtMouseDown.top;
+        var e = w + valuesAtMouseDown.width;
+        var s = n + valuesAtMouseDown.height;
 
-          // Set the northwest corner. We account for the difference between the click
-          // point and the northwest corner.
-          rect.setWest(evt.clientX - offsets.left);
-          rect.setNorth(evt.clientY - offsets.top);
+        // Set the northwest corner. We account for the difference between the click
+        // point and the northwest corner.
+        rect.setWest(w);
+        rect.setNorth(n);
 
-          // Make sure the width of the rectangle stays the same.
-          rect.setEast(rect.w + width);
-          rect.setSouth(rect.n + height);
-        });
+        // Make sure the width of the rectangle stays the same.
+        rect.setEast(e);
+        rect.setSouth(s);
+
+        $timeout(() => {});
       });
     };
   }

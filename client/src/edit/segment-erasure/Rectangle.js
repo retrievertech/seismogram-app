@@ -6,8 +6,8 @@ export class Rectangle {
   constructor() {
     this.n = 300;
     this.s = 420;
-    this.w = 300;
-    this.e = 490;
+    this.w = 400;
+    this.e = 590;
   }
 
   width()     { return Math.floor(this.e - this.w); }
