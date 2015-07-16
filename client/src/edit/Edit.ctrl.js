@@ -11,7 +11,7 @@ export class Edit {
     $scope.rect = SegmentErasureEditor.rect;
     $scope.Popup = Popup;
 
-    $scope.$on("$locationChangeStart", () => MeanLinesEditor.stopEditing());
+    $scope.$on("$locationChangeStart", () => $scope.stopEditing());
 
     $scope.gotoViewer = () => {
       $scope.go("/view/" + SeismogramMap.currentFile.name);
