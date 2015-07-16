@@ -54,10 +54,10 @@ TODO
     * ~~A popup shows up "Delete segments in region?"~~
     * ~~Adjust the rectangle. Click "Yes". Segment data is deleted.~~
     * Other option: Draw a circle in addition to a rectangle.
-  * Hook up saving function.
-  * Hook up "Discard Changes".
+  * ~~Hook up saving function.~~
+  * ~~Hook up "Discard Changes".~~
   * ~~Allow adjusting the opacity of the image layer to better focus on the data.~~
-  * Implement data downloading, probably just a ZIP of JSONs for now.
+  * ~~Implement data downloading, probably just a ZIP of JSONs for now.~~
   * Implement Segment Assignment
     * Auto assignment is not run by default, we give the user a chance to edit mean lines.
     * Click "Auto Assignment" to run our assignment algorithm.
