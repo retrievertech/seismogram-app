@@ -28,6 +28,17 @@
           {{ml.name}}
         </div>
       </div>
+      <div class="action">
+        <div class="action-name">
+          Image Opacity:
+          <div class="opacity-container">
+            <div class="opacity-box"
+                 ng-class="{'active': SeismogramMap.imageLayer.options.opacity == i / 10}"
+                 ng-repeat="i in range(0,10)"
+                 ng-click="SeismogramMap.imageLayer.setOpacity(i / 10)"></div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- the list of "actions" below the layers -->
