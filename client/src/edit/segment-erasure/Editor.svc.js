@@ -103,7 +103,7 @@ export class Editor {
         // the properties, and we have to split that array accordingly.
         outRegions.forEach((region) => {
           // The geojson for the new segment
-          var segment = {
+          var newSegmentFeature = {
             type: "Feature",
             id: newId++,
             geometry: {
@@ -112,21 +112,27 @@ export class Editor {
             }
           };
 
+          // Create a new style borrowing the parent segment's color
+          // TODO: This will change when segments are colored something other than
+          // random color.
+          var style = segmentsLayer.style.style();
+          style.color = segment.options.color;
+
           // We first create a Leaflet geoJson layer from this. We want this because
           // L.geoJson creates a "feature" member for the layer containing its geoJson.
           // This way we can access geoJson ID, properties, etc., from the leaflet
           // layer.
-          var layer = L.geoJson(segment, segmentsLayer.style);
+          var newSegmentLayer = L.geoJson(newSegmentFeature, style);
 
           // However, L.geoJson creates a new layer, and nests the feature layer inside
           // it. We don't want this. We want all segments to be stored in a flat
           // structure instead of an awkward tree structure of layers of layers of segments.
           // So we immediately grab the first layer from the L.geoJson structure,
           // which corresponds to our segment.
-          var segmentLayer = layer.getLayers()[0];
+          var newSegment = newSegmentLayer.getLayers()[0];
 
           // And add it to the segments layer.
-          segmentLayer.addTo(segmentsLayer.leafletLayer);
+          newSegment.addTo(segmentsLayer.leafletLayer);
         });
       }
     });
