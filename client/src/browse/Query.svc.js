@@ -10,6 +10,7 @@ export class Query {
     // To be initialized later when initModel() is called
     this.model = {};
 
+    // The file statuses to load by default
     this.initialQueryStatuses = [3,4];
 
     window.Query = this;
