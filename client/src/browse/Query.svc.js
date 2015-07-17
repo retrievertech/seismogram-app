@@ -17,8 +17,8 @@ export class Query {
   }
 
   initModel() {
-    this.model.dateFrom = "",
-    this.model.dateTo = "",
+    this.model.dateFrom = "";
+    this.model.dateTo = "";
     this.model.numBins = this.QueryData.filesQueryData.numBins;
     this.model.stationNames = "";
     this.model.fileNames = "";
