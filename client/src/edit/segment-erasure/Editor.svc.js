@@ -112,7 +112,10 @@ export class Editor {
             }
           };
 
-          // We first create a Leaflet geoJson layer from this.
+          // We first create a Leaflet geoJson layer from this. We want this because
+          // L.geoJson creates a "feature" member for the layer containing its geoJson.
+          // This way we can access geoJson ID, properties, etc., from the leaflet
+          // layer.
           var layer = L.geoJson(segment, segmentsLayer.style);
 
           // However, L.geoJson creates a new layer, and nests the feature layer inside
