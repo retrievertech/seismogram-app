@@ -105,6 +105,19 @@ class MeanLinesEditor {
     });
   }
 
+  getNewId() {
+    var meanlines = this.SeismogramMap.getLayer("meanlines");
+    var id = -1;
+
+    meanlines.leafletLayer.getLayers().forEach((layer) => {
+      if (layer.feature.id >= id) {
+        id = layer.feature.id + 1;
+      }
+    });
+
+    return id;
+  }
+
   // Add a new meanline:
 
   addMeanLine() {
@@ -123,6 +136,7 @@ class MeanLinesEditor {
     // The new mean line
     var newLine = {
       type: "Feature",
+      id: this.getNewId(),
       geometry: {
         type: "LineString",
         coordinates: [
