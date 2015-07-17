@@ -25,6 +25,17 @@ export class SeismogramMap {
 
     this.metadataLayers = [
       {
+        name: "Region of Interest",
+        key: "roi",
+        on: false,
+        zIndex: 10,
+        leafletLayer: null,
+        style: {
+          color: "blue",
+          weight: 1,
+          opacity: 0.9
+        }
+      }, {
         name: "Mean Lines",
         key: "meanlines",
         on: false,
