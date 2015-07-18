@@ -25,7 +25,25 @@ export class Editor {
   // Deletes all the map data that intersects `this.rect`
   //
 
+  getHighestNewId() {
+    var segmentsLayer = this.SeismogramMap.getLayer("segments");
+    var id = -1;
+
+    segmentsLayer.leafletLayer.getLayers().forEach((layer) => {
+      if (!layer.feature) {
+        console.log(layer);
+      }
+      if (layer.feature.id >= id) {
+        id = layer.feature.id + 1;
+      }
+    });
+
+    return id;
+  }
+
   eraseData() {
+    var newId = this.getHighestNewId();
+
     var segmentsLayer = this.SeismogramMap.getLayer("segments");
     var segments = segmentsLayer.leafletLayer.getLayers();
     var map = this.SeismogramMap.leafletMap;
@@ -81,11 +99,40 @@ export class Editor {
         var outRegions = regions.regions.filter((region) => region.type === "out");
 
         // We create a brand-new segment for every region outside the rectangle.
-        // TODO: the new segments need sensible IDs.
         // TODO: may need to transfer "properties". There may be grayscale values in
         // the properties, and we have to split that array accordingly.
         outRegions.forEach((region) => {
-          L.polyline(region.points, segment.options).addTo(segmentsLayer.leafletLayer);
+          // The geojson for the new segment
+          var newSegmentFeature = {
+            type: "Feature",
+            id: newId++,
+            geometry: {
+              type: "LineString",
+              coordinates: region.points.map((point) => [point.lng, point.lat])
+            }
+          };
+
+          // Create a new style borrowing the parent segment's color
+          // TODO: This will change when segments are colored something other than
+          // random color.
+          var style = segmentsLayer.style.style();
+          style.color = segment.options.color;
+
+          // We first create a Leaflet geoJson layer from this. We want this because
+          // L.geoJson creates a "feature" member for the layer containing its geoJson.
+          // This way we can access geoJson ID, properties, etc., from the leaflet
+          // layer.
+          var newSegmentLayer = L.geoJson(newSegmentFeature, style);
+
+          // However, L.geoJson creates a new layer, and nests the feature layer inside
+          // it. We don't want this. We want all segments to be stored in a flat
+          // structure instead of an awkward tree structure of layers of layers of segments.
+          // So we immediately grab the first layer from the L.geoJson structure,
+          // which corresponds to our segment.
+          var newSegment = newSegmentLayer.getLayers()[0];
+
+          // And add it to the segments layer.
+          newSegment.addTo(segmentsLayer.leafletLayer);
         });
       }
     });

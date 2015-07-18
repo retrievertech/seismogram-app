@@ -10,19 +10,23 @@ export class Query {
     // To be initialized later when initModel() is called
     this.model = {};
 
+    // The file statuses to load by default
+    this.initialQueryStatuses = [3,4];
+
     window.Query = this;
   }
 
   initModel() {
-    this.model.dateFrom = new Date(this.QueryData.filesQueryData.lowDate);
-    this.model.dateTo = new Date(this.QueryData.filesQueryData.highDate);
+    this.model.dateFrom = "";
+    this.model.dateTo = "";
     this.model.numBins = this.QueryData.filesQueryData.numBins;
     this.model.stationNames = "";
     this.model.fileNames = "";
     this.model.status = {};
 
     this.FileStatus.statuses.forEach((status) => {
-      this.model.status[status.code] = true;
+      var value = window._.contains(this.initialQueryStatuses, status.code);
+      this.model.status[status.code] = value;
     });
   }
 
@@ -31,7 +35,7 @@ export class Query {
       seismograms: this.$http({
         url: this.ServerUrls.filesUrl,
         params: {
-          status: "0,3,4"
+          status: this.initialQueryStatuses.join(",")
         }
       }),
       stations: this.$http({
@@ -90,15 +94,23 @@ export class Query {
     var status = Object.keys(statusModel).filter((code) => statusModel[code] === true);
 
     var query = {
-      dateFrom: new Date(queryParamModel.dateFrom),
-      dateTo: new Date(queryParamModel.dateTo),
       stationIds: stationIds.join(","),
       status: status.join(","),
       fileNames: queryParamModel.fileNames,
       bins: queryParamModel.numBins
     };
 
+    var dateFrom = new Date(queryParamModel.dateFrom);
+    var dateTo = new Date(queryParamModel.dateTo);
+
+    if (dateFrom.toDateString() !== "Invalid Date") {
+      query.dateFrom = dateFrom;
+    }
+
+    if (dateTo.toDateString() !== "Invalid Date") {
+      query.dateTo = dateTo;
+    }
+
     return query;
   }
-
 }
