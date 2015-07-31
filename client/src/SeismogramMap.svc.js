@@ -62,7 +62,7 @@ export class SeismogramMap {
         zIndex: 13,
         leafletLayer: null,
         style: {
-          color: "yellow",
+          color: "white",
           weight: 3,
           opacity: 0.9
         }
