@@ -16,6 +16,10 @@ export class AssignmentEditor {
     this.editing = false;
   }
 
+  manualAssign() {
+    this.ScreenMessage.ephemeral("This don't work yet.", "normal", 2000);
+  }
+
   autoAssign() {
     var segments = this.SeismogramMap.getLayer("segments");
     var meanlines = this.SeismogramMap.getLayer("meanlines");
