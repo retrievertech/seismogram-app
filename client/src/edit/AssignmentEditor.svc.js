@@ -39,7 +39,7 @@ export class AssignmentEditor {
       this.ScreenMessage.stop("Running Assignment. Please wait...");
       this.ScreenMessage.ephemeral("Success.", "simple", 2000);
       // color the assignments
-      this.SeismogramMap.colorAssignments(res.data);
+      this.SeismogramMap.setSegmentAssignment(res.data);
     }).catch((res) => {
       this.ScreenMessage.stop("Running Assignment. Please wait...");
       this.ScreenMessage.ephemeral("Error! Sorry!", "error", 3000);

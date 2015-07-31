@@ -51,6 +51,7 @@
       <div class="content">
         The assignment editor assigns trace segments to trace mean lines.
         <ul>
+          <li>Make sure you've edited the mean lines so there is one mean line per trace.</li>
           <li>Click "Auto-Assign" to run our assignment algorithm.</li>
           <li>Click "Edit the Assignment" to manually adjust the assignments.</li>
         </ul>
@@ -209,7 +210,8 @@
         </div>
 
         <div class="action sub-action">
-          <div class="action-name" ng-click="AssignmentEditor.manualAssign()">
+          <div class="action-name" ng-click="AssignmentEditor.manualAssign()"
+               ng-show="SeismogramMap.assignment != null">
             <span class="icon-point-up">&nbsp;</span>
             Edit the Assignment
           </div>

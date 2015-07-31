@@ -23,6 +23,9 @@ export class SeismogramMap {
     this.currentFile = null;
     this.imageIsLoaded = false;
 
+    // segment assignment data
+    this.assignment = null;
+
     this.metadataLayers = [
       {
         name: "Region of Interest",
@@ -174,6 +177,11 @@ export class SeismogramMap {
       });
     });
 
+    // We grab the segment assignment if it's there. It may not be.
+    var assignmentPromise = () => this.$http({
+      url: s3Prefix + "assignment.json?token=" + Math.random()
+    }).then((res) => this.setSegmentAssignment(res.data));
+
     // when all the data is loaded, put it on the map
     this.$q.all(promises).then(() => {
       this.metadataLayers.forEach((layer) => {
@@ -181,14 +189,21 @@ export class SeismogramMap {
           this.leafletMap.addLayer(layer.leafletLayer);
         }
       });
-
+    }).then(assignmentPromise).catch(() => {}).then(() => {
       this.ScreenMessage.stop("Loading metadata...");
     });
   }
 
-  colorAssignments(assignments) {
-    var meanlines = this.SeismogramMap.getLayer("meanlines");
-    var segments = this.SeismogramMap.getLayer("segments");
+  setSegmentAssignment(assignment) {
+    this.assignment = assignment;
+    this.colorAssignment(assignment);
+  }
+
+  colorAssignment(assignment) {
+    var meanlines = this.getLayer("meanlines");
+    var segments = this.getLayer("segments");
+
+    console.log("seg", segments);
 
     // Helper function that gets a copy of the style for a mean line.
     var getStyle = (meanlineId) => {
@@ -216,8 +231,8 @@ export class SeismogramMap {
     // a segmentId (the reverse mapping).
     var mapping = {};
 
-    Object.keys(assignments).forEach((meanlineId) => {
-      assignments[meanlineId].forEach((segmentId) => {
+    Object.keys(assignment).forEach((meanlineId) => {
+      assignment[meanlineId].forEach((segmentId) => {
         mapping[parseInt(segmentId)] = parseInt(meanlineId);
       });
     });
@@ -234,5 +249,27 @@ export class SeismogramMap {
         layer.setStyle(style);
       }
     });
+  }
+
+  getAllData() {
+    var layers = this.metadataLayers.map((layer) => {
+      return {
+        name: layer.name,
+        key: layer.key,
+        contents: JSON.stringify(layer.leafletLayer.toGeoJSON())
+      };
+    });
+
+    // The assignment may not exist if the user never ran the automatic segment
+    // assignment.
+    if (this.assignment) {
+      layers.push({
+        name: "Segment Assignment",
+        key: "assignment",
+        contents: JSON.stringify(this.assignment)
+      });
+    }
+
+    return layers;
   }
 }
