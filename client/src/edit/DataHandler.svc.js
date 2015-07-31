@@ -49,7 +49,7 @@ export class DataHandler {
   }
 
   downloadFiles() {
-    var layers = this.getAllData();
+    var layers = this.SeismogramMap.getAllData();
     var filename = this.SeismogramMap.currentFile.name + ".zip";
     var zip = new window.JSZip();
     layers.forEach((layer) => zip.file(layer.key + ".json", layer.contents));
