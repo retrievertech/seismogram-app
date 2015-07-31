@@ -42,17 +42,6 @@ export class SeismogramMap {
         zIndex: 11,
         leafletLayer: null,
         style: {
-          color: "yellow",
-          weight: 3,
-          opacity: 0.9
-        }
-      }, {
-        name: "Segments",
-        key: "segments",
-        on: true,
-        zIndex: 13,
-        leafletLayer: null,
-        style: {
           style: () => {
             var randomChannel = () => Math.floor(Math.random() * 256);
             var randomColor = () => "rgb(" + [0,0,0].map(randomChannel).join(",") + ")";
@@ -62,6 +51,17 @@ export class SeismogramMap {
               opacity: 0.9
             };
           }
+        }
+      }, {
+        name: "Segments",
+        key: "segments",
+        on: true,
+        zIndex: 13,
+        leafletLayer: null,
+        style: {
+          color: "yellow",
+          weight: 3,
+          opacity: 0.9
         }
       }
     ];
@@ -185,5 +185,4 @@ export class SeismogramMap {
       this.ScreenMessage.stop("Loading metadata...");
     });
   }
-
 }
