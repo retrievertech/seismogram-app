@@ -207,7 +207,7 @@ export class SeismogramMap {
 
     // Helper function that gets a copy of the style for a mean line.
     var getStyle = (meanlineId) => {
-      if (!meanlineId)
+      if (typeof meanlineId === "undefined")
         return;
 
       var ml = meanlines.leafletLayer.getLayers();
@@ -241,7 +241,7 @@ export class SeismogramMap {
     // mean line's style
     segments.leafletLayer.getLayers().forEach((layer) => {
       // Get its meanline ID
-      var meanLineId = mapping[layer.feature.id];
+      var meanLineId = mapping[parseInt(layer.feature.id)];
       // Get a copy of the style for the meanline ID
       var style = getStyle(meanLineId);
       // Apply the style to the segment.
