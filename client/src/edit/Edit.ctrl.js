@@ -2,11 +2,13 @@ var infoOpened = false;
 
 export class Edit {
   constructor($scope, $routeParams, SeismogramMap, QueryData, SeismogramMapLoader,
-              FileStatus, MeanLinesEditor, SegmentErasureEditor, Popup, DataHandler) {
+              FileStatus, MeanLinesEditor, SegmentErasureEditor, AssignmentEditor,
+              Popup, DataHandler) {
 
     $scope.SeismogramMap = SeismogramMap;
     $scope.MeanLinesEditor = MeanLinesEditor;
     $scope.SegmentErasureEditor = SegmentErasureEditor;
+    $scope.AssignmentEditor = AssignmentEditor;
     // A little shorthand for the rectangle.
     $scope.rect = SegmentErasureEditor.rect;
     $scope.Popup = Popup;
