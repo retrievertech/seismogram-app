@@ -43,6 +43,19 @@
         </ul>
       </div>
     </div>
+
+    <div ng-show="AssignmentEditor.editing">
+      <div class="title">
+        <span class="icon-info">&nbsp;</span> Assignment Editor
+      </div>
+      <div class="content">
+        The assignment editor assigns trace segments to trace mean lines.
+        <ul>
+          <li>Click "Auto-Assign" to run our assignment algorithm.</li>
+          <li>Click "Edit the Assignment" to manually adjust the assignments.</li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <!-- the segment erasure rectangle -->
@@ -178,11 +191,42 @@
         </div>
       </div>
 
-      <!-- segment assignment tool button -->
-      <div class="action">
-        <div class="action-name" ng-click="segmentsAssign()">
-          <span class="icon-tab">&nbsp;</span>
+      <!-- segment assignment editing -->
+      <div class="action" ng-class="{'active-action': AssignmentEditor.editing}">
+        <div class="action-name" ng-click="startEditing(AssignmentEditor)">
+          <span class="icon-git-commit">&nbsp;</span>
           Segment Assignment
+        </div>
+      </div>
+
+      <!-- segment assignment subactions -->
+      <div class="subaction-group" ng-show="AssignmentEditor.editing">
+        <div class="action sub-action">
+          <div class="action-name" ng-click="AssignmentEditor.autoAssign()">
+            <span class="icon-plus">&nbsp;</span>
+            Auto-Assign
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="AssignmentEditor.manualAssign()">
+            <span class="icon-plus">&nbsp;</span>
+            Edit the Assignment
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="infoVisible=true">
+            <span class="icon-info">&nbsp;</span>
+            Show Info
+          </div>
+        </div>
+
+        <div class="action sub-action">
+          <div class="action-name" ng-click="stopEditing()">
+            <span class="icon-blocked">&nbsp;</span>
+            Stop Editing
+          </div>
         </div>
       </div>
     </div>
