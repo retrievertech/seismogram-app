@@ -10,21 +10,10 @@ export class DataHandler {
     this.saving = false;
   }
 
-  getLayers() {
-    var layers = this.SeismogramMap.metadataLayers.map((layer) => {
-      return {
-        name: layer.name,
-        key: layer.key,
-        contents: JSON.stringify(layer.leafletLayer.toGeoJSON())
-      };
-    });
-    return layers;
-  }
-
   saveChanges() {
     this.saving = true;
 
-    var layers = this.getLayers();
+    var layers = this.SeismogramMap.getAllData();
 
     var request = {
       method: "POST",
@@ -60,7 +49,7 @@ export class DataHandler {
   }
 
   downloadFiles() {
-    var layers = this.getLayers();
+    var layers = this.getAllData();
     var filename = this.SeismogramMap.currentFile.name + ".zip";
     var zip = new window.JSZip();
     layers.forEach((layer) => zip.file(layer.key + ".json", layer.contents));

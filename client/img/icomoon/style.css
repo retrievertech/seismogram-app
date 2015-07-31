@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'icomoon';
-	src:url('fonts/icomoon.eot?f0frgx');
-	src:url('fonts/icomoon.eot?#iefixf0frgx') format('embedded-opentype'),
-		url('fonts/icomoon.ttf?f0frgx') format('truetype'),
-		url('fonts/icomoon.woff?f0frgx') format('woff'),
-		url('fonts/icomoon.svg?f0frgx#icomoon') format('svg');
+	src:url('fonts/icomoon.eot?-upzdf6');
+	src:url('fonts/icomoon.eot?#iefix-upzdf6') format('embedded-opentype'),
+		url('fonts/icomoon.ttf?-upzdf6') format('truetype'),
+		url('fonts/icomoon.woff?-upzdf6') format('woff'),
+		url('fonts/icomoon.svg?-upzdf6#icomoon') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
@@ -32,11 +32,17 @@
 .icon-cloud-upload:before {
 	content: "\f00c";
 }
+.icon-gear:before {
+	content: "\f02f";
+}
 .icon-git-commit:before {
 	content: "\f01f";
 }
 .icon-screen-full:before {
 	content: "\f066";
+}
+.icon-three-bars:before {
+	content: "\f05e";
 }
 .icon-home2:before {
 	content: "\e901";
@@ -88,6 +94,9 @@
 }
 .icon-link:before {
 	content: "\e9cb";
+}
+.icon-point-up:before {
+	content: "\ea03";
 }
 .icon-question:before {
 	content: "\ea09";

@@ -23,6 +23,9 @@ export class SeismogramMap {
     this.currentFile = null;
     this.imageIsLoaded = false;
 
+    // segment assignment data
+    this.assignment = null;
+
     this.metadataLayers = [
       {
         name: "Region of Interest",
@@ -42,17 +45,6 @@ export class SeismogramMap {
         zIndex: 11,
         leafletLayer: null,
         style: {
-          color: "yellow",
-          weight: 3,
-          opacity: 0.9
-        }
-      }, {
-        name: "Segments",
-        key: "segments",
-        on: true,
-        zIndex: 13,
-        leafletLayer: null,
-        style: {
           style: () => {
             var randomChannel = () => Math.floor(Math.random() * 256);
             var randomColor = () => "rgb(" + [0,0,0].map(randomChannel).join(",") + ")";
@@ -62,6 +54,17 @@ export class SeismogramMap {
               opacity: 0.9
             };
           }
+        }
+      }, {
+        name: "Segments",
+        key: "segments",
+        on: true,
+        zIndex: 13,
+        leafletLayer: null,
+        style: {
+          color: "white",
+          weight: 3,
+          opacity: 0.9
         }
       }
     ];
@@ -174,6 +177,11 @@ export class SeismogramMap {
       });
     });
 
+    // We grab the segment assignment if it's there. It may not be.
+    var assignmentPromise = () => this.$http({
+      url: s3Prefix + "assignment.json?token=" + Math.random()
+    }).then((res) => this.setSegmentAssignment(res.data));
+
     // when all the data is loaded, put it on the map
     this.$q.all(promises).then(() => {
       this.metadataLayers.forEach((layer) => {
@@ -181,9 +189,87 @@ export class SeismogramMap {
           this.leafletMap.addLayer(layer.leafletLayer);
         }
       });
-
+    }).then(assignmentPromise).catch(() => {}).then(() => {
       this.ScreenMessage.stop("Loading metadata...");
     });
   }
 
+  setSegmentAssignment(assignment) {
+    this.assignment = assignment;
+    this.colorAssignment(assignment);
+  }
+
+  colorAssignment(assignment) {
+    var meanlines = this.getLayer("meanlines");
+    var segments = this.getLayer("segments");
+
+    console.log("seg", segments);
+
+    // Helper function that gets a copy of the style for a mean line.
+    var getStyle = (meanlineId) => {
+      if (typeof meanlineId === "undefined")
+        return;
+
+      var ml = meanlines.leafletLayer.getLayers();
+
+      for (var i = 0; i < ml.length; ++i) {
+        if (ml[i].feature.id === meanlineId) {
+          // create a fresh mean lines style
+          var style = meanlines.style.style();
+          // set its color to this mean line's color
+          style.color = ml[i].options.color;
+          return style;
+        }
+      }
+    };
+
+    // A mapping from segment IDs to their meanline ID. This is precomputed so we
+    // can quickly find a segment's mean when we iterate all the segments, below.
+    // This is because the assignment data is in the form
+    //   meanlineId -> [list of segment IDs]
+    // This data structure is inefficient for getting the meanlineId corresponding to
+    // a segmentId (the reverse mapping).
+    var mapping = {};
+
+    Object.keys(assignment).forEach((meanlineId) => {
+      assignment[meanlineId].forEach((segmentId) => {
+        mapping[parseInt(segmentId)] = parseInt(meanlineId);
+      });
+    });
+
+    // Iterate each segment on the map and color it with its corresponding
+    // mean line's style
+    segments.leafletLayer.getLayers().forEach((layer) => {
+      // Get its meanline ID
+      var meanLineId = mapping[parseInt(layer.feature.id)];
+      // Get a copy of the style for the meanline ID
+      var style = getStyle(meanLineId);
+      // Apply the style to the segment.
+      if (style) {
+        layer.setStyle(style);
+      }
+    });
+  }
+
+  getAllData() {
+    var layers = this.metadataLayers.map((layer) => {
+      return {
+        name: layer.name,
+        key: layer.key,
+        contents: JSON.stringify(layer.leafletLayer.toGeoJSON())
+      };
+    });
+
+    // The assignment may not exist if the user never ran the automatic segment
+    // assignment.
+    if (this.assignment) {
+      layers.push({
+        name: "Segment Assignment",
+        key: "assignment",
+        contents: JSON.stringify(this.assignment)
+      });
+    }
+
+    return layers;
+  }
 }

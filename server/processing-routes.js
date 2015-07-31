@@ -65,6 +65,35 @@ router.get("/setstatus/:filename/:status", function(req, res, next) {
   });
 });
 
+router.post("/assign", function(req, res) {
+  var segments = req.body.segments;
+  var meanlines = req.body.meanlines;
+  var path = mktemp.createDirSync("/tmp/seismo-assign.XXXXX");
+
+  fs.writeFileSync(path + "/segments.json", segments);
+  fs.writeFileSync(path + "/meanlines.json", meanlines);
+
+  var command = "python get_segment_assignments.py " +
+    "--segments " + path + "/segments.json " +
+    "--meanlines " + path + "/meanlines.json " +
+    "--output " + path + "/assignments.json";
+
+  process.chdir(pipelinePath);
+
+  console.time("running assignment...");
+  exec(command, {maxBuffer: 1024 * 1000}, function(err, stdout, stderr) {
+    if (err) {
+      console.log(stdout);
+      console.log(stderr);
+      res.status(503).send({error: err.message});
+    } else {
+      console.timeEnd("running assignment...");
+      var assign = fs.readFileSync(path + "/assignments.json");
+      res.send(assign);
+    }
+  });
+});
+
 router.post("/save/:filename", function(req, res, next) {
   var filename = req.params.filename;
   var layers = req.body.layers;
