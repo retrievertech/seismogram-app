@@ -131,7 +131,7 @@
       <!-- mean lines editing -->
       <div class="action" ng-class="{'active-action': MeanLinesEditor.editing}">
         <div class="action-name" ng-click="startEditing(MeanLinesEditor)">
-          <span class="icon-git-commit">&nbsp;</span>
+          <span class="icon-three-bars">&nbsp;</span>
           Edit Mean Lines
         </div>
       </div>
@@ -194,7 +194,7 @@
       <!-- segment assignment editing -->
       <div class="action" ng-class="{'active-action': AssignmentEditor.editing}">
         <div class="action-name" ng-click="startEditing(AssignmentEditor)">
-          <span class="icon-git-commit">&nbsp;</span>
+          <span class="icon-tab">&nbsp;</span>
           Segment Assignment
         </div>
       </div>
@@ -203,14 +203,14 @@
       <div class="subaction-group" ng-show="AssignmentEditor.editing">
         <div class="action sub-action">
           <div class="action-name" ng-click="AssignmentEditor.autoAssign()">
-            <span class="icon-plus">&nbsp;</span>
+            <span class="icon-cog">&nbsp;</span>
             Auto-Assign
           </div>
         </div>
 
         <div class="action sub-action">
           <div class="action-name" ng-click="AssignmentEditor.manualAssign()">
-            <span class="icon-plus">&nbsp;</span>
+            <span class="icon-point-up">&nbsp;</span>
             Edit the Assignment
           </div>
         </div>
