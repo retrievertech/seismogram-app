@@ -1,4 +1,5 @@
 import { SeismogramMapCRS } from "./SeismogramMapCRS.js";
+import { AssignmentData } from "./AssignmentData.js";
 
 var L = window.L;
 
@@ -24,7 +25,7 @@ export class SeismogramMap {
     this.imageIsLoaded = false;
 
     // segment assignment data
-    this.assignment = null;
+    this.assignment = new AssignmentData();
 
     this.metadataLayers = [
       {
@@ -195,60 +196,10 @@ export class SeismogramMap {
   }
 
   setSegmentAssignment(assignment) {
-    this.assignment = assignment;
-    this.colorAssignment(assignment);
-  }
-
-  colorAssignment(assignment) {
     var meanlines = this.getLayer("meanlines");
     var segments = this.getLayer("segments");
-
-    console.log("seg", segments);
-
-    // Helper function that gets a copy of the style for a mean line.
-    var getStyle = (meanlineId) => {
-      if (typeof meanlineId === "undefined")
-        return;
-
-      var ml = meanlines.leafletLayer.getLayers();
-
-      for (var i = 0; i < ml.length; ++i) {
-        if (ml[i].feature.id === meanlineId) {
-          // create a fresh mean lines style
-          var style = meanlines.style.style();
-          // set its color to this mean line's color
-          style.color = ml[i].options.color;
-          return style;
-        }
-      }
-    };
-
-    // A mapping from segment IDs to their meanline ID. This is precomputed so we
-    // can quickly find a segment's mean when we iterate all the segments, below.
-    // This is because the assignment data is in the form
-    //   meanlineId -> [list of segment IDs]
-    // This data structure is inefficient for getting the meanlineId corresponding to
-    // a segmentId (the reverse mapping).
-    var mapping = {};
-
-    Object.keys(assignment).forEach((meanlineId) => {
-      assignment[meanlineId].forEach((segmentId) => {
-        mapping[parseInt(segmentId)] = parseInt(meanlineId);
-      });
-    });
-
-    // Iterate each segment on the map and color it with its corresponding
-    // mean line's style
-    segments.leafletLayer.getLayers().forEach((layer) => {
-      // Get its meanline ID
-      var meanLineId = mapping[parseInt(layer.feature.id)];
-      // Get a copy of the style for the meanline ID
-      var style = getStyle(meanLineId);
-      // Apply the style to the segment.
-      if (style) {
-        layer.setStyle(style);
-      }
-    });
+    this.assignment.setData(assignment);
+    this.assignment.updateColors(meanlines, segments);
   }
 
   getAllData() {
@@ -262,11 +213,11 @@ export class SeismogramMap {
 
     // The assignment may not exist if the user never ran the automatic segment
     // assignment.
-    if (this.assignment) {
+    if (this.assignment.hasData()) {
       layers.push({
         name: "Segment Assignment",
         key: "assignment",
-        contents: JSON.stringify(this.assignment)
+        contents: JSON.stringify(this.assignment.getData())
       });
     }
 
