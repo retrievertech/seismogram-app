@@ -81,4 +81,29 @@ export class AssignmentData {
       }
     });
   }
+
+  // In the segment erasure editor, a segment may be removed and replaced with
+  // new segments that are generated from sub-segments of the removed segment.
+  // If there is an assignment, we need to update it with the new information.
+  replaceRemovedSegmentId(oldSegmentId, newIds) {
+    var meanlineId = this.meanlineIdForSegmentId(oldSegmentId);
+
+    // I assume it's possible that a segment may be unmapped.
+    if (typeof meanlineId === "undefined") {
+      return;
+    }
+
+    // First remove the assignment for the old, removed segment.
+    this.assignment[meanlineId] = window._.without(this.assignment[meanlineId], oldSegmentId);
+    // And ditto for the reverse assignment
+    delete this.reverseAssignment[oldSegmentId];
+
+    // Then update the assignments with the new segment IDs
+    newIds.forEach((newId) => {
+      // Update the forward assignment
+      this.assignment[meanlineId].push(newId);
+      // Update the reverse assignment
+      this.reverseAssignment[newId] = meanlineId;
+    });
+  }
 }
