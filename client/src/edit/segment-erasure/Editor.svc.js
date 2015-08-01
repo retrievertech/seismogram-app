@@ -128,10 +128,9 @@ export class Editor {
           };
 
           // Create a new style borrowing the parent segment's color
-          // TODO: This will change when segments are colored something other than
-          // random color.
-          var style = segmentsLayer.style.style();
-          style.color = segment.options.color;
+          var style = window._.extend(segmentsLayer.style, {
+            color: segment.options.color
+          });
 
           // We first create a Leaflet geoJson layer from this. We want this because
           // L.geoJson creates a "feature" member for the layer containing its geoJson.
