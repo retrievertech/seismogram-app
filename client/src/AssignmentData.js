@@ -103,6 +103,12 @@ export class AssignmentData {
     });
   }
 
+  addedMeanLine(meanlineId) {
+    if (!(meanlineId in this.assignment)) {
+      this.assignment[meanlineId] = [];
+    }
+  }
+
   // Reacts to the deletion of a mean line by removing the mean line ID from the mapping
   // and also reverting the unassigned segments to the original segment style
   deletedMeanLine(meanlineId, segments) {

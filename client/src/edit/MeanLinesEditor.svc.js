@@ -181,6 +181,11 @@ class MeanLinesEditor {
     // Add the mean line to the mean lines layer.
     meanlines.leafletLayer.addData(newLine);
 
+    // Add the new mean line to the assignment.
+    if (this.SeismogramMap.assignment.hasData()) {
+      this.SeismogramMap.assignment.addedMeanLine(newLine.id);
+    }
+
     // Restart the editing
     this.startEditing();
   }
