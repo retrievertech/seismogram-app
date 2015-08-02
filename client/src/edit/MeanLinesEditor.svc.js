@@ -3,6 +3,11 @@ class MeanLinesEditor {
     this.SeismogramMap = SeismogramMap;
     this.Popup = Popup;
     this.editing = false;
+
+    // Currently clicked mean line
+    this._clickedMeanLine = null;
+    // And its color
+    this._clickedMeanLineColor = null;
   }
 
   // Start editing mean lines:
@@ -84,11 +89,22 @@ class MeanLinesEditor {
     });
 
     // The following event will select a mean line for deletion.
-
     meanLine.on("click", () => {
+      // If we already clicked a mean line before, reset that mean line's style
+      // to its original color.
+      if (this._clickedMeanLine) {
+        var style = meanlines.style.style();
+        style.color = this._clickedMeanLineColor;
+        this._clickedMeanLine.setStyle(style);
+      }
+
+      // This is the current clicked mean line
+      this._clickedMeanLine = meanLine;
+      this._clickedMeanLineColor = meanLine.options.color;
+
       // When a mean line is clicked, we change its style. We make it red
       // and fatter.
-      meanLine.setStyle({
+      this._clickedMeanLine.setStyle({
         color: "red",
         weight: 5
       });
@@ -96,11 +112,24 @@ class MeanLinesEditor {
       // We then open a popup.
       this.Popup.open("Delete the selected mean line?", () => {
         // If the user clicks yes, we remove the mean line from the data
-        meanlines.leafletLayer.removeLayer(meanLine);
+        meanlines.leafletLayer.removeLayer(this._clickedMeanLine);
+
+        // Update the segment assignment to remove this mean line, and recolor
+        // the unassigned segments to their original color
+        if (this.SeismogramMap.assignment.hasData()) {
+          this.SeismogramMap.assignment.deletedMeanLine(
+            this._clickedMeanLine.feature.id,
+            this.SeismogramMap.getLayer("segments")
+          );
+        }
+
+        this._clickedMeanLine = null;
       }, () => {
         // If the user clicks no, we revert the mean line to the original styling
-        // TODO: will need work when mean lines are different colors.
-        meanLine.setStyle(meanlines.style);
+        var style = meanlines.style.style();
+        style.color = this._clickedMeanLineColor;
+        this._clickedMeanLine.setStyle(style);
+        this._clickedMeanLine = null;
       });
     });
   }

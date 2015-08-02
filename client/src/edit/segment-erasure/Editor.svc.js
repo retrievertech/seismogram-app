@@ -109,12 +109,9 @@ export class Editor {
         // regions inside the rectangle will be omitted -- deleted.
         var outRegions = regions.regions.filter((region) => region.type === "out");
 
-        // We create a brand-new segment for every region outside the rectangle.
-        // TODO: may need to transfer "properties". There may be grayscale values in
-        // the properties, and we have to split that array accordingly.
-        outRegions.forEach((region) => {
-          // The geojson for the new segment
-          var newSegmentFeature = {
+        // Compute JSON features for the new segments we will add to the map
+        var newFeatures = outRegions.map((region) => {
+          return {
             type: "Feature",
             id: newId++,
             geometry: {
@@ -126,7 +123,12 @@ export class Editor {
               values: region.points.map((pointData) => pointData.grayValue)
             }
           };
+        });
 
+        // We create a brand-new segment for every region outside the rectangle.
+        // TODO: may need to transfer "properties". There may be grayscale values in
+        // the properties, and we have to split that array accordingly.
+        newFeatures.forEach((newSegmentFeature) => {
           // Create a new style borrowing the parent segment's color
           var style = window._.extend(segmentsLayer.style, {
             color: segment.options.color
@@ -148,6 +150,14 @@ export class Editor {
           // And add it to the segments layer.
           newSegment.addTo(segmentsLayer.leafletLayer);
         });
+
+        var oldSegmentId = segment.feature.id;
+        var newIds = newFeatures.map((feature) => feature.id);
+
+        var assignment = this.SeismogramMap.assignment;
+        if (assignment.hasData()) {
+          assignment.replaceRemovedSegmentId(oldSegmentId, newIds);
+        }
       }
     });
   }
