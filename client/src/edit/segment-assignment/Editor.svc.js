@@ -1,10 +1,12 @@
-export class AssignmentEditor {
-  constructor($http, SeismogramMap, ServerUrls, ScreenMessage, Popup) {
+export class Editor {
+  constructor($http, SeismogramMap, ServerUrls, ScreenMessage, ManualAssign, Popup) {
     this.$http = $http;
     this.SeismogramMap = SeismogramMap;
     this.ServerUrls = ServerUrls;
     this.ScreenMessage = ScreenMessage;
+    this.ManualAssign = ManualAssign;
     this.Popup = Popup;
+
     this.editing = false;
   }
 
@@ -17,7 +19,7 @@ export class AssignmentEditor {
   }
 
   manualAssign() {
-    this.ScreenMessage.ephemeral("This don't work yet.", "normal", 2000);
+    this.ManualAssign.start();
   }
 
   autoAssign() {
