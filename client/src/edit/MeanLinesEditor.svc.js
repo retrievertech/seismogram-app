@@ -113,6 +113,16 @@ class MeanLinesEditor {
       this.Popup.open("Delete the selected mean line?", () => {
         // If the user clicks yes, we remove the mean line from the data
         meanlines.leafletLayer.removeLayer(this._clickedMeanLine);
+
+        // Update the segment assignment to remove this mean line, and recolor
+        // the unassigned segments to their original color
+        if (this.SeismogramMap.assignment.hasData()) {
+          this.SeismogramMap.assignment.deletedMeanLine(
+            this._clickedMeanLine.feature.id,
+            this.SeismogramMap.getLayer("segments")
+          );
+        }
+
         this._clickedMeanLine = null;
       }, () => {
         // If the user clicks no, we revert the mean line to the original styling

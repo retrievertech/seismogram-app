@@ -106,4 +106,31 @@ export class AssignmentData {
       this.reverseAssignment[newId] = meanlineId;
     });
   }
+
+  // Reacts to the deletion of a mean line by removing the mean line ID from the mapping
+  // and also reverting the unassigned segments to the original segment style
+  deletedMeanLine(meanlineId, segments) {
+    // Delete the assignment for this mean line ID
+    delete this.assignment[meanlineId];
+
+    var unassignedSegments = [];
+
+    // Delete all entries from the reverse mapping that mention this ID
+    Object.keys(this.reverseAssignment).forEach((segmentId) => {
+      if (this.reverseAssignment[segmentId] === meanlineId) {
+        delete this.reverseAssignment[segmentId];
+        unassignedSegments.push(parseInt(segmentId));
+      }
+    });
+
+    // For all the segments that got unassigned by the deletion of the mean line,
+    // undo their styling to the original segment style -- remove the mean line color.
+    segments.leafletLayer.getLayers().forEach((segment) => {
+      var segmentId = segment.feature.id;
+
+      if (unassignedSegments.indexOf(segmentId) >= 0) {
+        segment.setStyle(segments.style);
+      }
+    });
+  }
 }
