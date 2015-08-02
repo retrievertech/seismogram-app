@@ -92,14 +92,6 @@
          style="top: {{rect.s}}px; left: {{rect.e}}px;"></div>
   </div>
 
-  <div class="popup-message" ng-show="Popup.visible">
-    <div class="message">{{ Popup.message }}</div>
-    <div class="buttons">
-      <div class="button" ng-click="Popup.yes()">Yes</div>
-      <div class="button" ng-click="Popup.no()">No</div>
-    </div>
-  </div>
-
   <!-- the controls container on the right -->
   <div class="controls" ng-show="!ScreenMessage.active() && hasData()">
 

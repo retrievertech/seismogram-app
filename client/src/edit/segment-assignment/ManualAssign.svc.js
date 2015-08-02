@@ -22,7 +22,7 @@ export class ManualAssign {
       this.installEventsOnMeanLine(meanline));
 
     this.Popup.open(
-      "Select a mean line.",
+      "Select a mean line and click OK when done.",
       () => this.selectSegments(),
       () => this.cancel()
     );
@@ -30,7 +30,7 @@ export class ManualAssign {
 
   selectSegments() {
     if (!this.selectedMeanline) {
-      this.ScreenMessage.ephemeral("Please select a mean line.", "error", 2000);
+      this.ScreenMessage.ephemeral("Please select a mean line or click Cancel.", "error", 2000);
       this.cancel();
       this.selectMeanLine();
       return;
@@ -47,7 +47,8 @@ export class ManualAssign {
       this.installEventsOnSegment(segment));
 
     this.Popup.open(
-      "Click segments to select them.",
+      "Click segments to assign them to the selected mean line. Click them again " +
+      "to unassign them. Click OK when done.",
       () => this.postProcess(),
       () => this.cancel()
     );
