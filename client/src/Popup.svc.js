@@ -13,38 +13,41 @@ class Popup {
   }
 
   close() {
-    this.visible = false;
-    this.message = "";
-    this.currentYesCb = null;
-    this.currentNoCb = null;
-    this.$timeout(() => {});
+    this.$timeout(() => {
+      this.visible = false;
+      this.message = "";
+      this.currentYesCb = null;
+      this.currentNoCb = null;
+    });
   }
 
   // called when clicking "yes"
   yes() {
-    if (typeof this.currentYesCb === "function") {
-      this.currentYesCb();
-    }
+    var yesCb = this.currentYesCb;
     this.close();
+    if (typeof yesCb === "function") {
+      yesCb();
+    }
   }
 
   // fired when clicking "no"
   no() {
-    if (typeof this.currentNoCb === "function") {
-      this.currentNoCb();
-    }
+    var noCb = this.currentNoCb();
     this.close();
+    if (typeof noCb === "function") {
+      noCb();
+    }
   }
 
   // Open the popup and save the two callbacks. Invoke one of them depending
   // on how the user responds in the UI.
   open(message, yesCb, noCb) {
-    this.message = message;
-    this.visible = true;
-    this.currentYesCb = yesCb;
-    this.currentNoCb = noCb;
-    // Hack: force the UI to refresh
-    this.$timeout(() => {});
+    this.$timeout(() => {
+      this.message = message;
+      this.visible = true;
+      this.currentYesCb = yesCb;
+      this.currentNoCb = noCb;
+    });
   }
 }
 
