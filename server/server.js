@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 var cors = require("cors");
 var app = express();
 
-var statusSocket = require("./status-socket");
+//var statusSocket = require("./status-socket");
 var queryRoutes = require("./query-routes");
 var tileRoutes = require("./tile-routes");
 var processingRoutes = require("./processing-routes");
@@ -22,7 +22,8 @@ app.use(function(err, req, res, next) {
 });
 
 var server = http.createServer(app);
-statusSocket.run(server);
+server.timeout = 0;
+//statusSocket.run(server);
 server.listen(3000, function() {
   var host = server.address().address;
   var port = server.address().port;
