@@ -82,6 +82,19 @@ export class AssignmentData {
     });
   }
 
+  meanlineIdForSegmentId(segmentId) {
+    var meanlineIds = Object.keys(this.assignment);
+
+    for (var i = 0; i < meanlineIds.length; ++i) {
+      var meanlineId = meanlineIds[i];
+      var segmentIds = this.assignment[meanlineId];
+
+      if (window._.include(segmentIds, segmentId)) {
+        return meanlineId;
+      }
+    }
+  }
+
   // In the segment erasure editor, a segment may be removed and replaced with
   // new segments that are generated from sub-segments of the removed segment.
   // If there is an assignment, we need to update it with the new information.
