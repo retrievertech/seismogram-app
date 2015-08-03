@@ -12,20 +12,28 @@ class Popup {
     this.currentNoCb = null;
   }
 
+  close() {
+    this.visible = false;
+    this.message = "";
+    this.currentYesCb = null;
+    this.currentNoCb = null;
+    this.$timeout(() => {});
+  }
+
   // called when clicking "yes"
   yes() {
-    this.visible = false;
     if (typeof this.currentYesCb === "function") {
       this.currentYesCb();
     }
+    this.close();
   }
 
   // fired when clicking "no"
   no() {
-    this.visible = false;
     if (typeof this.currentNoCb === "function") {
       this.currentNoCb();
     }
+    this.close();
   }
 
   // Open the popup and save the two callbacks. Invoke one of them depending

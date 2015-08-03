@@ -126,8 +126,6 @@ export class Editor {
         });
 
         // We create a brand-new segment for every region outside the rectangle.
-        // TODO: may need to transfer "properties". There may be grayscale values in
-        // the properties, and we have to split that array accordingly.
         newFeatures.forEach((newSegmentFeature) => {
           // Create a new style borrowing the parent segment's color
           var style = window._.extend(segmentsLayer.style, {
