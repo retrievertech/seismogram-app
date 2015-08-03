@@ -45,7 +45,24 @@ class MeanLinesEditor {
       meanline.disableEdit();
     });
 
+    // Undo any selected mean lines to their original style
+    this.cancel();
+
+    // Close any popups.
+    this.Popup.close();
+
     this.editing = false;
+  }
+
+  cancel() {
+    // Revert the mean lines to the original styling
+    this.selectedMeanlines.forEach((meanlineInfo) =>
+      meanlineInfo.meanline.setStyle({
+        color: meanlineInfo.color,
+        weight: meanlineInfo.weight
+      }));
+    // Get rid of any selected mean lines.
+    this.selectedMeanlines = [];
   }
 
   deleteEventsFromMeanline(meanline) {
@@ -148,14 +165,7 @@ class MeanLinesEditor {
 
       this.selectedMeanlines = [];
     }, () => {
-      // If the user clicks no, we revert the mean lines to the original styling
-      this.selectedMeanlines.forEach((meanlineInfo) =>
-        meanlineInfo.meanline.setStyle({
-          color: meanlineInfo.color,
-          weight: meanlineInfo.weight
-        }));
-
-      this.selectedMeanlines = [];
+      this.cancel();
     });
   }
 
