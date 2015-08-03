@@ -11,8 +11,7 @@ export class AssignmentData {
   }
 
   hasData() {
-    return typeof this.assignment === "object" &&
-      Object.keys(this.assignment).length > 0;
+    return this.assignment !== null && Object.keys(this.assignment).length > 0;
   }
 
   getData() {

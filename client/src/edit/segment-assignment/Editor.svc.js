@@ -20,6 +20,10 @@ export class Editor {
   }
 
   manualAssign() {
+    if (!this.SeismogramMap.assignment.hasData()) {
+      this.ScreenMessage.ephemeral("There is nothing to edit.", "error", 2000);
+      return;
+    }
     this.ManualAssign.start();
   }
 
