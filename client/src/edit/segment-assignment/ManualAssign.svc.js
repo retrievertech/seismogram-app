@@ -107,6 +107,7 @@ export class ManualAssign {
       this.uninstallEventsOnSegment(segment));
     // Restore mean lines to original opacity.
     this.restoreMeanlinesOpacity();
+    this.Popup.close();
   }
 
   // Install click event on segments: when a segment is clicked, it is stored for

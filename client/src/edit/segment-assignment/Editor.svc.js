@@ -16,6 +16,7 @@ export class Editor {
 
   stopEditing() {
     this.editing = false;
+    this.ManualAssign.cancel(true);
   }
 
   manualAssign() {
