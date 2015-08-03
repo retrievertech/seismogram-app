@@ -32,8 +32,11 @@ app.config(["$routeProvider", ($routeProvider) =>
   sections.forEach((section) => section.installRoutes($routeProvider))]);
 
 // Root controller. The function "go" is available to all scopes in all sections
-app.run(function($rootScope, $location, ScreenMessage) {
+app.run(function($rootScope, $location, ScreenMessage, Popup) {
+  window.scope = $rootScope;
+
   $rootScope.ScreenMessage = ScreenMessage;
+  $rootScope.Popup = Popup;
   $rootScope.go = (path) => $location.path(path);
 
   $rootScope.range = (a,b) => {

@@ -111,6 +111,14 @@ export class SeismogramMap {
       .forEach((layer) => layer.leafletLayer.bringToFront());
   }
 
+  turnOffLayers() {
+    this.metadataLayers.forEach((layer) => {
+      if (layer.on) {
+        this.toggleLayer(layer);
+      }
+    });
+  }
+
   resetLayer(layer) {
     layer.leafletLayer.clearLayers();
     layer.leafletLayer.addData(JSON.parse(layer.originalData));

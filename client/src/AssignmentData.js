@@ -8,9 +8,6 @@ export class AssignmentData {
     //   { meanlineId : [segmentId, ...], ... }
     // mapping a meanline ID to a list of segment IDs.
     this.assignment = null;
-    // The reverse mapping of the data above. Its form is
-    //   { segmentId : meanlineId, ... }
-    this.reverseAssignment = null;
   }
 
   hasData() {
@@ -24,11 +21,6 @@ export class AssignmentData {
 
   setData(assignment) {
     this.assignment = assignment;
-    this.setReverseAssignment();
-  }
-
-  meanlineIdForSegmentId(segmentId) {
-    return this.reverseAssignment[parseInt(segmentId)];
   }
 
   // Sets the mapping from segment IDs to their meanline ID. This is precomputed so we
@@ -37,19 +29,27 @@ export class AssignmentData {
   //   meanlineId -> [list of segment IDs]
   // This data structure is inefficient for getting the meanlineId corresponding to
   // a segmentId (the reverse mapping).
-  setReverseAssignment() {
-    this.reverseAssignment = {};
+  getReverseAssignment() {
+    var reverseAssignment = {};
 
     Object.keys(this.assignment).forEach((meanlineId) => {
       this.assignment[meanlineId].forEach((segmentId) => {
-        this.reverseAssignment[parseInt(segmentId)] = parseInt(meanlineId);
+        reverseAssignment[parseInt(segmentId)] = parseInt(meanlineId);
       });
     });
+
+    return reverseAssignment;
   }
 
   // updates the segment layer colors based on the meanlines' colors.
   // "meanlines" and "segments" are the metadata layers defined in SeismogramMap.
   updateColors(meanlines, segments) {
+    var reverseAssignment = this.getReverseAssignment();
+
+    var meanlineIdForSegmentId = (segmentId) => {
+      return reverseAssignment[parseInt(segmentId)];
+    };
+
     // Helper function that gets a copy of the style for a mean line.
     var getStyle = (meanlineId) => {
       if (typeof meanlineId === "undefined")
@@ -72,7 +72,7 @@ export class AssignmentData {
     // mean line's style
     segments.leafletLayer.getLayers().forEach((layer) => {
       // Get its meanline ID
-      var meanLineId = this.meanlineIdForSegmentId(layer.feature.id);
+      var meanLineId = meanlineIdForSegmentId(layer.feature.id);
       // Get a copy of the style for the meanline ID
       var style = getStyle(meanLineId);
       // Apply the style to the segment.
@@ -95,33 +95,27 @@ export class AssignmentData {
 
     // First remove the assignment for the old, removed segment.
     this.assignment[meanlineId] = window._.without(this.assignment[meanlineId], oldSegmentId);
-    // And ditto for the reverse assignment
-    delete this.reverseAssignment[oldSegmentId];
 
     // Then update the assignments with the new segment IDs
     newIds.forEach((newId) => {
       // Update the forward assignment
       this.assignment[meanlineId].push(newId);
-      // Update the reverse assignment
-      this.reverseAssignment[newId] = meanlineId;
     });
+  }
+
+  addedMeanLine(meanlineId) {
+    if (!(meanlineId in this.assignment)) {
+      this.assignment[meanlineId] = [];
+    }
   }
 
   // Reacts to the deletion of a mean line by removing the mean line ID from the mapping
   // and also reverting the unassigned segments to the original segment style
   deletedMeanLine(meanlineId, segments) {
+    var unassignedSegments = this.assignment[meanlineId];
+
     // Delete the assignment for this mean line ID
     delete this.assignment[meanlineId];
-
-    var unassignedSegments = [];
-
-    // Delete all entries from the reverse mapping that mention this ID
-    Object.keys(this.reverseAssignment).forEach((segmentId) => {
-      if (this.reverseAssignment[segmentId] === meanlineId) {
-        delete this.reverseAssignment[segmentId];
-        unassignedSegments.push(parseInt(segmentId));
-      }
-    });
 
     // For all the segments that got unassigned by the deletion of the mean line,
     // undo their styling to the original segment style -- remove the mean line color.
@@ -132,5 +126,28 @@ export class AssignmentData {
         segment.setStyle(segments.style);
       }
     });
+  }
+
+  reassignSegments(meanlineId, segmentIds) {
+    var _ = window._;
+
+    // This is kinda tricky, pay attention to the JSfu:
+
+    // We first remove all the segment IDs in `segment IDs` from the entire mapping,
+    // and then we add them to this.assignment[meanlineId].
+    Object.keys(this.assignment).forEach((_meanlineId) => {
+      // make a copy of the segmentIds array
+      var args = Array.apply(null, segmentIds);
+      // push the whole segment ID array for this mean line ID,
+      // to the front of the "args" array:
+      args.unshift(this.assignment[_meanlineId]);
+      // now we remove every segment ID in `segmentIds` from this array
+      // using one operation:
+      // _.without(null, [[1,2,3,4,5],4,5]) === [1,2,3]
+      this.assignment[_meanlineId] = _.without.apply(null, args);
+    });
+
+    // Now we add the contents of `segmentIds` to this.assignment[meanlineId]:
+    Array.prototype.push.apply(this.assignment[meanlineId], segmentIds);
   }
 }
