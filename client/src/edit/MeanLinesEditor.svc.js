@@ -8,9 +8,9 @@ class MeanLinesEditor {
     this.editing = false;
 
     // list of mean lines selected for deletion
-    this._selectedMeanlines = [];
-    this._meanlines = this.SeismogramMap.getLayer("meanlines");
-    this._segments = this.SeismogramMap.getLayer("segments");
+    this.selectedMeanlines = [];
+    this.meanlines = this.SeismogramMap.getLayer("meanlines");
+    this.segments = this.SeismogramMap.getLayer("segments");
   }
 
   // Start editing mean lines:
@@ -19,11 +19,11 @@ class MeanLinesEditor {
     if (this.editing) return;
 
     // Force the layer to be visible.
-    if (!this._meanlines.on) {
-      this.SeismogramMap.toggleLayer(this._meanlines);
+    if (!this.meanlines.on) {
+      this.SeismogramMap.toggleLayer(this.meanlines);
     }
 
-    this._meanlines.leafletLayer.getLayers().forEach((meanline) => {
+    this.meanlines.leafletLayer.getLayers().forEach((meanline) => {
       // We install the editing events on each mean line
       this.installEventsOnMeanline(meanline);
       // Turn on Leaflet.Editable on the mean line
@@ -38,7 +38,7 @@ class MeanLinesEditor {
   stopEditing() {
     if (!this.editing) return;
 
-    this._meanlines.leafletLayer.getLayers().forEach((meanline) => {
+    this.meanlines.leafletLayer.getLayers().forEach((meanline) => {
       // Delete the previously installed editing events
       this.deleteEventsFromMeanline(meanline);
       // Disable Leaflet.Editable for the mean line
@@ -87,14 +87,14 @@ class MeanLinesEditor {
 
     // The following event will select a mean line for deletion.
     meanline.on("click", () => {
-      var alreadySelectedMeanline = _.find(this._selectedMeanlines, (meanlineInfo) => {
+      var alreadySelectedMeanline = _.find(this.selectedMeanlines, (meanlineInfo) => {
         return meanlineInfo.meanline === meanline;
       });
 
       if (alreadySelectedMeanline) {
         // If we already clicked a mean line before, reset that mean line's style
         // to its original color and delete it from the list.
-        this._selectedMeanlines = _.without(this._selectedMeanlines, alreadySelectedMeanline);
+        this.selectedMeanlines = _.without(this.selectedMeanlines, alreadySelectedMeanline);
         alreadySelectedMeanline.meanline.setStyle({
           color: alreadySelectedMeanline.color,
           weight: alreadySelectedMeanline.weight
@@ -102,7 +102,7 @@ class MeanLinesEditor {
       } else {
         // If we haven't selected this mean line, add it to the list and save its
         // original style, too.
-        this._selectedMeanlines.push({
+        this.selectedMeanlines.push({
           meanline: meanline,
           color: meanline.options.color,
           weight: meanline.options.weight
@@ -122,7 +122,7 @@ class MeanLinesEditor {
   // Opens or closes the popup depends on if any mean lines are selected for deleting.
   checkPopupState() {
     // If there are no mean lines selected, close.
-    if (this._selectedMeanlines.length === 0) {
+    if (this.selectedMeanlines.length === 0) {
       this.Popup.close();
       return;
     }
@@ -132,30 +132,30 @@ class MeanLinesEditor {
       // If the user clicks "OK" we delete the selected mean lines.
 
       // First we save the IDs of the mean lines to be deleted.
-      var meanlineIds = this._selectedMeanlines.map((meanlineInfo) =>
+      var meanlineIds = this.selectedMeanlines.map((meanlineInfo) =>
         meanlineInfo.meanline.feature.id);
 
       // We delete the mean lines from the map.
-      this._selectedMeanlines.forEach((meanlineInfo) =>
-        this._meanlines.leafletLayer.removeLayer(meanlineInfo.meanline));
+      this.selectedMeanlines.forEach((meanlineInfo) =>
+        this.meanlines.leafletLayer.removeLayer(meanlineInfo.meanline));
 
       // Update the segment assignment to remove the mean line, and recolor
       // the unassigned segments to their original color
       if (this.SeismogramMap.assignment.hasData()) {
         meanlineIds.forEach((meanlineId) =>
-          this.SeismogramMap.assignment.deletedMeanline(meanlineId, this._segments));
+          this.SeismogramMap.assignment.deletedMeanline(meanlineId, this.segments));
       }
 
-      this._selectedMeanlines = [];
+      this.selectedMeanlines = [];
     }, () => {
       // If the user clicks no, we revert the mean lines to the original styling
-      this._selectedMeanlines.forEach((meanlineInfo) =>
+      this.selectedMeanlines.forEach((meanlineInfo) =>
         meanlineInfo.meanline.setStyle({
           color: meanlineInfo.color,
           weight: meanlineInfo.weight
         }));
 
-      this._selectedMeanlines = [];
+      this.selectedMeanlines = [];
     });
   }
 
@@ -163,7 +163,7 @@ class MeanLinesEditor {
   getNewId() {
     var id = -1;
 
-    this._meanlines.leafletLayer.getLayers().forEach((layer) => {
+    this.meanlines.leafletLayer.getLayers().forEach((layer) => {
       if (layer.feature.id >= id) {
         id = layer.feature.id + 1;
       }
@@ -181,7 +181,7 @@ class MeanLinesEditor {
 
     // We grab the seismogram's maximal x-coordinate by grabbing the first
     // mean line and getting the x-coord of its second point.
-    var firstLine = this._meanlines.leafletLayer.getLayers()[0].toGeoJSON();
+    var firstLine = this.meanlines.leafletLayer.getLayers()[0].toGeoJSON();
     var secondPoint = firstLine.geometry.coordinates[1];
 
     // The new mean line
@@ -201,7 +201,7 @@ class MeanLinesEditor {
     };
 
     // Add the mean line to the mean lines layer.
-    this._meanlines.leafletLayer.addData(newLine);
+    this.meanlines.leafletLayer.addData(newLine);
 
     // Add the new mean line to the assignment.
     if (this.SeismogramMap.assignment.hasData()) {
