@@ -12,6 +12,13 @@ class Popup {
     this.currentNoCb = null;
   }
 
+  close() {
+    this.visible = false;
+    this.message = "";
+    this.currentYesCb = null;
+    this.currentNoCb = null;
+  }
+
   // called when clicking "yes"
   yes() {
     this.visible = false;
