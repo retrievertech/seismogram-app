@@ -138,8 +138,9 @@ export class SeismogramMap {
     } else {
       // in production
       path = this.FileStatus.is(file.status, "Has Edited Data") ?
-        "https://s3.amazonaws.com/wwssn-edited-metadata" :
-        "https://s3.amazonaws.com/wwssn-metadata";
+        // nginx gzip proxy to s3
+        "/s3/wwssn-edited-metadata" :
+        "/s3/wwssn-metadata";
     }
 
     var s3Prefix = path + "/" + file.name + "/";
