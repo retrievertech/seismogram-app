@@ -6,7 +6,7 @@ var auth = require("./auth");
 
 var tiler = new Tiler();
 
-router.get("/:filename/:z/:x/:y.png", function(req, res) {
+router.get("/:filename/:z/:x/:y.png", auth, function(req, res) {
 
   console.log("--- processing /tile ---", req.params);
 
