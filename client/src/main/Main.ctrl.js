@@ -7,13 +7,6 @@ export class Main {
 
     $scope.username = "";
     $scope.password = "";
-    $scope.loggedIn = false;
-
-    var checkLogin = () => {
-      return $http({url: ServerUrls.loginUrl}).then(() => {
-        $scope.loggedIn = true;
-      });
-    };
 
     $scope.logIn = () => {
       Auth.store({
@@ -21,20 +14,17 @@ export class Main {
         password: $scope.password
       });
 
-      checkLogin().catch(() => {
-        ScreenMessage.ephemeral("Invalid credentials.", "error", 5000);
+      $scope.checkLogin().then(() => {
+        if (!$scope.loggedIn) {
+          ScreenMessage.ephemeral("Invalid credentials.", "error", 5000);
+        }
       });
     };
 
     $scope.logOut = () => {
-      Auth.remove().then(() => {
-        $scope.loggedIn = false;
-        $timeout(() => {});
-      });
+      Auth.remove().then(() => $scope.checkLogin());
     };
 
-    if (Auth.hasData()) {
-      checkLogin();
-    }
+    $scope.checkLogin();
   }
 }

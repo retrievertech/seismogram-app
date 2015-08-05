@@ -56,7 +56,7 @@ app.config(($routeProvider, $httpProvider) => {
 });
 
 // Root controller. The function "go" is available to all scopes in all sections
-app.run(function($rootScope, $location, ScreenMessage, Popup) {
+app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup) {
   window.scope = $rootScope;
 
   $rootScope.ScreenMessage = ScreenMessage;
@@ -70,6 +70,24 @@ app.run(function($rootScope, $location, ScreenMessage, Popup) {
     }
     return arr;
   };
+
+  $rootScope.loggedIn = false;
+
+  $rootScope.checkLogin = () => {
+    return $http({url: ServerUrls.loginUrl}).then(() => {
+      $rootScope.loggedIn = true;
+    }).catch(() => {
+      $rootScope.loggedIn = false;
+      $location.path("/");
+    });
+  };
+
+  $rootScope.$on("$routeChangeStart", (evt, next) => {
+    if (!$rootScope.loggedIn && next.$$route.originalPath !== "/") {
+      evt.preventDefault();
+      $location.path("/");
+    }
+  });
 
   console.log("Seismo app is running");
 });
