@@ -10,5 +10,6 @@ export class ServerUrls {
     this.processingUrl = this.url + "/processing/start";
     this.saveUrl = this.url + "/processing/save";
     this.assignUrl = this.url + "/processing/assign";
+    this.loginUrl = this.url + "/login";
   }
 }

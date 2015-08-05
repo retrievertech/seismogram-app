@@ -1,5 +1,7 @@
 var angular = window.angular;
 
+import { Auth } from "./Auth.js";
+
 // Top-level / shared modules
 import { ScreenMessage } from "./ScreenMessage.svc.js";
 import { Popup } from "./Popup.svc.js";
@@ -22,14 +24,32 @@ app.service("SeismogramMap", SeismogramMap)
   .service("ScreenMessage", ScreenMessage)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
-  .directive("mapLink", MapLink);
+  .directive("mapLink", MapLink)
+  .factory("Authorization", ($location, $q) => {
+    return {
+      request: (config) => {
+        var u = Auth.auth.username;
+        var p = Auth.auth.password;
+        config.headers.Authorization = "Basic " + window.btoa(u + ":" + p);
+        return config;
+      },
+      responseError: (rejection) => {
+        if (rejection.status === 401) {
+          $location.path("/");
+        }
+        return $q.reject(rejection);
+      }
+    };
+  });
 
 // Each section declares its dependencies
 sections.forEach((section) => section.declare(app));
 
 // Each section installs its routes
-app.config(["$routeProvider", ($routeProvider) =>
-  sections.forEach((section) => section.installRoutes($routeProvider))]);
+app.config(($routeProvider, $httpProvider) => {
+  sections.forEach((section) => section.installRoutes($routeProvider));
+  $httpProvider.interceptors.push("Authorization");
+});
 
 // Root controller. The function "go" is available to all scopes in all sections
 app.run(function($rootScope, $location, ScreenMessage, Popup) {
@@ -50,6 +70,8 @@ app.run(function($rootScope, $location, ScreenMessage, Popup) {
   console.log("Seismo app is running");
 });
 
-angular.element(document).ready(function() {
-  angular.bootstrap(document, ["ngRoute", "App"]);
+Auth.load(() => {
+  angular.element(document).ready(function() {
+    angular.bootstrap(document, ["ngRoute", "App"]);
+  });
 });

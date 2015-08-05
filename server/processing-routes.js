@@ -9,6 +9,7 @@ var queryCache = require("./query-cache");
 var statusSocket = require("./status-socket");
 var escape = require("./util").escape;
 var status = require("./status");
+var auth = require("./auth");
 
 var pipelinePath = __dirname + "/../../seismogram-pipeline";
 
@@ -55,7 +56,7 @@ function setStatus(filename, status, callback) {
   });
 }
 
-router.get("/setstatus/:filename/:status", function(req, res, next) {
+router.get("/setstatus/:filename/:status", auth, function(req, res, next) {
   var status = parseInt(req.params.status);
   var filename = req.params.filename;
 
@@ -65,7 +66,7 @@ router.get("/setstatus/:filename/:status", function(req, res, next) {
   });
 });
 
-router.post("/assign", function(req, res) {
+router.post("/assign", auth, function(req, res) {
   var segments = req.body.segments;
   var meanlines = req.body.meanlines;
   var path = mktemp.createDirSync("/tmp/seismo-assign.XXXXX");
@@ -94,7 +95,7 @@ router.post("/assign", function(req, res) {
   });
 });
 
-router.post("/save/:filename", function(req, res, next) {
+router.post("/save/:filename", auth, function(req, res, next) {
   var filename = req.params.filename;
   var layers = req.body.layers;
   async.waterfall([

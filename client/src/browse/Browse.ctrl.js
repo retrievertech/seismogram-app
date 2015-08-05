@@ -71,6 +71,8 @@ export class Browse {
         Query.initModel();
 
         ScreenMessage.stop("Loading seismograms...");
+      }).catch(() => {
+        ScreenMessage.stop("Loading seismograms...");
       });
     };
 

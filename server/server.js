@@ -5,6 +5,7 @@ var cors = require("cors");
 var app = express();
 
 //var statusSocket = require("./status-socket");
+var auth = require("./auth");
 var queryRoutes = require("./query-routes");
 var tileRoutes = require("./tile-routes");
 var processingRoutes = require("./processing-routes");
@@ -19,6 +20,11 @@ app.use("/processing", processingRoutes);
 app.use(function(err, req, res, next) {
   console.error(err);
   next(err);
+});
+
+// Simple route for checking auth. Note: all routes are authorized individually.
+app.get("/login", auth, function(req, res) {
+  res.sendStatus(200);
 });
 
 var server = http.createServer(app);
