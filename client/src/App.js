@@ -83,9 +83,12 @@ app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup)
   };
 
   $rootScope.$on("$routeChangeStart", (evt, next) => {
-    if (!$rootScope.loggedIn && next.$$route.originalPath !== "/") {
-      evt.preventDefault();
-      $location.path("/");
+    if (next.$$route.originalPath !== "/") {
+      $rootScope.checkLogin().then(() => {
+        if (!$rootScope.loggedIn) {
+          evt.preventDefault();
+        }
+      });
     }
   });
 
