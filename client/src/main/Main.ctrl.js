@@ -2,6 +2,9 @@ import { Auth } from "../Auth.js";
 
 export class Main {
   constructor($scope, $http, $location, $timeout, ServerUrls, ScreenMessage) {
+    $scope.Auth = Auth;
+    $scope.$location = $location;
+
     $scope.username = "";
     $scope.password = "";
     $scope.loggedIn = false;

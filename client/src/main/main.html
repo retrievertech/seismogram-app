@@ -1,17 +1,24 @@
 <div class="main-container">
   <h1>Skate</h1>
   <div ng-show="!loggedIn">
-  Username: <input type="text" ng-model="username"/>
-  <br/>
-  Password: <input type="password" ng-model="password"/>
-  <br/>
-  <input type="button" ng-click="logIn()">Log In</input>
+    <div class="field">
+      <input type="text" placeholder="Username" ng-model="username"></input>
+    </div>
+    <div class="field">
+      <input type="password" placeholder="Password" ng-model="password"></input>
+    </div>
+    <div class="button-container">
+      <div class="button login" ng-click="logIn()">Log In</div>
+    </div>
   </div>
 
   <div ng-show="loggedIn">
-    Wecome to Skate.
-    <br/>
-    <a href="#/browse">Browse Seismograms</a>
-    <input type="button" value="Log out" ng-click="logOut()"></input>
+    <p>Wecome to Skate. You are logged in as &quot;{{Auth.auth.username}}&quot;.</p>
+    <div class="button-container">
+      <div class="button browse" ng-click="$location.path('/browse')">Browse Seismograms</div>
+    <div>
+    <div class="button-container">
+      <div class="button logout" ng-click="logOut()">Log Out</div>
+    <div>
   </div>
 </div>

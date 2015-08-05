@@ -1,7 +1,7 @@
 var basicAuth = require("basic-auth");
 
 var username = "seismo";
-var pass = "retriever32";
+var pass = "redfish32";
 
 module.exports = function (req, res, next) {
   function unauthorized(res) {
@@ -15,7 +15,7 @@ module.exports = function (req, res, next) {
     return unauthorized(res);
   }
 
-  if (user.name === username && user.pass === pass) {
+  if (user.name.toLowerCase() === username && user.pass.toLowerCase() === pass) {
     return next();
   } else {
     return unauthorized(res);
