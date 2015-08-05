@@ -1,9 +1,16 @@
 import { Auth } from "../Auth.js";
 
 export class Main {
-  constructor($scope, $http, $location, ServerUrls, ScreenMessage) {
+  constructor($scope, $http, $location, $timeout, ServerUrls, ScreenMessage) {
     $scope.username = "";
     $scope.password = "";
+    $scope.loggedIn = false;
+
+    var checkLogin = () => {
+      return $http({url: ServerUrls.loginUrl}).then(() => {
+        $scope.loggedIn = true;
+      });
+    };
 
     $scope.logIn = () => {
       Auth.store({
@@ -11,11 +18,20 @@ export class Main {
         password: $scope.password
       });
 
-      $http({url: ServerUrls.loginUrl}).then(() => {
-        $location.path("/browse");
-      }).catch(() => {
+      checkLogin().catch(() => {
         ScreenMessage.ephemeral("Invalid credentials.", "error", 5000);
       });
     };
+
+    $scope.logOut = () => {
+      Auth.remove().then(() => {
+        $scope.loggedIn = false;
+        $timeout(() => {});
+      });
+    };
+
+    if (Auth.hasData()) {
+      checkLogin();
+    }
   }
 }

@@ -1,11 +1,17 @@
 <div class="main-container">
   <h1>Skate</h1>
-  Wecome to Skate.
-  <br/>
+  <div ng-show="!loggedIn">
   Username: <input type="text" ng-model="username"/>
   <br/>
   Password: <input type="password" ng-model="password"/>
   <br/>
   <input type="button" ng-click="logIn()">Log In</input>
-  <a href="#/browse">Browse Seismograms</a>
+  </div>
+
+  <div ng-show="loggedIn">
+    Wecome to Skate.
+    <br/>
+    <a href="#/browse">Browse Seismograms</a>
+    <input type="button" value="Log out" ng-click="logOut()"></input>
+  </div>
 </div>
