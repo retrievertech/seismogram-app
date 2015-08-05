@@ -1,3 +1,10 @@
+//
+// A super-simple class that stores/retrieves authentication data (user/pass) in/from
+// indexeddb via localforage.
+//
+// This should be a service. However, at the bottom of App.js you'll see that this
+// object is used before angular is initialized -- before any services are available.
+//
 export var Auth = {
   auth: {},
 

@@ -25,8 +25,11 @@ app.service("SeismogramMap", SeismogramMap)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
   .directive("mapLink", MapLink)
+  // An authorization interceptor. Injects auth headers on the way out and looks
+  // for 401 (unauthorized) status on the way back.
   .factory("Authorization", ($location, $q, ServerUrls) => {
     return {
+      // On the way out:
       request: (config) => {
         // We only put auth headers on node server requests
         if (!config.url.startsWith(ServerUrls.url)) {
@@ -34,10 +37,14 @@ app.service("SeismogramMap", SeismogramMap)
         }
         var u = Auth.auth.username;
         var p = Auth.auth.password;
+        // Basic authorization header The format is:
+        //  Authorization: Basic <base64 encoding of "user:password">
         config.headers.Authorization = "Basic " + window.btoa(u + ":" + p);
         return config;
       },
+      // On the way in:
       responseError: (rejection) => {
+        // If unauthorized we redirect to the home page.
         if (rejection.status === 401) {
           $location.path("/");
         }
@@ -52,6 +59,7 @@ sections.forEach((section) => section.declare(app));
 // Each section installs its routes
 app.config(($routeProvider, $httpProvider) => {
   sections.forEach((section) => section.installRoutes($routeProvider));
+  // Activate the authorization interceptor.
   $httpProvider.interceptors.push("Authorization");
 });
 
@@ -72,16 +80,21 @@ app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup)
   };
 
   $rootScope.loggedIn = false;
-
+  // Hits a trivial route on the server. If we're not logged in, the route should
+  // return 401. Note that the authorization interceptor automatically redirects
+  // to the home page.
   $rootScope.checkLogin = () => {
     return $http({url: ServerUrls.loginUrl}).then(() => {
       $rootScope.loggedIn = true;
     }).catch(() => {
       $rootScope.loggedIn = false;
-      $location.path("/");
     });
   };
 
+  // Check login status before each route change. TODO: Ideally, we want to check
+  // login state before the app loads anything. This event works OK-ish, but while
+  // we hit the server to check login status, angular is already in the process of
+  // loading the route. What we want is to prevent it from loading anything.
   $rootScope.$on("$routeChangeStart", (evt, next) => {
     $rootScope.checkLogin().then(() => {
       if (next.$$route.originalPath !== "/" && !$rootScope.loggedIn) {
@@ -93,6 +106,7 @@ app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup)
   console.log("Seismo app is running");
 });
 
+// Load the user/pass from localstorage and then bootstrap the app.
 Auth.load(() => {
   angular.element(document).ready(function() {
     angular.bootstrap(document, ["ngRoute", "App"]);
