@@ -1,5 +1,7 @@
 var angular = window.angular;
 
+import { Auth } from "./Auth.js";
+
 // Top-level / shared modules
 import { ScreenMessage } from "./ScreenMessage.svc.js";
 import { Popup } from "./Popup.svc.js";
@@ -17,25 +19,18 @@ var sections = [ BrowseSetup, ViewSetup, MainSetup, EditSetup ];
 
 var app = angular.module("App", []);
 
-class Auth {
-  set(u, p) {
-    this.username = u;
-    this.password = p;
-  }
-}
-
 // Install the top-level dependencies
 app.service("SeismogramMap", SeismogramMap)
   .service("ScreenMessage", ScreenMessage)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
-  .service("Auth", Auth)
   .directive("mapLink", MapLink)
-  .factory("Authorization", ($rootScope, Auth) => {
+  .factory("Authorization", () => {
     return {
       request: (config) => {
-        var u = Auth.username;
-        var p = Auth.password;
+        var u = Auth.auth.username;
+        var p = Auth.auth.password;
+        console.log(u, p);
         config.headers.Authorization = "Basic " + window.btoa(u + ":" + p);
         return config;
       }
@@ -70,6 +65,8 @@ app.run(function($rootScope, $location, ScreenMessage, Popup) {
   console.log("Seismo app is running");
 });
 
-angular.element(document).ready(function() {
-  angular.bootstrap(document, ["ngRoute", "App"]);
+Auth.load(() => {
+  angular.element(document).ready(function() {
+    angular.bootstrap(document, ["ngRoute", "App"]);
+  });
 });
