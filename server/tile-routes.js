@@ -2,11 +2,10 @@ var router = require("express").Router();
 var Tiler = require("./tiler");
 var imageCache = require("./image-cache");
 var diskCache = require("./disk-cache");
-var auth = require("./auth");
 
 var tiler = new Tiler();
 
-router.get("/:filename/:z/:x/:y.png", auth, function(req, res) {
+router.get("/:filename/:z/:x/:y.png", function(req, res) {
 
   console.log("--- processing /tile ---", req.params);
 
