@@ -25,14 +25,19 @@ app.service("SeismogramMap", SeismogramMap)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
   .directive("mapLink", MapLink)
-  .factory("Authorization", () => {
+  .factory("Authorization", ($location, $q) => {
     return {
       request: (config) => {
         var u = Auth.auth.username;
         var p = Auth.auth.password;
-        console.log(u, p);
         config.headers.Authorization = "Basic " + window.btoa(u + ":" + p);
         return config;
+      },
+      responseError: (rejection) => {
+        if (rejection.status === 401) {
+          $location.path("/");
+        }
+        return $q.reject(rejection);
       }
     };
   });

@@ -1,7 +1,7 @@
 import { Auth } from "../Auth.js";
 
 export class Main {
-  constructor($scope, $http, ServerUrls, ScreenMessage) {
+  constructor($scope, $http, $location, ServerUrls, ScreenMessage) {
     $scope.username = "";
     $scope.password = "";
 
@@ -12,7 +12,7 @@ export class Main {
       });
 
       $http({url: ServerUrls.loginUrl}).then(() => {
-        window.location.href = "#/browse";
+        $location.path("/browse");
       }).catch(() => {
         ScreenMessage.ephemeral("Invalid credentials.", "error", 5000);
       });
