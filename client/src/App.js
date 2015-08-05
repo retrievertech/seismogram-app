@@ -83,13 +83,11 @@ app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup)
   };
 
   $rootScope.$on("$routeChangeStart", (evt, next) => {
-    if (next.$$route.originalPath !== "/") {
-      $rootScope.checkLogin().then(() => {
-        if (!$rootScope.loggedIn) {
-          evt.preventDefault();
-        }
-      });
-    }
+    $rootScope.checkLogin().then(() => {
+      if (next.$$route.originalPath !== "/" && !$rootScope.loggedIn) {
+        evt.preventDefault();
+      }
+    });
   });
 
   console.log("Seismo app is running");

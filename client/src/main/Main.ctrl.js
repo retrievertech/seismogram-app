@@ -24,7 +24,5 @@ export class Main {
     $scope.logOut = () => {
       Auth.remove().then(() => $scope.checkLogin());
     };
-
-    $scope.checkLogin();
   }
 }
