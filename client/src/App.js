@@ -17,17 +17,26 @@ var sections = [ BrowseSetup, ViewSetup, MainSetup, EditSetup ];
 
 var app = angular.module("App", []);
 
+class Auth {
+  set(u, p) {
+    this.username = u;
+    this.password = p;
+  }
+}
+
 // Install the top-level dependencies
 app.service("SeismogramMap", SeismogramMap)
   .service("ScreenMessage", ScreenMessage)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
+  .service("Auth", Auth)
   .directive("mapLink", MapLink)
-  .factory("Authorization", () => {
+  .factory("Authorization", ($rootScope, Auth) => {
     return {
       request: (config) => {
-        console.log(config.headers);
-        config.headers.Authorization = "Basic " + window.btoa("seismo:retriever32");
+        var u = Auth.username;
+        var p = Auth.password;
+        config.headers.Authorization = "Basic " + window.btoa(u + ":" + p);
         return config;
       }
     };

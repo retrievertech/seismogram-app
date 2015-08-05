@@ -22,6 +22,7 @@ app.use(function(err, req, res, next) {
   next(err);
 });
 
+// Simple route for checking auth. Note: all routes are authorized individually.
 app.get("/login", auth, function(req, res) {
   res.sendStatus(200);
 });
