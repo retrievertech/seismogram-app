@@ -33,8 +33,10 @@ export class SeismogramMapLoader {
       }).then((res) => {
         this.QueryData.setStationQueryData(res.stations.data);
         this.SeismogramMap.loadImage(res.file.data);
-      }).catch(() => {
-        this.ScreenMessage.start("Seismogram not found.");
+      }).catch((res) => {
+        if (res.status !== 401) {
+          this.ScreenMessage.ephemeral("Seismogram not found.", "error", 3000);
+        }
       });
     }
   }

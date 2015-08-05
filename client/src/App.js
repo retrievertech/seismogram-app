@@ -25,9 +25,13 @@ app.service("SeismogramMap", SeismogramMap)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
   .directive("mapLink", MapLink)
-  .factory("Authorization", ($location, $q) => {
+  .factory("Authorization", ($location, $q, ServerUrls) => {
     return {
       request: (config) => {
+        // We only put auth headers on node server requests
+        if (!config.url.startsWith(ServerUrls.url)) {
+          return config;
+        }
         var u = Auth.auth.username;
         var p = Auth.auth.password;
         config.headers.Authorization = "Basic " + window.btoa(u + ":" + p);

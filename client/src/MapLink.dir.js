@@ -7,7 +7,6 @@ class MapLink {
         viewReset: "=" // whenever this object changes, invalidate map size
       },
       link: (scope, element, attrs) => {
-        console.log("maplink", attrs.id, scope);
         scope.mapLink.init(attrs.id);
         scope.$watch("viewReset", (oldVal, newVal) => {
           if (typeof newVal !== "undefined") {
