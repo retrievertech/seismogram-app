@@ -3,12 +3,13 @@ var router = express.Router();
 var mongo = require("mongodb").MongoClient;
 var async = require("async");
 var queryCache = require("./query-cache");
+var auth = require("./auth");
 
 var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
 
-router.get("/stations", function(req, res, next) {
+router.get("/stations", auth, function(req, res, next) {
   async.waterfall([
     connect,
     function(db, cb) {
@@ -24,7 +25,7 @@ router.get("/stations", function(req, res, next) {
   });
 });
 
-router.get("/file/:filename", function(req, res, next) {
+router.get("/file/:filename", auth, function(req, res, next) {
   var filename = req.params.filename;
 
   async.waterfall([
@@ -49,7 +50,7 @@ router.get("/file/:filename", function(req, res, next) {
   });
 });
 
-router.get("/files", function(req, res, next) {
+router.get("/files", auth, function(req, res, next) {
   console.log("--- processing files query ---", req.query);
   var hit = queryCache.hit(req.query);
   if (hit) {

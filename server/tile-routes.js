@@ -2,6 +2,7 @@ var router = require("express").Router();
 var Tiler = require("./tiler");
 var imageCache = require("./image-cache");
 var diskCache = require("./disk-cache");
+var auth = require("./auth");
 
 var tiler = new Tiler();
 

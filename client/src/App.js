@@ -22,14 +22,25 @@ app.service("SeismogramMap", SeismogramMap)
   .service("ScreenMessage", ScreenMessage)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
-  .directive("mapLink", MapLink);
+  .directive("mapLink", MapLink)
+  .factory("Authorization", () => {
+    return {
+      request: (config) => {
+        console.log(config.headers);
+        config.headers.Authorization = "Basic " + window.btoa("seismo:retriever32");
+        return config;
+      }
+    };
+  });
 
 // Each section declares its dependencies
 sections.forEach((section) => section.declare(app));
 
 // Each section installs its routes
-app.config(["$routeProvider", ($routeProvider) =>
-  sections.forEach((section) => section.installRoutes($routeProvider))]);
+app.config(($routeProvider, $httpProvider) => {
+  sections.forEach((section) => section.installRoutes($routeProvider));
+  $httpProvider.interceptors.push("Authorization");
+});
 
 // Root controller. The function "go" is available to all scopes in all sections
 app.run(function($rootScope, $location, ScreenMessage, Popup) {
