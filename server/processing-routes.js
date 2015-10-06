@@ -38,13 +38,7 @@ function setStatus(filename, status, callback) {
           status: status
         });
 
-        // update was successful
-        // update the cached queries
-        queryCache.forEachFile(function(file) {
-          if (file.name === filename) {
-            file.status = status;
-          }
-        });
+        queryCache.invalidate();
       }
 
       if (typeof callback === "function")

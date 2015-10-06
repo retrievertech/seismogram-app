@@ -19,6 +19,9 @@ var cache = {
         callback(query.files[i]);
       }
     }
+  },
+  invalidate: function() {
+    this.cache = {}
   }
 };
 
