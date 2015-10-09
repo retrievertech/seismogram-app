@@ -193,9 +193,9 @@ export class SeismogramMap {
     }).then((res) => this.setSegmentAssignment(res.data));
 
     // when all the data is loaded, put it on the map
-    this.$q.all(promises).then(() => {
+    this.$q.all(promises).finally(() => {
       this.metadataLayers.forEach((layer) => {
-        if (layer.on) {
+        if (layer.on && layer.leafletLayer) {
           this.leafletMap.addLayer(layer.leafletLayer);
         }
       });
