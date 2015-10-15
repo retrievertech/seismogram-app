@@ -159,6 +159,9 @@ export class SeismogramMap {
       this.$timeout(() => {
         this.imageIsLoaded = true;
         this.ScreenMessage.stop("Loading image...");
+        if (this.FileStatus.hasData(file.status)) {
+          this.loadMetadata(s3Prefix);
+        }
       });
     });
 
@@ -168,12 +171,9 @@ export class SeismogramMap {
         this.leafletMap.removeLayer(layer.leafletLayer);
       }
     });
+  }
 
-    if (!this.FileStatus.hasData(file.status)) {
-      // nothing to load
-      return;
-    }
-
+  loadMetadata(s3Prefix) {
     this.ScreenMessage.start("Loading metadata...");
 
     // load the data and recreate the layers
