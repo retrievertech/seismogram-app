@@ -109,7 +109,7 @@ router.post("/save/:filename", auth, function(req, res, next) {
     },
     function(path, cb) {
       process.chdir(pipelinePath);
-      var command = "sh copy_to_s3.sh " + filename + " " + escape(path) + " edited";
+      var command = "sh copy_to_s3.sh " + filename + " " + escape(path) + " edited-metadata";
       if (process.env.NODE_ENV !== "production") {
         command += " dev";
       }
