@@ -8,10 +8,10 @@ export class FileStatus {
     //  code: 1,
     //  name: "Processing"
     //},
-    // {
-    //  code: 2,
-    //  name: "Failed"
-    //},
+    {
+     code: 2,
+     name: "Failed"
+    },
     {
       code: 3,
       name: "Has Raw Data"
