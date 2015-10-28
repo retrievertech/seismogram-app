@@ -1,5 +1,5 @@
 export class View {
-  constructor($scope, $routeParams, $timeout, $http, $q, SeismogramMap,
+  constructor($scope, $routeParams, $timeout, $http, $q, SeismogramMap, $location,
               ScreenMessage, FileStatus, ServerUrls, QueryData, SeismogramMapLoader) {
 
     window.viewScope = $scope;
@@ -32,7 +32,20 @@ export class View {
     $scope.showLog = () => {
       var file = SeismogramMap.currentFile;
       var token = Math.random();
-      var url = "logs/" + file.name + ".txt?token="+token;
+
+      var url;
+
+      // TODO: Abstract this dev/prod logic; see also SeismogramMap.svc.js
+      if ($location.host() === "localhost") {
+        // we are in development
+        url = "https://s3.amazonaws.com/wwssn-logs/";
+      } else {
+        // in production
+        // nginx gzip proxy to s3
+        url = "/s3/logs/";
+      }
+
+      url += file.name + "/log.txt?token="+token;
 
       $scope.log = "";
 
