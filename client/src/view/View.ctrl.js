@@ -17,6 +17,11 @@ export class View {
       return file && (FileStatus.hasData(file.status));
     };
 
+    $scope.hasLog = () => {
+      var file = SeismogramMap.currentFile;
+      return file && (FileStatus.hasLog(file.status));
+    };
+
     $scope.gotoEditor = () => {
       $scope.go("/edit/" + SeismogramMap.currentFile.name);
     };

@@ -37,4 +37,8 @@ export class FileStatus {
   hasData(code) {
     return code === 3 || code === 4;
   }
+
+  hasLog(code) {
+    return code !== 0;
+  }
 }
