@@ -1,0 +1,33 @@
+<html>
+  <head></head>
+  <script src="https://cdn.firebase.com/js/client/2.3.1/firebase.js"></script>
+  <body>
+    <div id="tasks"></div>
+  </body>
+  <script>
+    var rootRef = new Firebase("seismogram.firebaseio.com");
+    var tasksDiv = document.getElementById("tasks");
+    var tasks = {};
+
+    rootRef.child("queue/tasks").on("value", function(snap) {
+      // clear tasks
+      tasks = {};
+      tasksDiv.innerHTML = "";
+
+      // count tasks
+      snap.forEach(function(taskSnap) {
+        var task = taskSnap.val(),
+            state = task._state ? task._state : "not_started";
+        tasks[state] = tasks[state] || [];
+        tasks[state].push(task);
+      });
+
+      // render
+      for (key in tasks) {
+        var newDiv = document.createElement("div");
+        newDiv.appendChild(document.createTextNode(key+": "+tasks[key].length));
+        tasksDiv.appendChild(newDiv);
+      }
+    });
+  </script>
+</html>
