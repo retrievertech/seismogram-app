@@ -62,9 +62,6 @@ export class Editor {
       // the coords of each point in the segment
       var coords = segment.getLatLngs();
 
-      // The gray scale values of the points in the segment.
-      var grayValues = segment.feature.properties.values;
-
       var regions = new Regions();
 
       // This takes a list of points and breaks it into a list of regions,
@@ -74,12 +71,8 @@ export class Editor {
       for (var i = 0; i < coords.length; ++i) {
         // the i-th point
         var point = coords[i];
-        // the grayscale value of the i-th point. Note that the coords array and
-        // the gray values array are assumed to be in order, the Nth gray value
-        // corresponding to the Nth point.
-        var grayValue = grayValues[i];
         var type = bounds.contains(point) ? "in" : "out";
-        regions.addPoint({ point: point, grayValue: grayValue }, type);
+        regions.addPoint({ point: point }, type);
       }
 
       // Assuming the list of points is nonempty, so should the list of regions.
@@ -105,7 +98,7 @@ export class Editor {
         // We first just delete the original.
         segmentsLayer.leafletLayer.removeLayer(segment);
 
-        // We get all the regions that are outside the rectangle. Implicily, any
+        // We get all the regions that are outside the rectangle. Implicitly, any
         // regions inside the rectangle will be omitted -- deleted.
         var outRegions = regions.regions.filter((region) => region.type === "out");
 
@@ -117,10 +110,6 @@ export class Editor {
             geometry: {
               type: "LineString",
               coordinates: region.points.map((pointData) => [pointData.point.lng, pointData.point.lat])
-            },
-            properties: {
-              // Retain the gray scale values of this particular sub-segment.
-              values: region.points.map((pointData) => pointData.grayValue)
             }
           };
         });
