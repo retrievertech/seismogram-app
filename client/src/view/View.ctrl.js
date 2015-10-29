@@ -41,8 +41,10 @@ export class View {
         url = "https://s3.amazonaws.com/wwssn-logs/";
       } else {
         // in production
+        // maybe switch to this?
         // nginx gzip proxy to s3
-        url = "/s3/logs/";
+        // url = "/s3/logs/";
+        url = "https://s3.amazonaws.com/wwssn-logs/";
       }
 
       url += file.name + "/log.txt?token="+token;
