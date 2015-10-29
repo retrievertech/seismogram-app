@@ -32,7 +32,7 @@ class Popup {
 
   // fired when clicking "no"
   no() {
-    var noCb = this.currentNoCb();
+    var noCb = this.currentNoCb;
     this.close();
     if (typeof noCb === "function") {
       noCb();
