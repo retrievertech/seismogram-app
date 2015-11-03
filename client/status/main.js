@@ -1,22 +1,26 @@
 var rootRef = new Firebase("seismogram.firebaseio.com");
-var countsDiv = $("#counts"); // counts of tasks by status
-var recentDiv = $("#recent"); // recent tasks
-var tasks = {};
 
-rootRef.child("queue/tasks").on("value", function(snap) {
-  // render recently changed tasks
-  recentDiv.empty();
-  var modifiedTasks = _.filter(snap.val(), function(task) { return task["_state_changed"]; });
+rootRef.child("queue/tasks").on("value", renderTasks);
+rootRef.child("machines_online").on("value", renderMachines);
+
+function renderRecentTasks(snap) {
+  var tasks = snap.val();
+  var recentDiv = $("#recent");
+  var modifiedTasks = _.filter(tasks, function(task) { return task["_state_changed"]; });
   var recentTasks = _.sortBy(modifiedTasks, "_state_changed");
+  recentTasks.reverse();
   var numTasksToShow = 10;
-  // for (var i = 0; i < numTasksToShow; i++) {
-  for (var i = recentTasks.length-1; i > recentTasks.length-1-numTasksToShow; i--) {
+
+  recentDiv.empty();
+  recentDiv.append($("<div>Recent changes:</div>"));
+  for (var i = 0; i < numTasksToShow; i++) {
     recentDiv.append($("<div>"+JSON.stringify(recentTasks[i], 2)+"</div>"));
   }
+}
 
-  // clear tasks
-  tasks = {};
-  countsDiv.empty();
+function renderTaskStatuses(snap) {
+  var countsDiv = $("#counts"); // counts of tasks by status
+  var tasks = {};
 
   // count tasks
   snap.forEach(function(taskSnap) {
@@ -26,25 +30,43 @@ rootRef.child("queue/tasks").on("value", function(snap) {
     tasks[state].push(task);
   });
 
-  // render status: count
-  for (var key in tasks) {
+  // render status counts
+  countsDiv.empty();
+  _.each(tasks, function(taskList, state) {
     var newDiv = $("<div>");
-    var taskList = tasks[key];
-    newDiv.append($("<div>"+key+": "+taskList.length+"</div>"));
+    newDiv.append($("<div>"+state+": "+taskList.length+"</div>"));
 
     // add error links
-    if (key === "error") {
+    if (state === "error") {
       _.each(taskList, function(task) {
-        var errorLink = $("<div style='margin-left: 10px'><a target='_blank' href='http://seismo.redfish.com/#/view/"+task.filename+"'>"+task.filename+"</a></div>");
-        newDiv.append(errorLink);
+        newDiv.append(errorLink(task.filename));
+      });
+    }
+
+    if (state === "complete") {
+      // count statuses
+      var tasksByStatus = _.groupBy(taskList, "status");
+      var statuses = ["notStarted", "processing", "failed", "successful", "edited", "problematic"];
+      _.each(tasksByStatus, function(completedTaskList, statusId) {
+        var statusName = statuses[statusId];
+        newDiv.append($("<div style='margin-left: 10px'>"+statusName+": "+completedTaskList.length+"</div>"));
       });
     }
 
     countsDiv.append(newDiv);
-  }
-});
+  });
 
-var machinesDiv = $("#machines");
-rootRef.child("machines_online").on("value", function(snap) {
-  machinesDiv.text("machines online: "+snap.numChildren());
-});
+  function errorLink(filename) {
+    return $("<div style='margin-left: 10px'><a target='_blank' href='http://seismo.redfish.com/#/view/"+filename+"'>"+filename+"</a></div>");
+  }
+
+}
+
+function renderTasks(snap) {
+  renderRecentTasks(snap);
+  renderTaskStatuses(snap);
+}
+
+function renderMachines(snap) {
+  $("#machines").text("machines online: "+snap.numChildren());
+}
