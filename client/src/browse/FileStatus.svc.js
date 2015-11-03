@@ -31,11 +31,11 @@ export class FileStatus {
       // seismograms that were processed without error
       // but have been flagged for issues (e.g. too many segments).
       //
-      // ,
-      // {
-      //   code: 5,
-      //   name: "Problematic"
-      // }
+      ,
+      {
+        code: 5,
+        name: "Problematic"
+      }
     ];
   }
 
