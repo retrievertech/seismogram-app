@@ -132,17 +132,18 @@ export class SeismogramMap {
 
     if (this.$location.host() === "localhost") {
       // we are in development
-      path = this.FileStatus.is(file.status, "Has Edited Data") ?
+      path = this.FileStatus.is(file.status, "Edited") ?
         "edited-metadata" :
         "metadata";
     } else {
       // in production
-      path = this.FileStatus.is(file.status, "Has Edited Data") ?
+      path = this.FileStatus.is(file.status, "Edited") ?
         // nginx gzip proxy to s3
         "/s3/wwssn-edited-metadata" :
         "/s3/wwssn-metadata";
     }
 
+    var path = "https://s3.amazonaws.com/wwssn-metadata";
     var s3Prefix = path + "/" + file.name + "/";
 
     var url = this.ServerUrls.tilesUrl + "/" + file.name + "/{z}/{x}/{y}.png";
