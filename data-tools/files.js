@@ -1,3 +1,12 @@
+// filenames are of the form:
+// mmddyy_hhmm_ssid_xx.png
+//
+// m = month; d = day; y = year;
+// h = hour; m = minute; ssid = station id;
+// xx = 01, 02, 03, 04, 05, or 06
+// 01, 02, 03 are shortperiod; 04, 05, 06 are longperiod
+// 01, 04 are up-down; 02, 05 are north-south; 03, 06 are east-west
+
 var fs = require("fs");
 
 function validDateTime(dateString, timeString) {
