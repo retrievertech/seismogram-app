@@ -53,7 +53,7 @@ export class FileStatus {
   }
 
   hasData(code) {
-    return code === 3 || code === 4;
+    return code === 3 || code === 4 || code === 5;
   }
 
   hasLog(code) {
