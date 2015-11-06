@@ -8,6 +8,7 @@ import { Popup } from "./Popup.svc.js";
 import { SeismogramMap } from "./SeismogramMap.svc.js";
 import { SeismogramMapLoader } from "./SeismogramMapLoader.svc.js";
 import { MapLink } from "./MapLink.dir.js";
+import { ScrollToBottom } from "./ScrollToBottom.dir.js";
 
 // App sections
 import { Setup as BrowseSetup } from "./browse/Setup.js";
@@ -25,6 +26,7 @@ app.service("SeismogramMap", SeismogramMap)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
   .directive("mapLink", MapLink)
+  .directive("scrollToBottom", ScrollToBottom)
   // An authorization interceptor. Injects auth headers on the way out and looks
   // for 401 (unauthorized) status on the way back.
   .factory("Authorization", ($location, $q, ServerUrls) => {

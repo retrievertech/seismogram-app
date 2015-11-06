@@ -44,6 +44,14 @@ export class Browse {
       });
     };
 
+    $scope.loadMoreFiles = () => {
+      return Query.moreFiles().then((res) => {
+        console.log("Query complete.", res.data);
+        // update the QueryData files data
+        QueryData.moreFilesData(res.data);
+      });
+    };
+
     var main = () => {
       // If we come here from a different route (e.g. by clicking the back button from
       // another view), we see if the QueryData service had alrady been populated with

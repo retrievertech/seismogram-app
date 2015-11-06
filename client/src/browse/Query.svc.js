@@ -23,6 +23,7 @@ export class Query {
     this.model.stationNames = "";
     this.model.fileNames = "";
     this.model.status = {};
+    this.model.page = 1;
 
     this.FileStatus.statuses.forEach((status) => {
       var value = window._.contains(this.initialQueryStatuses, status.code);
@@ -44,11 +45,26 @@ export class Query {
     });
   }
 
-  queryFiles(paramModel) {
-    var params = this.createQuery(paramModel);
+  queryFiles() {
+    // reset the page number of results
+    this.model.page = 1;
+    
+    var params = this.createQuery();
     return this.$http({
       method: "GET",
       url: this.ServerUrls.filesUrl,
+      params: params
+    });
+  }
+
+  moreFiles() {
+    // increment the page number of results
+    this.model.page += 1;
+
+    var params = this.createQuery();
+    return this.$http({
+      method: "GET",
+      url: this.ServerUrls.moreFilesUrl,
       params: params
     });
   }
@@ -97,7 +113,8 @@ export class Query {
       stationIds: stationIds.join(","),
       status: status.join(","),
       fileNames: queryParamModel.fileNames,
-      bins: queryParamModel.numBins
+      bins: queryParamModel.numBins,
+      page: queryParamModel.page
     };
 
     var dateFrom = new Date(queryParamModel.dateFrom);

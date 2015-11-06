@@ -50,6 +50,12 @@ export class QueryData {
     this.gotDataAlready = true;
   }
 
+  // called with new file data loaded from subsequent pages 
+  moreFilesData(data) {
+    this.filesQueryData.files = this.filesQueryData.files.concat(data.files);
+    this.setGroups(this.filesQueryData.files);
+  }
+
   resultsBBox() {
     var stationIds = Object.keys(this.filesQueryData.stations);
 

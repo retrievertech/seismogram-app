@@ -3,6 +3,7 @@ export class ServerUrls {
     var port = 3000;
     this.url = $location.protocol() + "://" + $location.host() + ":" + port;
     this.filesUrl = this.url + "/query/files";
+    this.moreFilesUrl = this.url + "/query/morefiles";
     this.fileUrl = this.url + "/query/file";
     this.stationsUrl = this.url + "/query/stations";
     this.tilesUrl = this.url + "/tiles";
