@@ -25,6 +25,10 @@ router.get("/stations", auth, function(req, res, next) {
   });
 });
 
+//
+// The /file/:filename route is only used when a user navigates directly
+// to seismo.redfish.com/#/view/some_image_name.png.
+//
 router.get("/file/:filename", auth, function(req, res, next) {
   var filename = req.params.filename;
 
