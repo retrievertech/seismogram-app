@@ -54,6 +54,12 @@ router.get("/file/:filename", auth, function(req, res, next) {
   });
 });
 
+//
+// The /files route returns the first page of files that satisfy a query,
+// as well as stats about the entire collection of files that satisfy
+// that query. It gets hit when the page loads and when the user
+// clicks the "Find Sesimograms" button.
+//
 router.get("/files", auth, function(req, res, next) {
   console.log("--- processing files query ---", req.query);
   var hit = queryCache.hit(req.query);
@@ -145,6 +151,11 @@ router.get("/files", auth, function(req, res, next) {
   });
 });
 
+//
+// The /morefiles route is used to load subsequent pages of file results.
+// It gets hit when the user scrolls to the bottom of the currently
+// rendered results in the browser.
+//
 router.get("/morefiles", auth, function(req, res, next) {
   console.log("--- processing morefiles query ---", req.query);
 
