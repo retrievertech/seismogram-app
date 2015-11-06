@@ -62,74 +62,12 @@ router.get("/files", auth, function(req, res, next) {
     res.send(hit);
     return;
   }
-  var edited = req.query.edited;
-  var dateFrom = new Date(req.query.dateFrom);
-  var dateTo = new Date(req.query.dateTo);
+  
+  var query = constructMongoQuery(req);
 
   // result paging
   var page = parseInt(req.query.page) || 1;
   var pageSize = 20;
-
-  // station ids to match. If no ids are provided, all ids are matched
-  var stationIds = [];
-  if (req.query.stationIds) {
-    stationIds = req.query.stationIds.split(",").map(function(stationId) {
-      return stationId.trim();
-    });
-  }
-
-  var fileNames = [];
-  if (req.query.fileNames) {
-    req.query.fileNames.split(",").reduce(function(acc, fileName) {
-      try {
-        acc.push(new RegExp(fileName.trim()));
-      } catch (e) {
-        console.log("bad file name regexp", e);
-      }
-      return acc;
-    }, fileNames);
-  }
-
-  var status = [];
-  if (req.query.status) {
-    status = req.query.status.split(",").reduce(function(acc, status) {
-      var cleanedUpStatus = parseInt(status.trim());
-      if (!isNaN(cleanedUpStatus)) {
-        acc.push(cleanedUpStatus);
-      }
-      return acc;
-    }, []);
-  }
-
-  // build the query.
-  // queryComponents is a list of clauses that will be $and-ed together
-  var queryComponents = [];
-
-  // the date range
-  var dateComponents = {};
-  // the image date should be greater or equal to datFrom (lower bound)
-  if (dateFrom.toString() !== "Invalid Date") dateComponents.$gte = dateFrom;
-  // and less than or equal to dateTo (upper bound)
-  if (dateTo.toString() !== "Invalid Date") dateComponents.$lte = dateTo;
-  if (Object.keys(dateComponents).length > 0) queryComponents.push({date: dateComponents});
-
-  // edited bit
-  if (edited) {
-    var editedValue = JSON.parse(edited);
-    if (editedValue)
-      queryComponents.push({edited: editedValue});
-  }
-  // station Ids to match
-  if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
-  // statuses
-  queryComponents.push({status: {$in: status}});
-
-  if (fileNames.length > 0) queryComponents.push({name: {$in: fileNames}});
-
-  // final query
-  var query = {};
-  if (queryComponents.length > 0) query.$and = queryComponents;
-  console.log("query =", JSON.stringify(query, null, 2));
 
   async.waterfall([
     connect,
@@ -206,5 +144,74 @@ router.get("/files", auth, function(req, res, next) {
     if (err) next(err);
   });
 });
+
+function constructMongoQuery(req) {
+  var edited = req.query.edited;
+  var dateFrom = new Date(req.query.dateFrom);
+  var dateTo = new Date(req.query.dateTo);
+
+  // station ids to match. If no ids are provided, all ids are matched
+  var stationIds = [];
+  if (req.query.stationIds) {
+    stationIds = req.query.stationIds.split(",").map(function(stationId) {
+      return stationId.trim();
+    });
+  }
+
+  var fileNames = [];
+  if (req.query.fileNames) {
+    req.query.fileNames.split(",").reduce(function(acc, fileName) {
+      try {
+        acc.push(new RegExp(fileName.trim()));
+      } catch (e) {
+        console.log("bad file name regexp", e);
+      }
+      return acc;
+    }, fileNames);
+  }
+
+  var status = [];
+  if (req.query.status) {
+    status = req.query.status.split(",").reduce(function(acc, status) {
+      var cleanedUpStatus = parseInt(status.trim());
+      if (!isNaN(cleanedUpStatus)) {
+        acc.push(cleanedUpStatus);
+      }
+      return acc;
+    }, []);
+  }
+
+  // build the query.
+  // queryComponents is a list of clauses that will be $and-ed together
+  var queryComponents = [];
+
+  // the date range
+  var dateComponents = {};
+  // the image date should be greater or equal to datFrom (lower bound)
+  if (dateFrom.toString() !== "Invalid Date") dateComponents.$gte = dateFrom;
+  // and less than or equal to dateTo (upper bound)
+  if (dateTo.toString() !== "Invalid Date") dateComponents.$lte = dateTo;
+  if (Object.keys(dateComponents).length > 0) queryComponents.push({date: dateComponents});
+
+  // edited bit
+  if (edited) {
+    var editedValue = JSON.parse(edited);
+    if (editedValue)
+      queryComponents.push({edited: editedValue});
+  }
+  // station Ids to match
+  if (stationIds.length > 0) queryComponents.push({stationId: {$in: stationIds}});
+  // statuses
+  queryComponents.push({status: {$in: status}});
+
+  if (fileNames.length > 0) queryComponents.push({name: {$in: fileNames}});
+
+  // final query
+  var query = {};
+  if (queryComponents.length > 0) query.$and = queryComponents;
+  console.log("query =", JSON.stringify(query, null, 2));
+
+  return query;
+}
 
 module.exports = router;
