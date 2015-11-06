@@ -14,7 +14,7 @@ export class StationMap {
   init(id) {
     var map = window.stationmap = this.map = new Leaflet(id, null, {
       minZoom: 1,
-      maxZoom: 4,
+      maxZoom: 5,
       maxBounds: [[-90, -180], [90, 180]]
     });
 
