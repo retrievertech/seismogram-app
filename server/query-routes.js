@@ -145,6 +145,38 @@ router.get("/files", auth, function(req, res, next) {
   });
 });
 
+router.get("/morefiles", auth, function(req, res, next) {
+  console.log("--- processing morefiles query ---", req.query);
+
+  var query = constructMongoQuery(req);
+
+  // result paging
+  var page = parseInt(req.query.page) || 1;
+  var pageSize = 20;
+
+  async.waterfall([
+    connect,
+    function(db, cb) {
+      console.time("filteredFiles");
+      db.collection("files")
+        .find(query)
+        .skip(pageSize * (page-1))
+        .limit(pageSize)
+        .toArray(function(err, filteredFiles) {
+          console.timeEnd("filteredFiles");
+          cb(err, db, filteredFiles);
+        });
+    },
+    function(db, filteredFiles, cb) {
+      res.send({ files: filteredFiles });
+      db.close();
+      cb(null);
+    }
+  ], function(err) {
+    if (err) next(err);
+  });
+});
+
 function constructMongoQuery(req) {
   var edited = req.query.edited;
   var dateFrom = new Date(req.query.dateFrom);
