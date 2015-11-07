@@ -104,6 +104,10 @@ export class QueryData {
     return this.stationQueryData.find((station) => station.stationId === id);
   }
 
+  getStationByCode(code) {
+    return this.stationQueryData.find((station) => station.code === code); 
+  }
+
   isLongPeriod(file) {
     if (!file) return;
     var type = parseInt(file.type);

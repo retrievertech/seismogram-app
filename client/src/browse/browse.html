@@ -9,7 +9,20 @@
       <span class="title-subtext">Browser</span>
     </div>
 
-    <!-- the links in the top-center -->
+    <!-- the filter button in the center -->
+    <div class="filter">
+      <a ng-class="{'active': filterVisible}" ng-click="filterVisible=true">
+        <span class="icon-search"></span>
+        <span ng-show="queryModel.stationNames === ''">Search</span>
+        <span ng-show="queryModel.stationNames !== ''">{{ queryModel.stationNames | formatStationLocation }}</span>
+      </a>
+      <!-- the X button in the top-right -->
+      <span class="reset-filter" ng-show="queryModel.stationNames !== ''" ng-click="resetFilter()">
+        <span class="icon-cross"></span>
+      </span>
+    </div>
+
+    <!-- the links in the top-right -->
     <div class="links">
       <a ng-class="{'active': listVisible}" ng-click="listVisible=true">
         <span class="icon-list"></span> List
@@ -18,14 +31,7 @@
       <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">
         <span class="icon-location2"></span> Map
       </a>
-    </div>
-
-    <!-- the filter button in the top-right -->
-    <div class="filter">
-      <a ng-class="{'active': filterVisible}" ng-click="filterVisible=true">
-        <span class="icon-search"></span> Search
-      </a>
-    </div>
+    </div>    
   </div>
 
 

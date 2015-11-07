@@ -18,6 +18,11 @@ export class Browse {
     // Whether the filter/query UI is visible
     $scope.filterVisible = false;
 
+    $scope.resetFilter = () => {
+      Query.model.stationNames = "";
+      $scope.queryFiles();
+    }
+
     // The query model is a member of the Query service so that it persists across
     // view changes.
     $scope.queryModel = Query.model;
