@@ -18,6 +18,13 @@ export class Browse {
     // Whether the filter/query UI is visible
     $scope.filterVisible = false;
 
+    StationMap.setStationCallback((station) => {
+      // Query.model.stationNames = station.location.split(",")[0];
+      Query.model.stationNames = station.code;
+      $scope.queryFiles();
+      $scope.listVisible = true;
+    });
+
     $scope.resetFilter = () => {
       Query.model.stationNames = "";
       $scope.queryFiles();

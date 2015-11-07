@@ -59,6 +59,10 @@ export class StationMap {
         })
       });
 
+      marker.on("click", () => {
+        this.stationCallback(station);
+      });
+
       // Make sure you don't clobber double-click for zooming
       marker.on("dblclick", () => this.map.leafletMap.zoomIn());
       // Save the marker so we can get rid of it on the next search
@@ -73,5 +77,14 @@ export class StationMap {
     this.updateBounds();
     // drop result pins on the map
     this.renderQueryData();
+  }
+
+  stationCallback(stationId) {
+    // Do nothing by default. A controller can set this
+    // callback with setStationCallback()
+  }
+
+  setStationCallback(cb) {
+    this.stationCallback = cb;
   }
 }
