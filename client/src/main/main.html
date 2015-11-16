@@ -1,24 +1,37 @@
 <div class="main-container">
-  <h1>Skate</h1>
-  <div ng-show="!loggedIn">
-    <div class="field">
-      <input type="text" placeholder="Username" ng-model="username"></input>
-    </div>
-    <div class="field">
-      <input type="password" placeholder="Password" ng-model="password"></input>
-    </div>
-    <div class="button-container">
-      <div class="button login" ng-click="logIn()">Log In</div>
+  <div class="header">
+    <img id="logo" src="img/SKATE.png" />
+
+    <div class="right-of-logo">
+      <div ng-show="!loggedIn">
+        <div class="field">
+          <input type="text" placeholder="Username" ng-model="username"></input>
+        </div>
+        <div class="field">
+          <input type="password" placeholder="Password" ng-model="password"></input>
+        </div>
+        <div class="button-container">
+          <div class="button login" ng-click="logIn()">Log In</div>
+        </div>
+      </div>
+
+      <div ng-show="loggedIn">
+        <!-- <p>Wecome to Skate. You are logged in as &quot;{{Auth.auth.username}}&quot;.</p> -->
+        <div class="button-container">
+          <div class="button browse" ng-click="$location.path('/browse')">Browse Seismograms</div>
+        </div>
+        <div class="button-container">
+          <div class="button logout" ng-click="logOut()">Log Out</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div ng-show="loggedIn">
-    <p>Wecome to Skate. You are logged in as &quot;{{Auth.auth.username}}&quot;.</p>
-    <div class="button-container">
-      <div class="button browse" ng-click="$location.path('/browse')">Browse Seismograms</div>
+  <div id="about">
     <div>
-    <div class="button-container">
-      <div class="button logout" ng-click="logOut()">Log Out</div>
-    <div>
+      SKATE (Seismogram Kit for Automatic Trace Extraction) is a web-based software tool for the digitization of seismic traces in historic analog seismograms. This work was performed under DOE contract DE-SC0008219. Retriever Technology has scanned approximately 150,000 WWSSN images under several contracts, including but not limited to USGS award G09PC00116, G09PD02064, and G10PD02236. Most of these seismograms are available for viewing on this website. A significant subset has been processed and is ready for editing and timeseries assignment. Refer to the User Manual for instructions on how to operate SKATE.
+      <br><br>
+      Questions and comments, including suggestions on how to improve SKATE should be directed to Dr. Andrew Bartlett at andy@retrievertech.com.
+    </div>
   </div>
 </div>
