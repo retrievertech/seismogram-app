@@ -20,6 +20,7 @@ var DELETE_IN_PROGRESS = false;
 
 function deleteOldFiles(cb) {
   if (DELETE_IN_PROGRESS) {
+    console.log("Already deleting images.");
     if (typeof cb === "function") {
       cb(null);
       return;
