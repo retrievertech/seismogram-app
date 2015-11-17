@@ -27,8 +27,6 @@ function deleteOldFiles(cb) {
     }
   }
 
-  DELETE_IN_PROGRESS = true;
-
   var filenames = fs
     .readdirSync(localPath(""))
     .filter(function(filename) {
@@ -44,6 +42,8 @@ function deleteOldFiles(cb) {
       return;
     }
   }
+
+  DELETE_IN_PROGRESS = true;
 
   var numFilesToDelete = filenames.length - MAX_LOCAL_FILES + 1;
   console.log("deleting", numFilesToDelete, "files");
