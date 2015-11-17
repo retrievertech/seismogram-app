@@ -48,7 +48,7 @@ function deleteOldFiles(cb) {
 
       // delete oldest files first
       results.sort(function(fileA, fileB) {
-        return fileA.birthtime.getTime() - fileB.birthtime.getTime();
+        return fileA.mtime.getTime() - fileB.mtime.getTime();
       });
 
       var pathsToDelete = results
