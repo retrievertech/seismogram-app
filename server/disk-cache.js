@@ -16,8 +16,18 @@ var bufferedRequests = {};
 // No more than this number of files are allowed to be saved locally.
 // (Prevents server from running out of disk space.)
 var MAX_LOCAL_FILES = 10;
+var DELETE_IN_PROGRESS = false;
 
 function deleteOldFiles(cb) {
+  if (DELETE_IN_PROGRESS) {
+    if (typeof cb === "function") {
+      cb(null);
+      return;
+    }
+  }
+
+  DELETE_IN_PROGRESS = true;
+
   var filenames = fs
     .readdirSync(localPath(""))
     .filter(function(filename) {
@@ -26,40 +36,47 @@ function deleteOldFiles(cb) {
 
   console.log(filenames.length, "files in local-file-cache");
 
+  // There's room for more files; carry on
   if (filenames.length < MAX_LOCAL_FILES) {
     if (typeof cb === "function") {
       cb(null);
+      return;
     }
-  } else {
-    var fullPaths = filenames.map(function(filename) {
-      return localPath(filename);
-    });
-
-    async.map(fullPaths, fs.stat, function(err, results) {
-      if (err) console.log(err);
-
-      var numFilesToDelete = filenames.length - MAX_LOCAL_FILES + 1;
-      console.log("deleting", numFilesToDelete, "files");
-      
-      // insert filenames into fs.stat results
-      results.forEach(function(info, idx) {
-        info.path = fullPaths[idx];
-      });
-
-      // delete oldest files first
-      results.sort(function(fileA, fileB) {
-        return fileA.mtime.getTime() - fileB.mtime.getTime();
-      });
-
-      var pathsToDelete = results
-        .slice(0, numFilesToDelete)
-        .map(function(file) { return file.path });
-
-      async.map(pathsToDelete, fs.unlink, function(err) {
-        if (err) console.log(err);
-      });
-    });
   }
+
+  var numFilesToDelete = filenames.length - MAX_LOCAL_FILES + 1;
+  console.log("deleting", numFilesToDelete, "files");
+
+  var fullPaths = filenames.map(function(filename) {
+    return localPath(filename);
+  });
+
+  async.map(fullPaths, fs.stat, function(err, results) {
+    if (err) console.log(err);
+    
+    // insert filenames into fs.stat results
+    results.forEach(function(info, idx) {
+      info.path = fullPaths[idx];
+    });
+
+    // delete oldest files first
+    results.sort(function(fileA, fileB) {
+      return fileA.mtime.getTime() - fileB.mtime.getTime();
+    });
+
+    var pathsToDelete = results
+      .slice(0, numFilesToDelete)
+      .map(function(file) { return file.path });
+
+    async.map(pathsToDelete, fs.unlink, function(err) {
+      DELETE_IN_PROGRESS = false;
+      if (err) console.log(err);
+      if (typeof cb === "function") {
+        cb(null);
+        return;
+      }
+    });
+  });
 }
 
 function ensureFileIsLocal(filename, cb) {
@@ -70,14 +87,15 @@ function ensureFileIsLocal(filename, cb) {
     // file is already local
     cb(null);
   } else {
-    deleteOldFiles(function() {
-      // file is on s3
-      console.time("s3fetch");
+    // file is on s3
+    console.time("s3fetch");
 
-      if (!bufferedRequests[filename]) {
-        // this is the first request for this file; create an object that will
-        // buffer subsequent requests.
-        bufferedRequests[filename] = [];
+    if (!bufferedRequests[filename]) {
+      // this is the first request for this file; create an object that will
+      // buffer subsequent requests.
+      bufferedRequests[filename] = [];
+
+      deleteOldFiles(function() {
 
         var command = "aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + escape(path);
 
@@ -106,11 +124,12 @@ function ensureFileIsLocal(filename, cb) {
           // there will be no more buffering
           delete bufferedRequests[filename];
         });
-      }
 
-      // buffer this request for processing when the copy from s3 is done.
-      bufferedRequests[filename].push(cb);
-    });
+      });
+    }
+
+    // buffer this request for processing when the copy from s3 is done.
+    bufferedRequests[filename].push(cb);
   }
 }
 
