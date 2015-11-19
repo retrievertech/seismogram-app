@@ -1,3 +1,6 @@
+var _ = window._;
+var JSZip = window.JSZip;
+
 export class DataHandler {
 
   constructor($http, $timeout, ScreenMessage, ServerUrls, SeismogramMap) {
@@ -51,7 +54,7 @@ export class DataHandler {
   downloadFiles() {
     var layers = this.SeismogramMap.getAllData();
     var filename = this.SeismogramMap.currentFile.name + ".zip";
-    var zip = new window.JSZip();
+    var zip = new JSZip();
     layers.forEach((layer) => zip.file(layer.key + ".json", layer.contents));
     var data = zip.generate({ type: "blob" });
     window.saveAs(data, filename);
