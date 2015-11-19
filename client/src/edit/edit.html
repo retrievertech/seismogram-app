@@ -245,6 +245,12 @@
           Download Data
         </div>
       </div>
+      <div class="action" ng-class="{ disabled: !SeismogramMap.assignment.hasData() }">
+        <div class="action-name" ng-click="downloadCSV()">
+          <span class="icon-download3">&nbsp;</span>
+          Download CSV
+        </div>
+      </div>
     </div>
   </div>
 </div>

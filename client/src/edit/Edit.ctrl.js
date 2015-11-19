@@ -3,7 +3,7 @@ var infoOpened = false;
 export class Edit {
   constructor($scope, $routeParams, SeismogramMap, QueryData, SeismogramMapLoader,
               FileStatus, MeanLinesEditor, SegmentErasureEditor, AssignmentEditor,
-              Popup, DataHandler) {
+              Popup, DataHandler, ScreenMessage) {
 
     $scope.SeismogramMap = SeismogramMap;
     $scope.MeanLinesEditor = MeanLinesEditor;
@@ -71,6 +71,14 @@ export class Edit {
     };
 
     $scope.download = () => DataHandler.downloadFiles();
+
+    $scope.downloadCSV = () => {
+      if (!SeismogramMap.assignment.hasData()) {
+        ScreenMessage.ephemeral("You need to assign segments to meanlines before you can export as CSV.", "error", 5000);
+        return;
+      }
+      DataHandler.downloadCenterlinesAsCSV();
+    }
 
     SeismogramMapLoader.load($routeParams.filename);
   }
