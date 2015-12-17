@@ -47,10 +47,15 @@ export class SeismogramMap {
         leafletLayer: null,
         style: {
           style: () => {
-            var randomChannel = () => Math.floor(Math.random() * 256);
-            var randomColor = () => "rgb(" + [0,0,0].map(randomChannel).join(",") + ")";
+            var nextColor;
+            if (this.colors.length > 0) {
+              nextColor = this.colors.pop();
+            } else {
+              var randomChannel = () => Math.floor(Math.random() * 256);
+              nextColor = "rgb(" + [0,0,0].map(randomChannel).join(",") + ")";
+            }
             return {
-              color: randomColor(),
+              color: nextColor,
               weight: 3,
               opacity: 0.9
             };
@@ -63,7 +68,7 @@ export class SeismogramMap {
         zIndex: 13,
         leafletLayer: null,
         style: {
-          color: "white",
+          color: "red",
           weight: 3,
           opacity: 0.9
         }
@@ -127,6 +132,8 @@ export class SeismogramMap {
   loadImage(file) {
     this.currentFile = file;
     this.imageIsLoaded = false;
+
+    this.colors = this.createColorList();
 
     var path;
 
@@ -231,5 +238,32 @@ export class SeismogramMap {
     }
 
     return layers;
+  }
+
+  createColorList() {
+    // from https://eleanormaclure.files.wordpress.com/2011/03/colour-coding.pdf
+    // and http://stackoverflow.com/a/4382138/1457005
+    return [
+      "rgb(255, 179, 0)",
+      "rgb(128, 62, 117)",
+      "rgb(255, 104, 0)",
+      "rgb(166, 189, 215)",
+      "rgb(193, 0, 32)",
+      "rgb(206, 162, 98)",
+      "rgb(129, 112, 102)",
+      "rgb(0, 125, 52)",
+      "rgb(246, 118, 142)",
+      "rgb(0, 83, 138)",
+      "rgb(255, 122, 92)",
+      "rgb(83, 55, 122)",
+      "rgb(255, 142, 0)",
+      "rgb(179, 40, 81)",
+      "rgb(244, 200, 0)",
+      "rgb(127, 24, 13)",
+      "rgb(147, 170, 0)",
+      "rgb(89, 51, 21)",
+      // "rgb(241, 58, 19)", // too similar to "red"
+      "rgb(35, 44, 22)"
+    ];
   }
 }
