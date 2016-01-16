@@ -9,7 +9,7 @@ var connect = function(cb) {
   mongo.connect("mongodb://localhost/seismo", cb);
 };
 
-router.get("/stations", auth, function(req, res, next) {
+router.get("/stations", function(req, res, next) {
   async.waterfall([
     connect,
     function(db, cb) {
@@ -29,7 +29,7 @@ router.get("/stations", auth, function(req, res, next) {
 // The /file/:filename route is only used when a user navigates directly
 // to seismo.redfish.com/#/view/some_image_name.png.
 //
-router.get("/file/:filename", auth, function(req, res, next) {
+router.get("/file/:filename", function(req, res, next) {
   var filename = req.params.filename;
 
   async.waterfall([
@@ -60,7 +60,7 @@ router.get("/file/:filename", auth, function(req, res, next) {
 // that query. It gets hit when the page loads and when the user
 // clicks the "Find Sesimograms" button.
 //
-router.get("/files", auth, function(req, res, next) {
+router.get("/files", function(req, res, next) {
   console.log("--- processing files query ---", req.query);
   var hit = queryCache.hit(req.query);
   if (hit) {
@@ -156,7 +156,7 @@ router.get("/files", auth, function(req, res, next) {
 // It gets hit when the user scrolls to the bottom of the currently
 // rendered results in the browser.
 //
-router.get("/morefiles", auth, function(req, res, next) {
+router.get("/morefiles", function(req, res, next) {
   console.log("--- processing morefiles query ---", req.query);
 
   var query = constructMongoQuery(req);

@@ -60,7 +60,7 @@ router.get("/setstatus/:filename/:status", auth, function(req, res, next) {
   });
 });
 
-router.post("/assign", auth, function(req, res) {
+router.post("/assign", function(req, res) {
   var segments = req.body.segments;
   var meanlines = req.body.meanlines;
   var path = mktemp.createDirSync("/tmp/seismo-assign.XXXXX");
