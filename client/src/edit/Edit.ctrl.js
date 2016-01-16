@@ -3,7 +3,7 @@ var infoOpened = false;
 export class Edit {
   constructor($scope, $routeParams, SeismogramMap, QueryData, SeismogramMapLoader,
               FileStatus, MeanLinesEditor, SegmentErasureEditor, AssignmentEditor,
-              Popup, DataHandler, ScreenMessage) {
+              Popup, DataHandler, ScreenMessage, LogInDialog) {
 
     $scope.SeismogramMap = SeismogramMap;
     $scope.MeanLinesEditor = MeanLinesEditor;
@@ -55,6 +55,12 @@ export class Edit {
     };
 
     $scope.saveChanges = () => {
+      if (!$scope.loggedIn) {
+        ScreenMessage.ephemeral("You need to log in before you can save changes.", "error", 5000);
+        LogInDialog.open();
+        return;
+      }
+
       Popup.open("This action will upload the current data to the server. Proceed?", () => {
         DataHandler.saveChanges();
       });

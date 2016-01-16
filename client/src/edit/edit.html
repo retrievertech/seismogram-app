@@ -239,7 +239,7 @@
           Discard Changes
         </div>
       </div>
-      <div class="action">
+      <div class="action" ng-class="{ disabled: !loggedIn }">
         <div class="action-name" ng-click="saveChanges()">
           <span class="icon-cloud-upload">&nbsp;</span>
           Save Changes
