@@ -89,6 +89,8 @@ app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup)
     });
   };
 
+  // Do an initial check for saved auth info.
+  $rootScope.checkLogin();
 
   console.log("Seismo app is running");
 });
