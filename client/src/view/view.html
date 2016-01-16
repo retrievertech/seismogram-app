@@ -10,6 +10,12 @@
       &nbsp;&bullet;&nbsp;
       <span class="title-subtext" ng-click="go('/browse')">Go to Browser</span>
     </div>
+    <div class="title-right">
+      <span class="title-subtext" ng-click="LogInDialog.open()">
+        <span ng-show="!loggedIn">Log In</span>
+        <span ng-show="loggedIn">Log Out</span>
+      </span>
+    </div>
   </div>
 
   <!-- the map showing the tiled image and metadata -->

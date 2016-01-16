@@ -44,6 +44,28 @@
       </div>
     </div>
 
+    <!-- log in dialog -->
+    <div class="log-in-dialog" ng-show="LogInDialog.visible">
+      <div ng-show="!loggedIn">
+        <div class="field">
+          <input type="text" placeholder="Username" ng-model="LogInDialog.username"></input>
+        </div>
+        <div class="field">
+          <input type="password" placeholder="Password" ng-model="LogInDialog.password"></input>
+        </div>
+        <div class="button-container">
+          <div class="button login" ng-click="LogInDialog.logIn()">Log In</div>
+          <div class="button close" ng-click="LogInDialog.close()">Close</div>
+        </div>
+      </div>
+      <div ng-show="loggedIn">
+        <div class="button-container">
+          <div class="button logout" ng-click="LogInDialog.logOut()">Log Out</div>
+          <div class="button close" ng-click="LogInDialog.close()">Close</div>
+        </div>
+      </div>
+    </div>
+
     <div class="app-container" ng-view></div>
   </body>
 </html>

@@ -91,6 +91,64 @@ html {
           cursor: pointer;
         }
       }
+
+    }
+
+    // Dialog specific to logging in
+    .log-in-dialog {
+      position: absolute;
+      top: 50px;
+      left: 50%;
+      width: 202px;
+      margin-left: -101px;
+      background: white;
+      border-radius: 3px;
+      box-shadow: 0px 1px 3px #888;
+      z-index: 50;
+      font-size: 16px;
+      text-align: center;
+
+      .field {
+        margin: 5px;
+        input {
+          display: inline-block;
+          width: 185px;
+          padding: 5px 0px 5px 5px;
+          font-size: 16px;
+          border-radius: 3px;
+          border: 1px solid #eee;
+          &:focus {
+            outline: 0;
+          }
+        }
+      }
+      .button-container {
+        margin-top: 5px;
+        .button {
+          display: inline-block;
+          width: 170px;
+          padding: 10px;
+          box-shadow: 0px 1px 2px #a7a7a7;
+          border-radius: 3px;
+          margin-bottom: 5px;
+          cursor: pointer;
+          &.login {
+            background: #37e29f;
+          }
+          &.logout {
+            background: #ff9b9b;
+          }
+          &.browse {
+            color: #d7d7d7;
+            background: rgba(0, 7, 56, 0.8);
+            box-shadow: 0px 1px 2px #666;
+          }
+          &.close {
+            background: rgba(193, 193, 193, 0.8);
+          }
+        }
+      }
+
     }
 
     // The header for all the sections. I chose to make it absolute and float on top of the
@@ -125,6 +183,15 @@ html {
         .title-subtext {
           font-size: 16px;
         }
+      }
+      .title-right {
+        font-weight: bold;
+        position: absolute;
+        top: 0;
+        right: 10px;
+        padding-top: 6px;
+        font-size: 16px;
+        cursor: pointer;
       }
     }
 

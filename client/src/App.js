@@ -5,6 +5,7 @@ import { Auth } from "./Auth.js";
 // Top-level / shared modules
 import { ScreenMessage } from "./ScreenMessage.svc.js";
 import { Popup } from "./Popup.svc.js";
+import { LogInDialog } from "./LogInDialog.svc.js";
 import { SeismogramMap } from "./SeismogramMap.svc.js";
 import { SeismogramMapLoader } from "./SeismogramMapLoader.svc.js";
 import { MapLink } from "./MapLink.dir.js";
@@ -25,6 +26,7 @@ app.service("SeismogramMap", SeismogramMap)
   .service("ScreenMessage", ScreenMessage)
   .service("SeismogramMapLoader", SeismogramMapLoader)
   .service("Popup", Popup)
+  .service("LogInDialog", LogInDialog)
   .directive("mapLink", MapLink)
   .directive("scrollToBottom", ScrollToBottom)
   // An authorization interceptor. Injects auth headers on the way out and looks
@@ -62,11 +64,12 @@ app.config(($routeProvider, $httpProvider) => {
 });
 
 // Root controller. The function "go" is available to all scopes in all sections
-app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup) {
+app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup, LogInDialog) {
   window.scope = $rootScope;
 
   $rootScope.ScreenMessage = ScreenMessage;
   $rootScope.Popup = Popup;
+  $rootScope.LogInDialog = LogInDialog;
   $rootScope.go = (path) => $location.path(path);
 
   $rootScope.range = (a,b) => {
