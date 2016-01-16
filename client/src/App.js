@@ -46,10 +46,6 @@ app.service("SeismogramMap", SeismogramMap)
       },
       // On the way in:
       responseError: (rejection) => {
-        // If unauthorized we redirect to the home page.
-        if (rejection.status === 401) {
-          $location.path("/");
-        }
         return $q.reject(rejection);
       }
     };
@@ -93,17 +89,6 @@ app.run(function($rootScope, $location, $http, ServerUrls, ScreenMessage, Popup)
     });
   };
 
-  // Check login status before each route change. TODO: Ideally, we want to check
-  // login state before the app loads anything. This event works OK-ish, but while
-  // we hit the server to check login status, angular is already in the process of
-  // loading the route. What we want is to prevent it from loading anything.
-  $rootScope.$on("$routeChangeStart", (evt, next) => {
-    $rootScope.checkLogin().then(() => {
-      if (next.$$route.originalPath !== "/" && !$rootScope.loggedIn) {
-        evt.preventDefault();
-      }
-    });
-  });
 
   console.log("Seismo app is running");
 });
