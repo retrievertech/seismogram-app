@@ -1,30 +1,6 @@
 <div class="main-container">
   <div class="header">
     <img id="logo" src="img/SKATE.png" />
-
-    <div class="right-of-logo">
-      <div ng-show="!loggedIn">
-        <div class="field">
-          <input type="text" placeholder="Username" ng-model="username"></input>
-        </div>
-        <div class="field">
-          <input type="password" placeholder="Password" ng-model="password"></input>
-        </div>
-        <div class="button-container">
-          <div class="button login" ng-click="logIn()">Log In</div>
-        </div>
-      </div>
-
-      <div ng-show="loggedIn">
-        <!-- <p>Wecome to Skate. You are logged in as &quot;{{Auth.auth.username}}&quot;.</p> -->
-        <div class="button-container">
-          <div class="button browse" ng-click="$location.path('/browse')">Browse Seismograms</div>
-        </div>
-        <div class="button-container">
-          <div class="button logout" ng-click="logOut()">Log Out</div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div id="about">
@@ -33,5 +9,9 @@
       <br><br>
       Questions and comments, including suggestions on how to improve SKATE should be directed to Dr. Andrew Bartlett at andy@retrievertech.com.
     </div>
+  </div>
+
+  <div class="button-container">
+    <div class="button browse" ng-click="$location.path('/browse')">Browse Seismograms</div>
   </div>
 </div>
