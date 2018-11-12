@@ -19,7 +19,6 @@
 
     </script>
     <script type="text/javascript" src="bower_components/traceur/traceur.js"></script>
-    <script type="text/javascript">new traceur.WebPageTranscoder(document.location.href).run();</script>
     <script type="text/javascript" src="bower_components/angular/angular.js"></script>
     <script type="text/javascript" src="bower_components/angular-route/angular-route.js"></script>
     <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
@@ -32,8 +31,9 @@
     <script type="text/javascript" src="bower_components/file-saver/dist/FileSaver.js"></script>
     <script type="text/javascript" src="bower_components/socket.io-client/socket.io.js"></script>
     <script type="text/javascript" src="bower_components/localforage/dist/localforage.js"></script>
-    <script type="module">
-      import "src/App.js";
+    <script type="text/javascript">
+      window.System = new traceur.loader.BrowserTraceurLoader();
+      System.import('src/App.js');
     </script>
   </head>
   <body ng-cloak>
