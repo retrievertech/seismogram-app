@@ -6,14 +6,14 @@ var queryCache = require("./query-cache");
 var auth = require("./auth");
 
 var connect = function(cb) {
-  mongo.connect("mongodb://localhost/seismo", cb);
+  mongo.connect("mongodb://localhost/seismo", { useNewUrlParser: true }, cb);
 };
 
 router.get("/stations", function(req, res, next) {
   async.waterfall([
     connect,
-    function(db, cb) {
-      var stations = db.collection("stations");
+    function(client, cb) {
+      var stations = client.db().collection("stations");
       stations.find({}).toArray(cb);
     },
     function(stations, cb) {
@@ -34,19 +34,19 @@ router.get("/file/:filename", function(req, res, next) {
 
   async.waterfall([
     connect,
-    function(db, cb) {
-      var files = db.collection("files");
+    function(client, cb) {
+      var files = client.db().collection("files");
       files.find({name: filename}).toArray(function(err, files) {
-        cb(err, db, files);
+        cb(err, client, files);
       });
     },
-    function(db, files, cb) {
+    function(client, files, cb) {
       if (files.length > 0) {
         res.status(200).send(files[0]);
       } else {
         res.status(404).send("Not Found");
       }
-      db.close();
+      client.close();
       cb(null);
     }
   ], function(err) {
@@ -77,7 +77,8 @@ router.get("/files", function(req, res, next) {
 
   async.waterfall([
     connect,
-    function(db, cb) {
+    function(client, cb) {
+      var db = client.db();
       async.parallel({
         filteredFiles: function(cb) {
           console.time("filteredFiles");
@@ -129,10 +130,10 @@ router.get("/files", function(req, res, next) {
         }
       },
       function(err, results) {
-        cb(err, db, results);
+        cb(err, client, results);
       });
     },
-    function(db, results, cb) {
+    function(client, results, cb) {
       var payload = {
         stations: results.counts.stationMap,
         lowDate: results.lowDate,
@@ -143,7 +144,7 @@ router.get("/files", function(req, res, next) {
 
       queryCache.put(req.query, payload);
       res.send(payload);
-      db.close();
+      client.close();
       cb(null);
     }
   ], function(err) {
@@ -167,20 +168,20 @@ router.get("/morefiles", function(req, res, next) {
 
   async.waterfall([
     connect,
-    function(db, cb) {
+    function(client, cb) {
       console.time("filteredFiles");
-      db.collection("files")
+      client.db().collection("files")
         .find(query)
         .skip(pageSize * (page-1))
         .limit(pageSize)
         .toArray(function(err, filteredFiles) {
           console.timeEnd("filteredFiles");
-          cb(err, db, filteredFiles);
+          cb(err, client, filteredFiles);
         });
     },
-    function(db, filteredFiles, cb) {
+    function(client, filteredFiles, cb) {
       res.send({ files: filteredFiles });
-      db.close();
+      client.close();
       cb(null);
     }
   ], function(err) {
