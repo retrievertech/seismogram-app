@@ -1,5 +1,3 @@
-import {Leaflet} from "bower_components/redfish-util/lib/Leaflet.js";
-
 var L = window.L;
 
 export class StationMap {
@@ -12,29 +10,24 @@ export class StationMap {
   }
 
   init(id) {
-    var map = window.stationmap = this.map = new Leaflet(id, null, {
+    this.leafletMap = new L.Map(id, {
       minZoom: 1,
       maxZoom: 5,
       maxBounds: [[-90, -180], [90, 180]]
     });
-
-    this.leafletMap = map.leafletMap;
-
-    map.leafletMap.setView(new L.LatLng(0,0), 3);
-    map.addLayers();
-    map.setBaseLayer(map.baseLayers[3]);
+    L.control.scale().addTo(this.leafletMap);
+    this.leafletMap.setView(new L.LatLng(0,0), 3);
 
     // see https://www.mapbox.com/developers/api/maps/ for other tile styles
     // e.g. try replacing mapbox.outdoors with mapbox.light to test a different style
-
-    map.setBaseLayer({
-      name: "Seismogram",
-      leafletLayer: new L.TileLayer("http://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVubmxpY2giLCJhIjoieUxHOHQyNCJ9.VLDDBTTdzeHKJvR5ABYaLA", {
-        zIndex: 1,
-        zoomAnimation: false,
-        opacity: 0.4
-      })
+    let tileUrl = "http://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVubmxpY2giLCJhIjoieUxHOHQyNCJ9.VLDDBTTdzeHKJvR5ABYaLA";
+    let baseLayer = new L.TileLayer(tileUrl, {
+      zIndex: 1,
+      zoomAnimation: false,
+      opacity: 0.4
     });
+    this.leafletMap.addLayer(baseLayer);
+    this.leafletMap.fire("baselayerchange", { layer: baseLayer });
   }
 
   updateBounds() {
