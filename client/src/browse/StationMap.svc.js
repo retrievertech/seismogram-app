@@ -4,7 +4,6 @@ export class StationMap {
 
   constructor(QueryData) {
     this.QueryData = QueryData;
-    this.map = null;
     this.leafletMap = null;
     this.stationMarkers = [];
   }
@@ -36,7 +35,7 @@ export class StationMap {
 
   renderQueryData() {
     // First, erase all existing markers
-    this.stationMarkers.forEach((marker) => this.map.leafletMap.removeLayer(marker));
+    this.stationMarkers.forEach((marker) => this.leafletMap.removeLayer(marker));
     this.stationMarkers = [];
 
     window._.keys(this.QueryData.filesQueryData.stations).forEach((stationId) => {
@@ -57,11 +56,11 @@ export class StationMap {
       });
 
       // Make sure you don't clobber double-click for zooming
-      marker.on("dblclick", () => this.map.leafletMap.zoomIn());
+      marker.on("dblclick", () => this.leafletMap.zoomIn());
       // Save the marker so we can get rid of it on the next search
       this.stationMarkers.push(marker);
       // Add it to the map
-      marker.addTo(this.map.leafletMap);
+      marker.addTo(this.leafletMap);
     });
   }
 
