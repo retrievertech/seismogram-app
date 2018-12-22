@@ -1,4 +1,4 @@
-var Canvas = require("canvas");
+const { createCanvas } = require('canvas');
 
 var imageCoordExtent = Math.pow(2, 15);
 
@@ -23,16 +23,39 @@ Tiler.prototype.tileRect = function(tx, ty, zoom) {
 };
 
 Tiler.prototype.createTile = function(image, z, x, y) {
-  var canvas = new Canvas(),
+  var canvas = createCanvas(this.tileSize, this.tileSize),
       ctx = canvas.getContext("2d");
 
-  canvas.width = canvas.height = this.tileSize;
+  var [sourceX, sourceY, sourceWidth, sourceHeight] = this.tileRect(x, y, z);
 
-  var tileRect = this.tileRect(x, y, z);
+  var destWidth = canvas.width;
+  var destHeight = canvas.height;
+
+  // BEGIN node-canvas bugfix. See https://github.com/Automattic/node-canvas/issues/1249#issuecomment-449468751.
+  // Can delete everything between BEGIN/END comments once resolved--this code compensates for the bug
+  // by being careful not to sample pixels from outside of the bounds of the source image.
+  var scale = sourceWidth / destWidth;
+
+  if (sourceX > image.width || sourceY > image.height)
+    return canvas;
+
+  var overageX = sourceX + sourceWidth - image.width;
+  var overageY = sourceY + sourceHeight - image.height;
+
+  if (overageX > 0) {
+    destWidth -= overageX / scale;
+    sourceWidth -= overageX;
+  }
+
+  if (overageY > 0) {
+    destHeight -= overageY / scale;
+    sourceHeight -= overageY;
+  }
+  // END node-canvas bugfix
 
   ctx.patternQuality = "fast";
-  ctx.drawImage(image, tileRect[0], tileRect[1], tileRect[2], tileRect[3],
-                0, 0, canvas.width, canvas.height);
+  ctx.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight,
+                0, 0, destWidth, destHeight);
 
   return canvas;
 };
