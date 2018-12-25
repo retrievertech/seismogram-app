@@ -10,6 +10,8 @@ var queryRoutes = require("./query-routes");
 var tileRoutes = require("./tile-routes");
 var processingRoutes = require("./processing-routes");
 
+var { port } = require("./config");
+
 app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
 app.use(cors());
@@ -30,7 +32,7 @@ app.get("/login", auth, function(req, res) {
 var server = http.createServer(app);
 server.timeout = 0;
 //statusSocket.run(server);
-server.listen(3000, function() {
+server.listen(port, function() {
   var host = server.address().address;
   var port = server.address().port;
   var mode = process.env.NODE_ENV || "dev";
