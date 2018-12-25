@@ -27,7 +27,8 @@ A node server atop mongo.
 ```sh
 cd server
 npm install
-node app # starts on port 3000
+cp config.example.js config.js
+node server.js # starts on port 3000
 ```
 
 client
