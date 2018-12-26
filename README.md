@@ -1,7 +1,11 @@
-seismogram-app
+Skate Web
 ==============
 
-Beginning of a browser app for searching/browsing seismograms. Eventually editing.
+This web application is the interactive component of the Skate project. For the analysis component, see https://github.com/retrievertech/seismogram-pipeline.
+
+The Skate web app allows browsing a large collection of analog WWSSN seismograms, overlaid with digital trace data that was extracted using our analysis component.
+
+Skate is currently deployed at https://seismo.redfish.com
 
 data-tools
 ----------
