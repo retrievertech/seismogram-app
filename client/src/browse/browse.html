@@ -31,7 +31,7 @@
       <a ng-class="{'active': !listVisible}" ng-click="listVisible=false">
         <span class="icon-location2"></span> Map
       </a>
-    </div>    
+    </div>
   </div>
 
 
@@ -71,7 +71,7 @@
 
           <!-- The thumbnail. Note that it has an inline error handler that replaces the -->
           <!-- thumb with a fallback thumb in case the thumb doesn't exist -->
-          <img src="https://s3.amazonaws.com/wwssn-thumbnails/{{file.name}}.jpg"
+          <img ng-src="https://s3.amazonaws.com/wwssn-thumbnails/{{file.name}}.jpg"
                onError="this.src='img/nopreview.jpg'" width="100%"/>
         </div>
       </div>
