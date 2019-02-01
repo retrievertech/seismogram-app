@@ -26,7 +26,7 @@
     "jszip": "2.5.0",
     "localforage": "1.2.7",
     "traceur": "0.0.111",
-    "file-saver": "git@github.com:eligrey/FileSaver.js.git#72effad",
+    "file-saver": "https://github.com/eligrey/FileSaver.js.git#72effad",
     "underscore": "1.9.1"
   },
   "resolutions": {
