@@ -46,3 +46,9 @@ Serve the client directory using a web server and load it in the browser, assumi
 EC2
 ---
 On our EC2 instance, the mongodb config file is located at `/etc/mongod.conf`.
+
+The server listens on port 3010 and sits behind an nginx proxy that listens on port 3000.
+nginx implements SSL and serves the static web app content on ports 80 and 443.
+The nginx config is located at `/etc/nginx/sites-enabled/seismogram`.
+
+Restart the server with `forever restartall`, or have a look at [deploy.sh](deploy.sh).
