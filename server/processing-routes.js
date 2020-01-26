@@ -92,6 +92,7 @@ router.post("/assign", function(req, res) {
 router.post("/save/:filename", auth, function(req, res, next) {
   var filename = req.params.filename;
   var layers = req.body.layers;
+  console.log("Saving metadata for " + filename);
   async.waterfall([
     function(cb) {
       mktemp.createDir("/tmp/seismo-save.XXXX", cb);
@@ -113,6 +114,7 @@ router.post("/save/:filename", auth, function(req, res, next) {
       if (process.env.NODE_ENV !== "production") {
         command += " dev";
       }
+      console.log("Executing command: " + command);
       exec(command, cb);
     },
     function(stdout, stderr, cb) {

@@ -14,7 +14,9 @@ stationsModule.parse("data/stations.csv", function(stations) {
       console.error("  ", station.code, station.location);
     return station.numFiles > 0;
   });
-  fs.writeFileSync(path.join(__dirname, "files.json"), JSON.stringify(files, null, 2));
+  var filesString = files.map(function (f) { return JSON.stringify(f) }).join('\n');
+  fs.writeFileSync(path.join(__dirname, "files.json"), filesString);
+//  fs.writeFileSync(path.join(__dirname, "files.json"), JSON.stringify(files, null, 2));
   fs.writeFileSync(path.join(__dirname, "stations.json"), JSON.stringify(stations, null, 2));
   //fs.writeFileSync(path.join(__dirname, "statuses.json"), JSON.stringify(statuses, null, 2));
   console.log("Wrote output to files.json, stations.json.");

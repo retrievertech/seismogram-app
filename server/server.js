@@ -30,7 +30,7 @@ app.get("/login", auth, function(req, res) {
 var server = http.createServer(app);
 server.timeout = 0;
 //statusSocket.run(server);
-server.listen(3000, function() {
+server.listen(3010, function() {
   var host = server.address().address;
   var port = server.address().port;
   var mode = process.env.NODE_ENV || "dev";
