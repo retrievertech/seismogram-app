@@ -17,12 +17,17 @@ node jsonize.js
 
 This will produce `files.json` and `stations.json`. Then you can import data into mongo:
 ```sh
-sh mongo-import.sh
+node mongo-import.js
 ```
 
 This assumes you started mongo:
 ```sh
 mongod --dbpath <some directory>
+```
+
+And have set up an aws cli profile called `seismo` with credentials to read the s3 bucket:
+```sh
+aws configure --profile seismo
 ```
 
 server
