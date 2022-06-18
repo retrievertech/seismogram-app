@@ -17,9 +17,8 @@ export class StationMap {
     L.control.scale().addTo(this.leafletMap);
     this.leafletMap.setView(new L.LatLng(0,0), 3);
 
-    // see https://www.mapbox.com/developers/api/maps/ for other tile styles
-    // e.g. try replacing mapbox.outdoors with mapbox.light to test a different style
-    let tileUrl = "https://api.tiles.mapbox.com/v4/mapbox.light/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoiYmVubmxpY2giLCJhIjoieUxHOHQyNCJ9.VLDDBTTdzeHKJvR5ABYaLA";
+    // Thank you stamen!
+    let tileUrl = "https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg";
     let baseLayer = new L.TileLayer(tileUrl, {
       zIndex: 1,
       zoomAnimation: false,
