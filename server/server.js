@@ -10,7 +10,8 @@ var queryRoutes = require("./query-routes");
 var tileRoutes = require("./tile-routes");
 var processingRoutes = require("./processing-routes");
 
-var { port } = require("./config");
+var config = require("./config");
+var port = config.port
 
 app.use(bodyParser.json({ limit: "100mb" }));
 app.use(bodyParser.urlencoded({ limit: "100mb", extended: true }));
