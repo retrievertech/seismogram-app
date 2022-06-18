@@ -14,10 +14,13 @@ router.get("/stations", function(req, res, next) {
     connect,
     function(client, cb) {
       var stations = client.db().collection("stations");
-      stations.find({}).toArray(cb);
+      stations.find({}).toArray((err, stations) => {
+        cb(err, client, stations);
+      });
     },
-    function(stations, cb) {
+    function(client, stations, cb) {
       res.send(stations);
+      client.close();
       cb(null);
     }
   ], function(err) {
