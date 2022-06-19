@@ -68,7 +68,10 @@ router.post("/assign", function(req, res) {
   fs.writeFileSync(path + "/segments.json", segments);
   fs.writeFileSync(path + "/meanlines.json", meanlines);
 
-  var command = "python get_segment_assignments.py " +
+  // change this if not using conda to manage your python environment
+  var pythonCommand = "conda run -n seismo python"
+  
+  var command = pythonCommand + " get_segment_assignments.py " +
     "--segments " + path + "/segments.json " +
     "--meanlines " + path + "/meanlines.json " +
     "--output " + path + "/assignments.json";
