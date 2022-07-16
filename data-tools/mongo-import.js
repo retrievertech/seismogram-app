@@ -19,9 +19,9 @@ async function mongoImport() {
   await execAndPrint(`mongo ${db} --eval "db.dropDatabase()"`)
   await execAndPrint(`mongoimport --db=${db} --collection=stations --jsonArray --file stations.json`)
   await execAndPrint(`mongoimport --db=${db} --collection=files --jsonArray --file files.json`)
-  await execAndPrint(`mongo ${db} --eval "db.files.ensureIndex({date:1})"`)
-  await execAndPrint(`mongo ${db} --eval "db.files.ensureIndex({stationId:1})"`)
-  await execAndPrint(`mongo ${db} --eval "db.files.ensureIndex({status:1})"`)
+  await execAndPrint(`mongo ${db} --eval "db.files.createIndex({date:1})"`)
+  await execAndPrint(`mongo ${db} --eval "db.files.createIndex({stationId:1})"`)
+  await execAndPrint(`mongo ${db} --eval "db.files.createIndex({status:1})"`)
   if (devMode) {
     console.log("Unimplemented. See mongo-import.sh")
   } else {
