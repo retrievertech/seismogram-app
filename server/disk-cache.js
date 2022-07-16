@@ -98,7 +98,7 @@ function ensureFileIsLocal(filename, cb) {
 
       deleteOldFiles(function() {
 
-        var command = "aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 " + escape(path);
+        var command = "aws s3 cp s3://WWSSN_Scans/" + filename + " --region us-east-1 --profile seismo " + escape(path);
 
         if (process.env.NODE_ENV !== "production") {
           command = "wget http://s3.amazonaws.com/WWSSN_Scans/" + filename + " -O " + escape(path);
