@@ -1,3 +1,8 @@
+// 
+// Turns stations.csv and files.uniq.txt into json files ready for
+// import into mongo
+// 
+
 var stationsModule = require("./stations");
 var filesModule = require("./files");
 //var statusesModule = require("./statuses");
