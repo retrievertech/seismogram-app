@@ -26,7 +26,7 @@ async function mongoImport() {
     console.log("Unimplemented. See mongo-import.sh")
   } else {
     let filenameRegex = /.*(\d{6}_\d{4}_\d{4}_\d{2}\.png).*/
-    let files_with_metadata = (await execAndPrint(`aws s3 ls "s3://wwssn-metadata/" --profile seismo`, false))
+    let processed_files = (await execAndPrint(`aws s3 ls "s3://wwssn-metadata/" --profile seismo`, false))
       .split('\n')
       .map(line => {
         let match = filenameRegex.exec(line)
@@ -36,8 +36,22 @@ async function mongoImport() {
       .filter(filename => !!filename)
       .map(filename => `"${filename}"`)
     
-    _.chunk(files_with_metadata, 1000).forEach(async chunk => {
+    _.chunk(processed_files, 1000).forEach(async chunk => {
       await execAndPrint(`mongo ${db} --eval 'db.files.update({name: {$in: [${chunk.join(',')}]}}, {$set: {status:3}}, {multi:true})'`)
+    })
+
+    let edited_files = (await execAndPrint(`aws s3 ls "s3://wwssn-edited-metadata/" --profile seismo`, false))
+      .split('\n')
+      .map(line => {
+        let match = filenameRegex.exec(line)
+        if (match) return match[1]
+        return null
+      })
+      .filter(filename => !!filename)
+      .map(filename => `"${filename}"`)
+    
+    _.chunk(edited_files, 1000).forEach(async chunk => {
+      await execAndPrint(`mongo ${db} --eval 'db.files.update({name: {$in: [${chunk.join(',')}]}}, {$set: {status:4}}, {multi:true})'`)
     })
   }
 }
