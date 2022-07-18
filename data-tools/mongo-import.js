@@ -36,9 +36,10 @@ async function mongoImport() {
       .filter(filename => !!filename)
       .map(filename => `"${filename}"`)
     
-    _.chunk(processed_files, 1000).forEach(async chunk => {
+    let chunks = _.chunk(processed_files, 1000)
+    for (let chunk of chunks) {
       await execAndPrint(`mongo ${db} --eval 'db.files.update({name: {$in: [${chunk.join(',')}]}}, {$set: {status:3}}, {multi:true})'`)
-    })
+    }
 
     let edited_files = (await execAndPrint(`aws s3 ls "s3://wwssn-edited-metadata/" --profile seismo`, false))
       .split('\n')
@@ -50,9 +51,10 @@ async function mongoImport() {
       .filter(filename => !!filename)
       .map(filename => `"${filename}"`)
     
-    _.chunk(edited_files, 1000).forEach(async chunk => {
+    chunks = _.chunk(edited_files, 1000)
+    for (let chunk of chunks) {
       await execAndPrint(`mongo ${db} --eval 'db.files.update({name: {$in: [${chunk.join(',')}]}}, {$set: {status:4}}, {multi:true})'`)
-    })
+    }
   }
 }
 
