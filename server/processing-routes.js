@@ -20,8 +20,8 @@ var connect = function(cb) {
 function setStatus(filename, status, callback) {
   async.waterfall([
     connect,
-    function(db, cb) {
-      db.collection("files").update({
+    function(client, cb) {
+      client.db().collection("files").update({
         name: filename
       }, {
         $set: { status: status }
