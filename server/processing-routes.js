@@ -26,11 +26,11 @@ function setStatus(filename, status, callback) {
       }, {
         $set: { status: status }
       }, function(err, result) {
-        cb(err, db, result);
+        cb(err, client, result);
       });
     },
-    function(db, result) {
-      db.close();
+    function(client, result) {
+      client.close();
 
       if (result === 1) {
         statusSocket.broadcast("status-update", {
