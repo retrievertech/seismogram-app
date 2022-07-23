@@ -116,6 +116,7 @@ router.post("/save/:filename", auth, function(req, res, next) {
       if (process.env.NODE_ENV !== "production") {
         command += " dev";
       }
+      console.log(`Executing ${command}`);
       exec(command, cb);
     },
     function(stdout, stderr, cb) {
