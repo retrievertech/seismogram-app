@@ -32,7 +32,7 @@ function setStatus(filename, status, callback) {
     function(client, result) {
       client.close();
 
-      if (result === 1) {
+      if (result.result.ok) {
         statusSocket.broadcast("status-update", {
           filename: filename,
           status: status
@@ -56,7 +56,7 @@ router.get("/setstatus/:filename/:status", auth, function(req, res, next) {
 
   setStatus(filename, status, function(err, result) {
     if (err) next(err);
-    else res.send({ ok: result });
+    else res.send({ ok: result.result.ok });
   });
 });
 
