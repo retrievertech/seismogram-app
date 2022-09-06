@@ -70,7 +70,7 @@ router.post("/assign", function(req, res) {
 
   // change this if not using conda to manage your python environment
   var pythonCommand = "conda run -n seismo python"
-  
+
   var command = pythonCommand + " get_segment_assignments.py " +
     "--segments " + path + "/segments.json " +
     "--meanlines " + path + "/meanlines.json " +
@@ -79,11 +79,11 @@ router.post("/assign", function(req, res) {
   process.chdir(pipelinePath);
 
   console.time("running assignment...");
-  exec(command, {maxBuffer: 1024 * 1000}, function(err, stdout, stderr) {
+  exec(command, { maxBuffer: 1024 * 1000 }, function(err, stdout, stderr) {
     if (err) {
       console.log(stdout);
       console.log(stderr);
-      res.status(503).send({error: err.message});
+      res.status(503).send({ error: err.message });
     } else {
       console.timeEnd("running assignment...");
       var assign = fs.readFileSync(path + "/assignments.json");
