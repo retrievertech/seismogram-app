@@ -19,12 +19,12 @@ var cache = {
 
   hit: function(filename) {
     var item = this.find(filename);
-    
+
     if (!item) {
       console.time("readFile");
       var file = fs.readFileSync(localPath(filename));
       console.timeEnd("readFile");
-      
+
       console.time("convertToImage");
       var img = new Image();
       img.src = file;
@@ -35,7 +35,7 @@ var cache = {
         time: Date.now(),
         img: img
       };
-      
+
       this.data.push(item);
     } else {
       // the item is in the cache.
@@ -45,7 +45,7 @@ var cache = {
 
     // eject the oldest item from memory when we reach
     // 15 elements in the cache
-    if (this.data.length > 15) {
+    if (this.data.length > 3) {
       this.data.sort(function(a, b) {
         return b.time - a.time;
       });
