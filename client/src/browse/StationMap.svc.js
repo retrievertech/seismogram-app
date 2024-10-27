@@ -17,12 +17,13 @@ export class StationMap {
     L.control.scale().addTo(this.leafletMap);
     this.leafletMap.setView(new L.LatLng(0,0), 3);
 
-    // Thank you stamen!
-    let tileUrl = "https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.jpg";
+    // Thank you open street map!
+    let tileUrl = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
     let baseLayer = new L.TileLayer(tileUrl, {
       zIndex: 1,
       zoomAnimation: false,
-      opacity: 0.4
+      opacity: 0.4,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
     this.leafletMap.addLayer(baseLayer);
     this.leafletMap.fire("baselayerchange", { layer: baseLayer });
