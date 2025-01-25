@@ -7,9 +7,17 @@ The Skate web app allows browsing a large collection of analog WWSSN seismograms
 
 Skate is currently deployed at https://seismo.redfish.com
 
+Local Development
+-----------------
+
+Start mongo:
+```sh
+mongod --dbpath <some directory>
+```
+
 data-tools
 ----------
-Tools to sanitize/import the station and file data. The data is in the repo in `data-tools/data`. You can run:
+Tools to sanitize/import the station and file data. The data is in the repo in `data-tools/data`. From `data-tools/`, run:
 ```sh
 npm install
 node jsonize.js
@@ -17,17 +25,20 @@ node jsonize.js
 
 This will produce `files.json` and `stations.json`. Then you can import data into mongo:
 ```sh
-node mongo-import.js
+node mongo-import.js dev
 ```
 
-This assumes you started mongo:
-```sh
-mongod --dbpath <some directory>
-```
+If you have AWS credentials for the seismogram metadata bucket, you can import the latest edited metadata into your local mongo.
 
-And have set up an aws cli profile called `seismo` with credentials to read the s3 bucket:
+Set up an aws cli profile called `seismo` with credentials to read the s3 bucket:
 ```sh
 aws configure --profile seismo
+```
+
+And run the same mongo-import script without the dev flag:
+
+```sh
+node mongo-import.js
 ```
 
 server
@@ -46,7 +57,21 @@ An angular frontend.
 ```sh
 bower install
 ```
-Serve the client directory using a web server and load it in the browser, assuming the above steps are done.
+Serve the client directory using any simple web server (e.g. https://simplewebserver.org/) and load it in the browser, assuming the above steps are done.
+
+
+image processing
+----------------
+
+The image processing scripts are tracked in a separate repo: https://github.com/retrievertech/seismogram-pipeline. The web app will run and allow you to browse seismograms without setting up these image processing scripts. Only if you want to use the web app to analyze and trace seismograms do you need to set them up.
+
+Clone https://github.com/retrievertech/seismogram-pipeline and put the directory next to `seismogram-app/` on your computer. The server expects `seismogram-pipeline/` and `seismogram-app/` to live as siblings in the same directory on your filesystem.
+
+For the rest of the image processing setup (e.g. conda and python dependencies), follow the "setup processing pipeline" steps at the bottom of the Cloud Development section.
+
+
+Cloud Development
+-----------------
 
 EC2
 ---
