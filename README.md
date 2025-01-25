@@ -15,8 +15,7 @@ Start mongo:
 mongod --dbpath <some directory>
 ```
 
-data-tools
-----------
+### data-tools
 Tools to sanitize/import the station and file data. The data is in the repo in `data-tools/data`. From `data-tools/`, run:
 ```sh
 npm install
@@ -41,8 +40,7 @@ And run the same mongo-import script without the dev flag:
 node mongo-import.js
 ```
 
-server
-------
+### server
 A node server atop mongo.
 ```sh
 cd server
@@ -51,8 +49,7 @@ cp config.example.js config.js
 node server.js # starts on port 3000
 ```
 
-client
-------
+### client
 An angular frontend.
 ```sh
 bower install
@@ -60,9 +57,7 @@ bower install
 Serve the client directory using any simple web server (e.g. https://simplewebserver.org/) and load it in the browser, assuming the above steps are done.
 
 
-image processing
-----------------
-
+### image processing
 The image processing scripts are tracked in a separate repo: https://github.com/retrievertech/seismogram-pipeline. The web app will run and allow you to browse seismograms without setting up these image processing scripts. Only if you want to use the web app to analyze and trace seismograms do you need to set them up.
 
 Clone https://github.com/retrievertech/seismogram-pipeline and put the directory next to `seismogram-app/` on your computer. The server expects `seismogram-pipeline/` and `seismogram-app/` to live as siblings in the same directory on your filesystem.
@@ -73,8 +68,7 @@ For the rest of the image processing setup (e.g. conda and python dependencies),
 Cloud Development
 -----------------
 
-EC2
----
+### EC2
 On our EC2 instance, the mongodb config file is located at `/etc/mongod.conf`.
 
 The server listens on port 3010 and sits behind an nginx proxy that listens on port 3000.
@@ -84,8 +78,7 @@ The nginx config is located at `/etc/nginx/sites-enabled/seismogram`.
 Restart the server with `pm2 restart all`, or have a look at [deploy.sh](deploy.sh).
 
 
-Spinning up a new deployment
----
+### Spinning up a new deployment
 
 nginx
 ```
