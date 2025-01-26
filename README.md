@@ -7,6 +7,8 @@ The Skate web app allows browsing a large collection of analog WWSSN seismograms
 
 Skate is currently deployed at https://seismo.redfish.com
 
+NOTE: The master branch is currently deployed to https://seismo.redfish.com, running Ubuntu 22.04, node 14.16.1, mongod 5.0.9. See https://github.com/retrievertech/seismogram-app/tree/node-16-mongo-8 for a version of the code that works with node v16.20.0 and mongod v8.0.1.
+
 Local Development
 -----------------
 
