@@ -10,6 +10,8 @@ Skate is currently deployed at https://seismo.redfish.com
 Local Development
 -----------------
 
+Last tested with node.js v16.20.0 and mongod v8.0.1
+
 Start mongo:
 ```sh
 mongod --dbpath <some directory>

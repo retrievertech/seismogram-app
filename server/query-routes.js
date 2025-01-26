@@ -1,60 +1,59 @@
 var express = require("express");
 var router = express.Router();
-var mongo = require("mongodb").MongoClient;
+var { MongoClient } = require("mongodb");
 var async = require("async");
 var queryCache = require("./query-cache");
 var auth = require("./auth");
 
-var connect = function(cb) {
-  mongo.connect("mongodb://localhost/seismo", { useNewUrlParser: true }, cb);
+var connect = async function() {
+  let client = new MongoClient("mongodb://localhost/seismo");
+  try {
+    await client.connect();
+    return client;
+  } catch(e) {
+    console.error(e);
+  }
 };
 
-router.get("/stations", function(req, res, next) {
-  async.waterfall([
-    connect,
-    function(client, cb) {
-      var stations = client.db().collection("stations");
-      stations.find({}).toArray((err, stations) => {
-        cb(err, client, stations);
-      });
-    },
-    function(client, stations, cb) {
-      res.send(stations);
-      client.close();
-      cb(null);
-    }
-  ], function(err) {
-    if (err) next(err);
-  });
+router.get("/stations", async function(req, res, next) {
+  let client
+  try {
+    client = await connect();
+    let stations = await client.db().collection("stations").find({}).toArray();
+    res.send(stations);
+  } catch(err) {
+    next(err);
+  }
+  
+  if (client) {
+    client.close();
+  }
 });
 
 //
 // The /file/:filename route is only used when a user navigates directly
 // to seismo.redfish.com/#/view/some_image_name.png.
 //
-router.get("/file/:filename", function(req, res, next) {
-  var filename = req.params.filename;
+router.get("/file/:filename", async function(req, res, next) {
+  let client
+  
+  try {
+    client = await connect();
+    var filename = req.params.filename;
+    let files = await client.db().collection("files").find({name: filename}).toArray();
 
-  async.waterfall([
-    connect,
-    function(client, cb) {
-      var files = client.db().collection("files");
-      files.find({name: filename}).toArray(function(err, files) {
-        cb(err, client, files);
-      });
-    },
-    function(client, files, cb) {
-      if (files.length > 0) {
-        res.status(200).send(files[0]);
-      } else {
-        res.status(404).send("Not Found");
-      }
-      client.close();
-      cb(null);
+    if (files.length > 0) {
+      res.status(200).send(files[0]);
+    } else {
+      res.status(404).send("Not Found");
     }
-  ], function(err) {
-    if (err) next(err);
-  });
+  } catch(err) {
+    next(err);
+  }
+  
+  if (client) {
+    client.close();
+  }
 });
 
 //
@@ -63,96 +62,90 @@ router.get("/file/:filename", function(req, res, next) {
 // that query. It gets hit when the page loads and when the user
 // clicks the "Find Sesimograms" button.
 //
-router.get("/files", function(req, res, next) {
-  console.log("--- processing files query ---", req.query);
-  var hit = queryCache.hit(req.query);
-  if (hit) {
-    console.log("result is cached");
-    res.send(hit);
-    return;
-  }
-  
-  var query = constructMongoQuery(req);
-
-  // result paging
-  var page = parseInt(req.query.page) || 1;
-  var pageSize = 20;
-
-  async.waterfall([
-    connect,
-    function(client, cb) {
-      var db = client.db();
-      async.parallel({
-        filteredFiles: function(cb) {
-          console.time("filteredFiles");
-          db.collection("files")
-            .find(query)
-            .skip(pageSize * (page-1))
-            .limit(pageSize)
-            .toArray(function(err, filteredFiles) {
-              console.timeEnd("filteredFiles");
-              cb(err, filteredFiles);
-            });
-        },
-        numResults: function(cb) {
-          console.time("numResults");
-          var fileCursor = db.collection("files").find(query).batchSize(10000);
-          fileCursor.count(function(err, numResults) {
-            console.timeEnd("numResults");
-            cb(err, numResults);
-          });
-        },
-        lowDate: function(cb) {
-          db.collection("files").find(query).sort({date:1}).limit(1).toArray(function(err, files) {
-            var date = files.length > 0 ? files[0].date : null;
-            cb(err, date);
-          });
-        },
-        highDate: function(cb) {
-          db.collection("files").find(query).sort({date:-1}).limit(1).toArray(function(err, files) {
-            var date = files.length > 0 ? files[0].date : null;
-            cb(err, date);
-          });
-        },
-        counts: function(cb) {
-          console.time("processing");
-
-          var stationMap = {};
-
-          db.collection("files").find(query).batchSize(10000).each(function(err, file) {
-            if (file === null) {
-              console.timeEnd("processing");
-              cb(err, { stationMap: stationMap });
-            } else {
-              if (!(file.stationId in stationMap)) {
-                stationMap[file.stationId] = 0;
-              }
-              stationMap[file.stationId]++;
-            }
-          });
-        }
-      },
-      function(err, results) {
-        cb(err, client, results);
-      });
-    },
-    function(client, results, cb) {
-      var payload = {
-        stations: results.counts.stationMap,
-        lowDate: results.lowDate,
-        highDate: results.highDate,
-        numResults: results.numResults,
-        files: results.filteredFiles
-      };
-
-      queryCache.put(req.query, payload);
-      res.send(payload);
-      client.close();
-      cb(null);
+router.get("/files", async function(req, res, next) {
+  let client
+  try {
+    console.log("--- processing files query ---", req.query);
+    var hit = queryCache.hit(req.query);
+    if (hit) {
+      console.log("result is cached");
+      res.send(hit);
+      return;
     }
-  ], function(err) {
-    if (err) next(err);
-  });
+    
+    var query = constructMongoQuery(req);
+
+    // result paging
+    var page = parseInt(req.query.page) || 1;
+    var pageSize = 20;
+
+    client = await connect();
+    var db = client.db();
+    let results = await async.parallel({
+      filteredFiles: async function(cb) {
+        console.time("filteredFiles");
+        let filteredFiles = await db.collection("files")
+          .find(query)
+          .skip(pageSize * (page-1))
+          .limit(pageSize)
+          .toArray();
+
+        console.timeEnd("filteredFiles")
+        return filteredFiles;
+      },
+      numResults: async function(cb) {
+        console.time("numResults");
+        var fileCursor = db.collection("files").find(query).batchSize(10000);
+        let numResults = await fileCursor.count();
+        console.timeEnd("numResults");
+        return numResults;
+      },
+      lowDate: async function(cb) {
+        let files = await db.collection("files").find(query).sort({date:1}).limit(1).toArray();
+        var date = files.length > 0 ? files[0].date : null;
+        return date;
+      },
+      highDate: async function(cb) {
+        let files = await db.collection("files").find(query).sort({date:-1}).limit(1).toArray();
+        var date = files.length > 0 ? files[0].date : null;
+        return date;
+      },
+      counts: async function(cb) {
+        console.time("processing");
+
+        var stationMap = {};
+
+        let cursor = db.collection("files").find(query, {batchSize: 10000})
+        
+        for await (const file of cursor) {
+          if (!(file.stationId in stationMap)) {
+            stationMap[file.stationId] = 0;
+          }
+          stationMap[file.stationId]++;
+        }
+
+        console.timeEnd("processing");
+        return { stationMap: stationMap };
+      }
+    });
+    
+    var payload = {
+      stations: results.counts.stationMap,
+      lowDate: results.lowDate,
+      highDate: results.highDate,
+      numResults: results.numResults,
+      files: results.filteredFiles
+    };
+
+    queryCache.put(req.query, payload);
+    res.send(payload);
+  } catch(err) {
+    next(err);
+  }  
+
+  if (client) {
+    client.close();
+  }
 });
 
 //
@@ -160,36 +153,35 @@ router.get("/files", function(req, res, next) {
 // It gets hit when the user scrolls to the bottom of the currently
 // rendered results in the browser.
 //
-router.get("/morefiles", function(req, res, next) {
-  console.log("--- processing morefiles query ---", req.query);
+router.get("/morefiles", async function(req, res, next) {
+  let client
+  try {
+    console.log("--- processing morefiles query ---", req.query);
 
-  var query = constructMongoQuery(req);
+    var query = constructMongoQuery(req);
 
-  // result paging
-  var page = parseInt(req.query.page) || 1;
-  var pageSize = 20;
+    // result paging
+    var page = parseInt(req.query.page) || 1;
+    var pageSize = 20;
 
-  async.waterfall([
-    connect,
-    function(client, cb) {
-      console.time("filteredFiles");
-      client.db().collection("files")
-        .find(query)
-        .skip(pageSize * (page-1))
-        .limit(pageSize)
-        .toArray(function(err, filteredFiles) {
-          console.timeEnd("filteredFiles");
-          cb(err, client, filteredFiles);
-        });
-    },
-    function(client, filteredFiles, cb) {
-      res.send({ files: filteredFiles });
-      client.close();
-      cb(null);
-    }
-  ], function(err) {
-    if (err) next(err);
-  });
+    client = await connect();
+    
+    console.time("filteredFiles");
+    let filteredFiles = await client.db().collection("files")
+      .find(query)
+      .skip(pageSize * (page-1))
+      .limit(pageSize)
+      .toArray();
+    console.timeEnd("filteredFiles");
+
+    res.send({ files: filteredFiles });  
+  } catch(err) {
+    next(err);
+  }
+
+  if (client) {
+    client.close();
+  }
 });
 
 function constructMongoQuery(req) {
