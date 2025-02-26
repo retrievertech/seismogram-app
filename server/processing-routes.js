@@ -1,7 +1,8 @@
 var router = require("express").Router();
-var mongo = require("mongodb").MongoClient;
+var { MongoClient } = require("mongodb");
 var async = require("async");
 var fs = require("fs");
+var fsPromises = require("node:fs/promises");
 var exec = require("child_process").exec;
 var mktemp = require("mktemp");
 
@@ -13,51 +14,46 @@ var auth = require("./auth");
 
 var pipelinePath = __dirname + "/../../seismogram-pipeline";
 
-var connect = function(cb) {
-  mongo.connect("mongodb://localhost/seismo", cb);
+var connect = async function() {
+  let client = new MongoClient("mongodb://localhost/seismo");
+  try {
+    await client.connect();
+    return client;
+  } catch(e) {
+    console.error(e);
+  }
 };
 
-function setStatus(filename, status, callback) {
-  async.waterfall([
-    connect,
-    function(client, cb) {
-      client.db().collection("files").update({
-        name: filename
-      }, {
-        $set: { status: status }
-      }, function(err, result) {
-        cb(err, client, result);
-      });
-    },
-    function(client, result) {
-      client.close();
+async function setStatus(filename, status) {
+  let client = await connect();
+  let result = await client.db().collection("files").updateOne({ name: filename }, { $set: { status: status } });
 
-      if (result.result.ok) {
-        statusSocket.broadcast("status-update", {
-          filename: filename,
-          status: status
-        });
+  if (result.modifiedCount === 1) {
+    statusSocket.broadcast("status-update", {
+      filename: filename,
+      status: status
+    });
 
-        queryCache.invalidate();
-      }
+    queryCache.invalidate();
+  }
+  
+  if (client) {
+    client.close();
+  }
 
-      if (typeof callback === "function")
-        callback(null, result);
-    }
-  ], function(err) {
-    if (typeof callback === "function")
-      callback(err);
-  });
+  return result
 }
 
-router.get("/setstatus/:filename/:status", auth, function(req, res, next) {
+router.get("/setstatus/:filename/:status", auth, async function(req, res, next) {
   var status = parseInt(req.params.status);
   var filename = req.params.filename;
 
-  setStatus(filename, status, function(err, result) {
-    if (err) next(err);
-    else res.send({ ok: result.result.ok });
-  });
+  try {
+    let result = await setStatus(filename, status);
+    res.send({ ok: result.modifiedCount === 1 });
+  } catch(err) {
+    next(err);
+  }
 });
 
 router.post("/assign", function(req, res) {
@@ -92,42 +88,35 @@ router.post("/assign", function(req, res) {
   });
 });
 
-router.post("/save/:filename", auth, function(req, res, next) {
+router.post("/save/:filename", auth, async function(req, res, next) {
   var filename = req.params.filename;
   var layers = req.body.layers;
-  async.waterfall([
-    function(cb) {
-      mktemp.createDir("/tmp/seismo-save.XXXX", cb);
-    },
-    function(path, cb) {
-      var functions = layers.map(function(layer) {
-        return function(callback) {
-          var filePath = path + "/" + layer.key + ".json";
-          fs.writeFile(filePath, layer.contents, callback);
-        };
-      });
-      async.parallel(functions, function(err) {
-        cb(err, path);
-      });
-    },
-    function(path, cb) {
-      process.chdir(pipelinePath);
-      var command = "sh copy_to_s3.sh " + filename + " " + escape(path) + " edited-metadata";
-      if (process.env.NODE_ENV !== "production") {
-        command += " dev";
-      }
-      console.log(`Executing ${command}`);
-      exec(command, cb);
-    },
-    function(stdout, stderr, cb) {
-      if (stdout) console.log(stdout);
-      if (stderr) console.log(stderr);
-      res.send({ ok: 1 });
-      setStatus(filename, status.edited);
-      cb(null);
-    }
-  ], function(err) {
-    if (err) next(err);
+
+  var path = mktemp.createDirSync("/tmp/seismo-save.XXXX");
+
+  try {
+    console.log("Writing metadata jsons...")
+    var writeMetadataFiles = layers.map((layer) => {
+      var filePath = path + "/" + layer.key + ".json";
+      return fsPromises.writeFile(filePath, layer.contents);
+    });
+
+    await Promise.all(writeMetadataFiles);  
+  } catch(err) {
+    console.log(err);
+  }
+
+  process.chdir(pipelinePath);
+  var command = "sh copy_to_s3.sh " + filename + " " + escape(path) + " wwssn-edited-metadata";
+  if (process.env.NODE_ENV !== "production") {
+    command += " dev";
+  }
+  console.log(`Executing ${command}`);
+  exec(command, (stdout, stderr) => {
+    if (stdout) console.log(stdout);
+    if (stderr) console.log(stderr);
+    res.send({ ok: 1 });
+    setStatus(filename, status.edited);  
   });
 });
 
