@@ -138,10 +138,15 @@ export class SeismogramMap {
     var path;
 
     if (this.$location.host() === "localhost") {
-      // we are in development
+      // we are in development, fetch seismogram metadata from localhost
       path = this.FileStatus.is(file.status, "Edited") ?
-        "https://s3.amazonaws.com/wwssn-edited-metadata" :
-        "https://s3.amazonaws.com/wwssn-metadata";
+        "wwssn-edited-metadata" :
+        "wwssn-metadata";
+
+      // uncomment below if you want your local webapp to fetch metadata from s3 instead
+      // path = this.FileStatus.is(file.status, "Edited") ?
+      //   "https://s3.amazonaws.com/wwssn-edited-metadata" :
+      //   "https://s3.amazonaws.com/wwssn-metadata";
     } else {
       // in production
       path = this.FileStatus.is(file.status, "Edited") ?
